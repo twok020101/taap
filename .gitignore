@@ -1,0 +1,43 @@
+# Deps
+node_modules/
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Env & secrets
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Claude
+.claude/settings.local.json
+
+# Branch docs (per /cmit convention)
+docs/feat-*.md
+docs/fix-*.md
+docs/refactor-*.md
+docs/chore-*.md
+
+# Build artifacts
+dist/
+build/
+.turbo/
+.vercel/
+
+# Data precompute outputs (large, regenerated)
+data/precomputed/*.tif
+data/precomputed/*.png
+!data/precomputed/.gitkeep

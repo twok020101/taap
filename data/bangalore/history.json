@@ -1,0 +1,8 @@
+{
+  "stats": [
+    { "label": "Tree cover lost since 1973", "value": 91, "suffix": "%", "source": "IISc 2023" },
+    { "label": "Wetlands lost since 1973", "value": 79, "suffix": "%", "source": "IISc 2023" },
+    { "label": "Built-up area grew by", "value": 1055, "suffix": "%", "source": "IISc 2023" },
+    { "label": "Surface temperature up", "value": 8, "suffix": "°C", "source": "IISc / Landsat 1992–2017" }
+  ]
+}

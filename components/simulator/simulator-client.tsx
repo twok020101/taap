@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { Moon, Satellite } from 'lucide-react'
 import { useAmbientTemp } from '@/components/ambient/ambient-particles'
 import { SliderPanel } from '@/components/simulator/slider-panel'
 import { Readouts } from '@/components/simulator/readouts'
@@ -51,6 +52,7 @@ export function SimulatorClient({ baseline, liveWeather, liveAq }: SimulatorClie
   })
   const [linkedMode, setLinkedMode] = useState(true)
   const [activePreset, setActivePreset] = useState<PresetYear | null>('2026')
+  const [basemap, setBasemap] = useState<'dark' | 'satellite'>('dark')
   const [ctx, setCtx] = useState<SimContext>({
     month: 4,  // April — matches the baseline snapshot
     windDir: 'N',
@@ -158,7 +160,41 @@ export function SimulatorClient({ baseline, liveWeather, liveAq }: SimulatorClie
 
       {/* Hero: spatial heatmap — the main visual */}
       <div className="mt-8">
-        <HeatmapMap baseline={baseline} sliders={sliders} ctx={ctx} />
+        {/* Basemap toggle */}
+        <div className="mb-2 flex items-center justify-end gap-3">
+          <span className="text-[11px] text-muted-foreground">
+            Sentinel-2 · Q1 2024 EOX cloudless composite (latest free)
+          </span>
+          <div className="flex overflow-hidden rounded-md border border-border">
+            <button
+              onClick={() => setBasemap('dark')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs transition-colors ${
+                basemap === 'dark'
+                  ? 'bg-foreground text-background'
+                  : 'bg-card text-muted-foreground hover:bg-muted'
+              }`}
+              aria-pressed={basemap === 'dark'}
+              title="Dark basemap"
+            >
+              <Moon className="h-3.5 w-3.5" />
+              Dark
+            </button>
+            <button
+              onClick={() => setBasemap('satellite')}
+              className={`flex items-center gap-1.5 border-l border-border px-3 py-1.5 text-xs transition-colors ${
+                basemap === 'satellite'
+                  ? 'bg-foreground text-background'
+                  : 'bg-card text-muted-foreground hover:bg-muted'
+              }`}
+              aria-pressed={basemap === 'satellite'}
+              title="Satellite basemap"
+            >
+              <Satellite className="h-3.5 w-3.5" />
+              Satellite
+            </button>
+          </div>
+        </div>
+        <HeatmapMap baseline={baseline} sliders={sliders} ctx={ctx} basemap={basemap} />
       </div>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]">

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import maplibregl, { type Map as MapLibreMap, type GeoJSONSource } from 'maplibre-gl'
+import maplibregl, { type Map as MapLibreMap, type GeoJSONSource, type StyleSpecification } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { bangalore } from '@/cities/bangalore'
 import { zones } from '@/data/bangalore/zones'
@@ -14,6 +14,7 @@ interface HeatmapMapProps {
   baseline: Baseline
   sliders: SliderState
   ctx: SimContext
+  basemap?: 'dark' | 'satellite'
 }
 
 /** Diverging ramp: forest (cold) → neutral → ember → fire (hot). Values are °C from baseline. */
@@ -58,12 +59,45 @@ const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
-export function HeatmapMap({ baseline, sliders, ctx }: HeatmapMapProps) {
+/** Build an inline MapLibre style object for the EOX satellite raster basemap */
+function buildSatelliteStyle(): StyleSpecification {
+  const sat = bangalore.mapBasemaps!.satellite
+  return {
+    version: 8,
+    sources: {
+      'eox-satellite': {
+        type: 'raster',
+        tiles: [sat.tileUrl],
+        tileSize: 256,
+        maxzoom: sat.maxZoom,
+        attribution: sat.attribution,
+      },
+    },
+    layers: [
+      {
+        id: 'eox-satellite-layer',
+        type: 'raster',
+        source: 'eox-satellite',
+        minzoom: 0,
+        maxzoom: 22,
+      },
+    ],
+  }
+}
+
+function getStyleForBasemap(bm: 'dark' | 'satellite'): string | StyleSpecification {
+  if (bm === 'satellite') return buildSatelliteStyle()
+  return bangalore.mapBasemaps?.dark ?? bangalore.mapStyleUrl
+}
+
+export function HeatmapMap({ baseline, sliders, ctx, basemap = 'dark' }: HeatmapMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const mapRef = useRef<MapLibreMap | null>(null)
   const loadedRef = useRef(false)
   const popupRef = useRef<maplibregl.Popup | null>(null)
   const simRef = useRef<Float32Array | null>(null)
+  const geojsonRef = useRef<FeatureCollection<Polygon> | null>(null)
+  const basemapRef = useRef<'dark' | 'satellite'>('dark')
   const [mapError, setMapError] = useState<string | null>(null)
 
   const grid = useMemo(() => buildGrid(bangalore), [])
@@ -94,67 +128,41 @@ export function HeatmapMap({ baseline, sliders, ctx }: HeatmapMapProps) {
     }
   }, [grid])
 
-  // ── Initialise MapLibre (once) ────────────────────────────────────────────
+  // Keep geojsonRef in sync for use inside style.load callbacks
   useEffect(() => {
-    if (!containerRef.current || mapRef.current) return
+    geojsonRef.current = geojson
+  }, [geojson])
 
-    let map: MapLibreMap
-    try {
-      map = new maplibregl.Map({
-        container: containerRef.current,
-        style: bangalore.mapStyleUrl,
-        center: bangalore.mapCenter,
-        zoom: bangalore.mapZoom,
-        minZoom: 9,
-        maxZoom: 13,
-        maxBounds: [
-          [bangalore.bbox[0] - 0.15, bangalore.bbox[1] - 0.15],
-          [bangalore.bbox[2] + 0.15, bangalore.bbox[3] + 0.15],
+  /** Add the heat-grid source, heat-fill layer, and optionally zone labels */
+  function addHeatLayers(map: MapLibreMap, bm: 'dark' | 'satellite') {
+    const gj = geojsonRef.current
+    if (!gj) return
+
+    map.addSource('heat-grid', { type: 'geojson', data: gj })
+
+    map.addLayer({
+      id: 'heat-fill',
+      type: 'fill',
+      source: 'heat-grid',
+      paint: {
+        'fill-color': [
+          'interpolate',
+          ['linear'],
+          ['coalesce', ['feature-state', 'tempDelta'], 0],
+          ...COLOR_STOPS.flat(),
         ],
-        attributionControl: { compact: true },
-        dragRotate: false,
-        pitchWithRotate: false,
-      })
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Failed to initialise map'
-      queueMicrotask(() => setMapError(msg))
-      return
-    }
-
-    mapRef.current = map
-    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
-
-    map.on('error', (e) => {
-      if (e.error?.message) setMapError(e.error.message)
+        'fill-opacity': [
+          'case',
+          ['boolean', ['feature-state', 'hover'], false],
+          bm === 'satellite' ? 0.85 : 0.95,
+          bm === 'satellite' ? 0.62 : 0.72,
+        ],
+        'fill-outline-color': 'transparent',
+      },
     })
 
-    map.on('load', () => {
-      if (!mapRef.current) return
-
-      map.addSource('heat-grid', { type: 'geojson', data: geojson })
-
-      map.addLayer({
-        id: 'heat-fill',
-        type: 'fill',
-        source: 'heat-grid',
-        paint: {
-          'fill-color': [
-            'interpolate',
-            ['linear'],
-            ['coalesce', ['feature-state', 'tempDelta'], 0],
-            ...COLOR_STOPS.flat(),
-          ],
-          'fill-opacity': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            0.95,
-            0.72,
-          ],
-          'fill-outline-color': 'transparent',
-        },
-      })
-
-      // Zone label layer
+    // Zone labels only on dark (satellite basemap lacks Open Sans glyphs)
+    if (bm === 'dark') {
       const zoneLabels: FeatureCollection = {
         type: 'FeatureCollection',
         features: (Object.keys(zones) as Array<keyof typeof zones>).map(zk => ({
@@ -184,10 +192,53 @@ export function HeatmapMap({ baseline, sliders, ctx }: HeatmapMapProps) {
           'text-halo-width': 1.2,
         },
       })
+    }
 
+    // Reapply feature states after layer (re)creation
+    const latest = simRef.current
+    if (latest) writeFeatureStates(map, latest)
+  }
+
+  // ── Initialise MapLibre (once) ────────────────────────────────────────────
+  useEffect(() => {
+    if (!containerRef.current || mapRef.current) return
+
+    basemapRef.current = basemap
+
+    let map: MapLibreMap
+    try {
+      map = new maplibregl.Map({
+        container: containerRef.current,
+        style: getStyleForBasemap(basemap),
+        center: bangalore.mapCenter,
+        zoom: bangalore.mapZoom,
+        minZoom: 9,
+        maxZoom: 13,
+        maxBounds: [
+          [bangalore.bbox[0] - 0.15, bangalore.bbox[1] - 0.15],
+          [bangalore.bbox[2] + 0.15, bangalore.bbox[3] + 0.15],
+        ],
+        attributionControl: { compact: true },
+        dragRotate: false,
+        pitchWithRotate: false,
+      })
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to initialise map'
+      queueMicrotask(() => setMapError(msg))
+      return
+    }
+
+    mapRef.current = map
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
+
+    map.on('error', (e) => {
+      if (e.error?.message) setMapError(e.error.message)
+    })
+
+    map.on('load', () => {
+      if (!mapRef.current) return
+      addHeatLayers(map, basemapRef.current)
       loadedRef.current = true
-      const latest = simRef.current
-      if (latest) writeFeatureStates(map, latest)
       setMapError(null)
     })
 
@@ -253,6 +304,24 @@ export function HeatmapMap({ baseline, sliders, ctx }: HeatmapMapProps) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // ── Swap basemap style when prop changes ──────────────────────────────────
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !loadedRef.current) return
+    if (basemapRef.current === basemap) return
+
+    basemapRef.current = basemap
+    loadedRef.current = false
+
+    map.setStyle(getStyleForBasemap(basemap), { diff: false })
+
+    map.once('style.load', () => {
+      addHeatLayers(map, basemap)
+      loadedRef.current = true
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [basemap])
 
   // ── Update the feature state on every sim recompute ───────────────────────
   useEffect(() => {

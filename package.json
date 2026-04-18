@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "rasters": "node scripts/snapshot-rasters.mjs",
+    "history": "node scripts/fetch-history-temps.mjs"
   },
   "dependencies": {
     "@radix-ui/react-separator": "^1.1.2",

@@ -1,4 +1,5 @@
 import { Hero } from '@/components/scrolly/hero'
+import { RasterStrip } from '@/components/scrolly/raster-strip'
 import { StatCard } from '@/components/scrolly/stat-card'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -17,6 +18,11 @@ export default async function HomePage() {
   return (
     <div>
       <Hero />
+
+      <Separator />
+
+      {/* Satellite raster split-screen */}
+      <RasterStrip />
 
       <Separator />
 

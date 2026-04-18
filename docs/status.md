@@ -1,6 +1,6 @@
 # Taap — Project Status
 
-_Last updated: 2026-04-18 (v0.4 — validation & honesty landed)_
+_Last updated: 2026-04-18 (v0.3 data pipeline completed + v0.4 validation & honesty landed)_
 
 This document tracks what has been shipped vs. what remains per the original plan in `docs/feat-bangalore-heat-simulator.md` (gitignored branch spec).
 
@@ -64,6 +64,10 @@ Clamping: Δ°C ∈ [−8, +12], PM2.5 ∈ [0, 500]. Model returns a `breakdown`
 - `lib/sources/openAQ.ts` — typed live PM2.5 fetcher, nearest 5 CPCB/KSPCB stations via OpenAQ v3, median, ISR 900 s, needs `OPENAQ_API_KEY`
 - `lib/sources/gfw.ts` — typed annual tree-cover-loss fetcher, `gadm__tcl__adm2_change` for IND/17/5 at 10% threshold, ISR 86 400 s, needs `GFW_API_KEY`
 - `app/api/weather/route.ts` · `app/api/air/route.ts` · `app/api/tree-loss/route.ts` — ISR-cached proxies
+- `scripts/snapshot-rasters.mjs` — NASA GIBS MODIS raster snapshotter (`pnpm rasters`)
+- `scripts/fetch-history-temps.mjs` — Open-Meteo ERA5 historical-temperature ingester (`pnpm history`)
+- `data/bangalore/temperature-history.json` — 1951–2024 annual + monthly Tmax/Tmin + anomalies
+- `public/rasters/bangalore/{2000,2024,2026}-{ndvi,lst}.png` + `sources.json` — committed GIBS MODIS snapshots
 
 ### Infra
 - Next.js 16 App Router + React 19 + TypeScript strict
@@ -79,9 +83,10 @@ Clamping: Δ°C ∈ [−8, +12], PM2.5 ∈ [0, 500]. Model returns a `breakdown`
 - [x] **MapLibre GL heatmap overlay** on the simulator (`feat/map-heatmap`). Client-side ~400 m regular grid (~15k cells) over the city bbox, built from the 5-zone config + a curated `data/bangalore/features.json` (15 lakes, 10 green patches, 10 built-up clusters). Per-cell coefficient compute in `model/simulate-grid.ts` mirrors `simulate.ts` but drops the spatially-uniform monsoon + aerosol components (they'd wash the baseline red). Static `reliefC` per cell surfaces lakes and parks as cooler patches even at sliders=baseline. CartoDB Dark Matter no-labels basemap, no API key. Hover popup shows cell Δ°C and land-cover composition.
 - [x] **Live OpenAQ integration** — PM2.5 from CPCB/KSPCB stations via OpenAQ v3. Nearest 5 live Bangalore stations, median, ISR 15 min. Shows in simulator strip + muted pill next to modeled PM2.5. Graceful fallback if unreachable.
 - [x] **Live GFW tree-cover-loss feed** — annual Hansen data via `gadm__tcl__adm2_change` dataset (pre-aggregated admin-level). Bengaluru Urban (IND/17/5) at 10% threshold. 5th stat card on homepage. ISR 24 h.
-- [ ] **GEE precompute pipeline** — one-off script to generate 1973/2000/2024/2026 Bangalore NDVI/LST rasters as committed PNGs for the intro split-screen.
-- [ ] **data.opencity.in** — historical Bangalore daily max/min 1951–2024 CSV ingested as a committed JSON; reference in hero and about page.
-- [ ] **Sentinel-2 Q1 2026 composite** — high-res recent imagery for the map base layer (upgrades `feat/map-heatmap`).
+- [x] **Raster precompute pipeline** (`scripts/snapshot-rasters.mjs`, `pnpm rasters`) — one-off ESM Node script fetching NASA EOSDIS GIBS MODIS Terra monthly composites (NDVI + daytime LST) via WMS GetMap, no auth, no `sharp` / compositing. Committed at `public/rasters/bangalore/{2000,2024,2026}-{ndvi,lst}.png` + sidecar `sources.json`. 2026 slot uses 2026-03-01 (Q1, latest full month available). **Substitution**: GEE replaced with public GIBS; this is honest — we never had GEE auth. **1973 handled as a text-only "pre-satellite era" tile** in the homepage split-screen citing IISc Ramachandra & Bharath 2023 LULC reconstruction; no faked imagery.
+- [x] **Historical temperature ingest** (`scripts/fetch-history-temps.mjs`, `pnpm history`) — single fetch against the free Open-Meteo ERA5 Archive API (no key), 1951-01-01 → 2024-12-31 daily Tmax/Tmin for Bangalore, aggregated to 74 annual + 888 monthly rows plus 1951–1980 baseline, 2015–2024 recent decade, and derived anomalies. Committed at `data/bangalore/temperature-history.json` (~98 KB). **Substitution**: data.opencity.in replaced with ERA5 reanalysis — CLAUDE.md already names ERA5 as the IMD substitute. Wired into hero sub-line ("ERA5: annual Tmax +0.56 °C, Tmin +0.81 °C vs 1951–1980 mean") and into `/about` as a full 1951–2024 annual SVG line chart with explicit LST-vs-air-temp disclaimer.
+- [x] **Sentinel-2 cloudless 2024 base layer** on the simulator map. Free EOX WMTS endpoint (no auth) added as a Dark ↔ Satellite segmented toggle above the map; heatmap overlay stays on top with fill-opacity tuned per basemap. **Substitution**: Q1 2026 requires Copernicus auth; 2024 EOX cloudless composite is the latest free source. Caveat is surfaced in the UI next to the toggle.
+- [x] **Homepage raster split-screen** (`components/scrolly/raster-strip.tsx`) — 4-column × 2-row grid (NDVI + LST across 1973 / 2000 / 2024 / 2026 Q1) rendered between the hero and the stat cards. 1973 column is the pre-satellite text tile; other three are served from `public/rasters/bangalore/`.
 
 ### v0.4 — Validation & honesty
 - [x] **Backwards model validation**: 1973-preset run against the 2026 baseline reproduces the IMD April-mean (22.0 °C) with error −0.20 °C, well inside the ±1 °C gate. Rendered as a pass/fail card at the top of `/about`.
@@ -131,11 +136,13 @@ components/
   brand/     logo · wordmark · header
   globe/     globe-intro · globe-spinner
   ambient/   ambient-particles (+ useAmbientTemp hook)
-  scrolly/   hero · stat-card
-  simulator/ slider-panel · readouts · simulator-client · map-placeholder · honesty-inline
+  scrolly/   hero · stat-card · raster-strip
+  simulator/ slider-panel · readouts · simulator-client · heatmap-map · honesty-inline
   ui/        shadcn primitives
 cities/      bangalore.ts · types.ts
-model/       coefficients.ts · simulate.ts
-data/bangalore/  baseline · presets · history · zones (all JSON)
+model/       coefficients.ts · simulate.ts · simulate-grid.ts · grid.ts
+data/bangalore/  baseline · presets · history · zones · temperature-history · features (all JSON)
 lib/         utils.ts · sources/{openMeteo,openAQ,gfw}.ts
+scripts/     snapshot-rasters.mjs · fetch-history-temps.mjs
+public/rasters/bangalore/  committed MODIS PNGs (2000/2024/2026 · NDVI + LST) + sources.json
 ```

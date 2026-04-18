@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react'
 import { useAmbientTemp } from '@/components/ambient/ambient-particles'
 import { SliderPanel } from '@/components/simulator/slider-panel'
 import { Readouts } from '@/components/simulator/readouts'
-import { MapPlaceholder } from '@/components/simulator/map-placeholder'
+import { HeatmapMap } from '@/components/simulator/heatmap-map'
 import { HonestyInline } from '@/components/simulator/honesty-inline'
 import { ClimateContext } from '@/components/simulator/climate-context'
 import { LiveWeatherStrip } from '@/components/simulator/live-weather-strip'
@@ -122,6 +122,11 @@ export function SimulatorClient({ baseline, liveWeather }: SimulatorClientProps)
         />
       </div>
 
+      {/* Hero: spatial heatmap — the main visual */}
+      <div className="mt-8">
+        <HeatmapMap baseline={baseline} sliders={sliders} ctx={ctx} />
+      </div>
+
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]">
         {/* Left: Sliders */}
         <div className="order-2 lg:order-1">
@@ -133,10 +138,9 @@ export function SimulatorClient({ baseline, liveWeather }: SimulatorClientProps)
           />
         </div>
 
-        {/* Right: Readouts + Map */}
-        <div className="order-1 flex flex-col gap-6 lg:order-2">
+        {/* Right: Readouts */}
+        <div className="order-1 lg:order-2">
           <Readouts output={output} baseline={{ tempC: baseline.tempC, pm25: baseline.pm25 }} />
-          <MapPlaceholder />
         </div>
       </div>
 

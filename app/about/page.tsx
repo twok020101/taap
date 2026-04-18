@@ -2,7 +2,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { coefficients } from '@/model/coefficients'
-import { AlertTriangle, BookOpen, CheckCircle2, Microscope } from 'lucide-react'
+import { simulate } from '@/model/simulate'
+import baselineData from '@/data/bangalore/baseline.json'
+import presetsData from '@/data/bangalore/presets.json'
+import type { Baseline, PresetYear } from '@/cities/types'
+import { AlertTriangle, BookOpen, CheckCircle2, Microscope, Ruler, XCircle } from 'lucide-react'
 
 interface CaveatItem {
   title: string
@@ -130,7 +134,49 @@ const COEFF_ROWS: CoeffRow[] = [
   },
 ]
 
+/**
+ * Backwards validation: rewind the sliders to the 1973 preset values against
+ * the April 2026 baseline, run the model, and compare the modelled ambient
+ * temperature to the IMD-derived 1973 observed April mean.
+ *
+ * Reference: 22.0°C — Bangalore WMO-station April mean, IMD historical normals
+ * 1951–1970 (the 1973 preset `tempC` field is sourced from the same normals).
+ * Gate: ±1°C per the branch acceptance criteria.
+ */
+const baseline = baselineData as Baseline
+const presets = presetsData as Record<PresetYear, Baseline>
+const VALIDATION_OBSERVED_1973_C = 22.0
+const VALIDATION_GATE_C = 1.0
+
+function runValidation() {
+  const p1973 = presets['1973']
+  const out = simulate(
+    baseline,
+    {
+      canopyPct: p1973.canopyPct,
+      builtUpPct: p1973.builtUpPct,
+      waterKm2: p1973.waterKm2,
+      vehiclesIndex: p1973.vehiclesIndex,
+      populationM: p1973.populationM,
+    },
+    { month: 4, windDir: 'N', aod: 0.4, zone: 'central', timeOfDay: 'day' },
+  )
+  const error = out.tempC - VALIDATION_OBSERVED_1973_C
+  return {
+    modelled: out.tempC,
+    modelledLow: baseline.tempC + out.bands.tempDelta.low,
+    modelledHigh: baseline.tempC + out.bands.tempDelta.high,
+    observed: VALIDATION_OBSERVED_1973_C,
+    error,
+    absError: Math.abs(error),
+    passed: Math.abs(error) <= VALIDATION_GATE_C,
+  }
+}
+
 export default function AboutPage() {
+  const validation = runValidation()
+  const validationPassed = validation.passed
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-16">
       <div className="mb-10">
@@ -146,6 +192,93 @@ export default function AboutPage() {
           Read these caveats before citing the outputs.
         </p>
       </div>
+
+      {/* Backwards validation */}
+      <section className="mb-14">
+        <div className="mb-4 flex items-center gap-2">
+          <Ruler className="h-5 w-5 text-blue-400" />
+          <h2 className="text-xl font-semibold">Backwards validation</h2>
+        </div>
+        <Card
+          className={
+            validationPassed ? 'border-emerald-900/40 bg-emerald-950/10' : 'border-amber-900/40 bg-amber-950/10'
+          }
+        >
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-base">
+              {validationPassed ? (
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+              ) : (
+                <XCircle className="h-4 w-4 text-amber-400" />
+              )}
+              1973 preset vs IMD historical record
+              <Badge
+                variant={validationPassed ? 'default' : 'destructive'}
+                className="ml-auto font-mono text-[11px]"
+              >
+                {validationPassed ? 'PASS' : 'FAIL'} (±{VALIDATION_GATE_C.toFixed(1)}°C gate)
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground">
+            <p className="mb-3">
+              Rewinding the sliders to their 1973 values (canopy {presets['1973'].canopyPct}%,
+              built-up {presets['1973'].builtUpPct}%, water {presets['1973'].waterKm2} km²,
+              vehicles index {presets['1973'].vehiclesIndex}) against the April 2026 baseline
+              should reproduce the IMD-recorded April mean temperature at Bangalore WMO station.
+            </p>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-lg border bg-card/50 p-3">
+                <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                  Modelled
+                </div>
+                <div className="mt-1 font-mono text-lg text-orange-300">
+                  {validation.modelled.toFixed(1)}°C
+                </div>
+                <div className="text-[11px] font-mono text-muted-foreground/70">
+                  [{validation.modelledLow.toFixed(1)}…{validation.modelledHigh.toFixed(1)}]°C
+                </div>
+              </div>
+              <div className="rounded-lg border bg-card/50 p-3">
+                <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                  Observed (IMD 1951–1970)
+                </div>
+                <div className="mt-1 font-mono text-lg">
+                  {validation.observed.toFixed(1)}°C
+                </div>
+                <div className="text-[11px] text-muted-foreground/70">
+                  April mean, Bangalore WMO
+                </div>
+              </div>
+              <div className="rounded-lg border bg-card/50 p-3">
+                <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                  Error
+                </div>
+                <div
+                  className={`mt-1 font-mono text-lg ${
+                    validationPassed ? 'text-emerald-300' : 'text-amber-300'
+                  }`}
+                >
+                  {validation.error > 0 ? '+' : ''}
+                  {validation.error.toFixed(2)}°C
+                </div>
+                <div className="text-[11px] text-muted-foreground/70">
+                  |error| ≤ {VALIDATION_GATE_C.toFixed(1)}°C
+                </div>
+              </div>
+            </div>
+            <p className="mt-4 text-xs">
+              This is a back-of-the-envelope check, not a formal skill score. It tests whether the
+              coefficients can reproduce the aggregate ambient warming Bangalore has seen since
+              1973 — not whether the model predicts any individual year. The modelled band
+              assumes the [low, high] coefficient range — if it contains {validation.observed.toFixed(1)}°C,
+              the observed value is within the model&apos;s stated uncertainty.
+            </p>
+          </CardContent>
+        </Card>
+      </section>
+
+      <Separator className="mb-14" />
 
       {/* Now captured */}
       <section className="mb-14">
@@ -199,8 +332,8 @@ export default function AboutPage() {
         </div>
         <p className="mb-6 text-sm text-muted-foreground">
           All values are the <em>central estimate</em> from regression studies. Low/high
-          give the reported uncertainty range. The single readout uses the central value;
-          Monte Carlo uncertainty bands will ship in v0.2.
+          give the reported uncertainty range. The simulator readouts now propagate these
+          ranges as low–high bands next to every central number.
         </p>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

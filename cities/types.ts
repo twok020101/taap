@@ -27,6 +27,18 @@ export interface BreakdownComponents {
   zoneOffset: number
 }
 
+/** Per-component low/high bounds on the temperature breakdown. */
+export interface BreakdownBands {
+  canopy: { low: number; high: number }
+  builtUp: { low: number; high: number }
+  water: { low: number; high: number }
+}
+
+export interface ModelBand {
+  low: number
+  high: number
+}
+
 export interface ModelOutput {
   tempC: number
   tempDelta: number
@@ -34,6 +46,17 @@ export interface ModelOutput {
   pm25Delta: number
   nightCoolLoss: number
   breakdown: BreakdownComponents
+  /**
+   * Low/high bounds on each ranged readout, propagated from the coefficient
+   * `{low, high}` intervals. Fixed-value components (monsoon, aerosol, wind
+   * direction, zone) pass through identically on both bounds.
+   */
+  bands: {
+    tempDelta: ModelBand
+    pm25Delta: ModelBand
+    nightCoolLoss: ModelBand
+    breakdown: BreakdownBands
+  }
 }
 
 export interface StatEntry {

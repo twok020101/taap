@@ -25,6 +25,22 @@ interface SimulatorClientProps {
 
 const DEFAULT_ZONE: ZoneKey = 'central'
 
+/**
+ * Coupling ratio for linked-slider mode — moving one of {canopyPct, builtUpPct}
+ * pulls the other by this fraction of the delta, in the opposite direction.
+ * Conservative choice: IISc LULC 1973–2023 implies 0.6–1.4 pp canopy per pp
+ * built-up depending on direction; 0.6 is the low end and avoids "runaway"
+ * coupling where a tiny nudge to one slider pegs the other.
+ * Source: Ramachandra & Bharath 2023.
+ */
+const COUPLING_RATIO = 0.6
+
+/** Slider bounds kept in sync with SliderPanel's SLIDERS config. */
+const SLIDER_BOUNDS = {
+  canopyPct: { min: 0, max: 80 },
+  builtUpPct: { min: 0, max: 100 },
+} as const
+
 export function SimulatorClient({ baseline, liveWeather, liveAq }: SimulatorClientProps) {
   const [sliders, setSliders] = useState<SliderState>({
     canopyPct: baseline.canopyPct,
@@ -33,6 +49,7 @@ export function SimulatorClient({ baseline, liveWeather, liveAq }: SimulatorClie
     vehiclesIndex: baseline.vehiclesIndex,
     populationM: baseline.populationM,
   })
+  const [linkedMode, setLinkedMode] = useState(true)
   const [activePreset, setActivePreset] = useState<PresetYear | null>('2026')
   const [ctx, setCtx] = useState<SimContext>({
     month: 4,  // April — matches the baseline snapshot
@@ -43,8 +60,23 @@ export function SimulatorClient({ baseline, liveWeather, liveAq }: SimulatorClie
   })
 
   const handleSliderChange = useCallback((key: keyof SliderState, value: number) => {
-    setSliders(prev => ({ ...prev, [key]: value }))
+    setSliders(prev => {
+      const next: SliderState = { ...prev, [key]: value }
+      if (linkedMode && (key === 'canopyPct' || key === 'builtUpPct')) {
+        const otherKey: 'canopyPct' | 'builtUpPct' =
+          key === 'canopyPct' ? 'builtUpPct' : 'canopyPct'
+        const delta = value - prev[key]
+        const bounds = SLIDER_BOUNDS[otherKey]
+        const coupled = prev[otherKey] - COUPLING_RATIO * delta
+        next[otherKey] = Math.max(bounds.min, Math.min(bounds.max, coupled))
+      }
+      return next
+    })
     setActivePreset(null)
+  }, [linkedMode])
+
+  const handleLinkedModeChange = useCallback((linked: boolean) => {
+    setLinkedMode(linked)
   }, [])
 
   const handlePresetSelect = useCallback((year: PresetYear) => {
@@ -135,8 +167,10 @@ export function SimulatorClient({ baseline, liveWeather, liveAq }: SimulatorClie
           <SliderPanel
             sliders={sliders}
             activePreset={activePreset}
+            linkedMode={linkedMode}
             onSliderChange={handleSliderChange}
             onPresetSelect={handlePresetSelect}
+            onLinkedModeChange={handleLinkedModeChange}
           />
         </div>
 

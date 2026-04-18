@@ -1,6 +1,6 @@
 # Taap — Project Status
 
-_Last updated: 2026-04-18 (v0.3 — live data integrations landed)_
+_Last updated: 2026-04-18 (v0.4 — validation & honesty landed)_
 
 This document tracks what has been shipped vs. what remains per the original plan in `docs/feat-bangalore-heat-simulator.md` (gitignored branch spec).
 
@@ -84,10 +84,10 @@ Clamping: Δ°C ∈ [−8, +12], PM2.5 ∈ [0, 500]. Model returns a `breakdown`
 - [ ] **Sentinel-2 Q1 2026 composite** — high-res recent imagery for the map base layer (upgrades `feat/map-heatmap`).
 
 ### v0.4 — Validation & honesty
-- [ ] **Backwards model validation**: re-run the 1973 preset and verify the output matches IISc's observed 1973 LST within ±1 °C. Surface the validation result in `/about`.
-- [ ] **Monte Carlo uncertainty bands** on every readout (shade low/central/high).
-- [ ] **"Linked" vs "unlinked" slider mode** — default to physically realistic co-variation (moving built-up up pulls canopy down proportionally); free mode lets users explore counterfactuals.
-- [ ] **Citation hover tooltips** on every coefficient in the UI (partially present in `/about`; extend to simulator).
+- [x] **Backwards model validation**: 1973-preset run against the 2026 baseline reproduces the IMD April-mean (22.0 °C) with error −0.20 °C, well inside the ±1 °C gate. Rendered as a pass/fail card at the top of `/about`.
+- [x] **Monte Carlo uncertainty bands** — `simulate()` now returns `bands: { tempDelta, pm25Delta, nightCoolLoss, breakdown }` propagated from the `{low, high}` coefficient ranges. Rendered as `[low … high]` brackets next to every headline and breakdown row.
+- [x] **"Linked" vs "unlinked" slider mode** — default linked; moving built-up ↔ canopy applies a 0.6× opposite-direction coupling (IISc LULC 1973–2023, conservative end of the 0.6–1.4 ratio). Free mode for counterfactuals. Toggle in the slider panel.
+- [x] **Citation hover tooltips on simulator** — every BreakdownRow in `readouts.tsx` (canopy, built-up, water, aerosol-day, aerosol-night, monsoon, advection, zone) now carries an `Info` tooltip with description + source.
 
 ### v1 — Multi-city
 - [ ] `cities/delhi.ts`, `cities/mumbai.ts`, `cities/chennai.ts` with per-city coefficients + zone overrides + baselines

@@ -10,21 +10,17 @@ import { HonestyInline } from '@/components/simulator/honesty-inline'
 import { ClimateContext } from '@/components/simulator/climate-context'
 import { LiveWeatherStrip } from '@/components/simulator/live-weather-strip'
 import { simulate } from '@/model/simulate'
-import { zones } from '@/data/bangalore/zones'
-import type { SliderState, PresetYear, Baseline, SimContext, ZoneKey, WindDir } from '@/cities/types'
+import type { CityConfig, SliderState, PresetYear, Baseline, SimContext, ZoneKey, WindDir } from '@/cities/types'
 import type { LiveWeather } from '@/lib/sources/openMeteo'
 import type { LiveAq } from '@/lib/sources/openAQ'
-import presetsData from '@/data/bangalore/presets.json'
-
-const presets = presetsData as Record<PresetYear, Baseline>
 
 interface SimulatorClientProps {
+  city: CityConfig
   baseline: Baseline
+  presets: Record<PresetYear, Baseline>
   liveWeather: LiveWeather | null
   liveAq: LiveAq | null
 }
-
-const DEFAULT_ZONE: ZoneKey = 'central'
 
 /**
  * Coupling ratio for linked-slider mode — moving one of {canopyPct, builtUpPct}
@@ -42,7 +38,8 @@ const SLIDER_BOUNDS = {
   builtUpPct: { min: 0, max: 100 },
 } as const
 
-export function SimulatorClient({ baseline, liveWeather, liveAq }: SimulatorClientProps) {
+export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }: SimulatorClientProps) {
+  const DEFAULT_ZONE: ZoneKey = Object.keys(city.zones)[0] ?? 'central'
   const [sliders, setSliders] = useState<SliderState>({
     canopyPct: baseline.canopyPct,
     builtUpPct: baseline.builtUpPct,
@@ -94,7 +91,8 @@ export function SimulatorClient({ baseline, liveWeather, liveAq }: SimulatorClie
   }, [])
 
   const handleZoneChange = useCallback((zone: ZoneKey) => {
-    const z = zones[zone]
+    const z = city.zones[zone]
+    if (!z) return
     setSliders(prev => ({
       ...prev,
       canopyPct: z.canopyPct,
@@ -103,7 +101,7 @@ export function SimulatorClient({ baseline, liveWeather, liveAq }: SimulatorClie
     }))
     setCtx(prev => ({ ...prev, zone }))
     setActivePreset(null)
-  }, [])
+  }, [city])
 
   const handleMonthChange = useCallback((month: number) => {
     setCtx(prev => ({ ...prev, month }))
@@ -121,7 +119,7 @@ export function SimulatorClient({ baseline, liveWeather, liveAq }: SimulatorClie
     setCtx(prev => ({ ...prev, timeOfDay }))
   }, [])
 
-  const output = simulate(baseline, sliders, ctx)
+  const output = simulate(city, baseline, sliders, ctx)
 
   // Publish the modelled temperature to the ambient particle canvas in layout
   useAmbientTemp(output.tempC)
@@ -130,17 +128,17 @@ export function SimulatorClient({ baseline, liveWeather, liveAq }: SimulatorClie
     <div className="mx-auto max-w-6xl px-4 py-10">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">
-          Heat Simulator
+          {city.name} Heat Simulator
         </h1>
         <p className="mt-2 text-muted-foreground">
-          Adjust the sliders to explore how land-use changes affect Bangalore&apos;s
+          Adjust the sliders to explore how land-use changes affect {city.name}&apos;s
           temperature and air quality. The model applies published coefficients
           against the April 2026 baseline.
         </p>
       </div>
 
       {/* Live weather strip */}
-      {liveWeather && <LiveWeatherStrip weather={liveWeather} liveAq={liveAq} />}
+      {liveWeather && <LiveWeatherStrip cityName={city.name} weather={liveWeather} liveAq={liveAq} />}
 
       <div className="mt-6">
         <HonestyInline />
@@ -149,6 +147,7 @@ export function SimulatorClient({ baseline, liveWeather, liveAq }: SimulatorClie
       {/* Climate context controls */}
       <div className="mt-6">
         <ClimateContext
+          city={city}
           ctx={ctx}
           onMonthChange={handleMonthChange}
           onWindDirChange={handleWindDirChange}
@@ -194,7 +193,7 @@ export function SimulatorClient({ baseline, liveWeather, liveAq }: SimulatorClie
             </button>
           </div>
         </div>
-        <HeatmapMap baseline={baseline} sliders={sliders} ctx={ctx} basemap={basemap} />
+        <HeatmapMap city={city} baseline={baseline} sliders={sliders} ctx={ctx} basemap={basemap} />
       </div>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]">
@@ -222,7 +221,6 @@ export function SimulatorClient({ baseline, liveWeather, liveAq }: SimulatorClie
         Canopy {baseline.canopyPct}% · Built-up {baseline.builtUpPct}% ·
         Water {baseline.waterKm2} km² · Vehicles index {baseline.vehiclesIndex} ·
         Pop {baseline.populationM} M · Temp {baseline.tempC}°C · PM2.5 {baseline.pm25} µg/m³.
-        Data from IISc Bangalore, KSPCB, and Open-Meteo ERA5 April 2026 analysis.
       </div>
     </div>
   )

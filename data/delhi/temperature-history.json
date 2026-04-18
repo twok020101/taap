@@ -1,0 +1,5803 @@
+{
+  "meta": {
+    "source": "Open-Meteo ERA5 Archive",
+    "url": "https://archive-api.open-meteo.com/v1/archive",
+    "variable": "temperature_2m (daily max / min)",
+    "city": "delhi",
+    "station": "IMD Safdarjung",
+    "lat": 28.5918,
+    "lon": 77.21,
+    "timezone": "Asia/Kolkata",
+    "startDate": "1951-01-01",
+    "endDate": "2024-12-31",
+    "fetchedAt": "2026-04-18T12:33:47.210Z"
+  },
+  "baseline1951_1980": {
+    "tmaxMean": 31.06,
+    "tminMean": 18.89
+  },
+  "recent2015_2024": {
+    "tmaxMean": 30.38,
+    "tminMean": 19.34
+  },
+  "anomalyDegC": {
+    "tmax": -0.68,
+    "tmin": 0.45
+  },
+  "annual": [
+    {
+      "y": 1951,
+      "tmaxMean": 30.96,
+      "tminMean": 18.61,
+      "nDays": 365
+    },
+    {
+      "y": 1952,
+      "tmaxMean": 31.54,
+      "tminMean": 18.82,
+      "nDays": 366
+    },
+    {
+      "y": 1953,
+      "tmaxMean": 31.09,
+      "tminMean": 19.11,
+      "nDays": 365
+    },
+    {
+      "y": 1954,
+      "tmaxMean": 31.05,
+      "tminMean": 18.7,
+      "nDays": 365
+    },
+    {
+      "y": 1955,
+      "tmaxMean": 31.3,
+      "tminMean": 18.71,
+      "nDays": 365
+    },
+    {
+      "y": 1956,
+      "tmaxMean": 31.18,
+      "tminMean": 18.84,
+      "nDays": 366
+    },
+    {
+      "y": 1957,
+      "tmaxMean": 30.84,
+      "tminMean": 18.63,
+      "nDays": 365
+    },
+    {
+      "y": 1958,
+      "tmaxMean": 31.21,
+      "tminMean": 19.36,
+      "nDays": 365
+    },
+    {
+      "y": 1959,
+      "tmaxMean": 31.41,
+      "tminMean": 19.5,
+      "nDays": 365
+    },
+    {
+      "y": 1960,
+      "tmaxMean": 31.72,
+      "tminMean": 19.04,
+      "nDays": 366
+    },
+    {
+      "y": 1961,
+      "tmaxMean": 29.88,
+      "tminMean": 18.7,
+      "nDays": 365
+    },
+    {
+      "y": 1962,
+      "tmaxMean": 30.91,
+      "tminMean": 18.72,
+      "nDays": 365
+    },
+    {
+      "y": 1963,
+      "tmaxMean": 31.82,
+      "tminMean": 19.42,
+      "nDays": 365
+    },
+    {
+      "y": 1964,
+      "tmaxMean": 31.09,
+      "tminMean": 18.56,
+      "nDays": 366
+    },
+    {
+      "y": 1965,
+      "tmaxMean": 32.23,
+      "tminMean": 19.04,
+      "nDays": 365
+    },
+    {
+      "y": 1966,
+      "tmaxMean": 32.09,
+      "tminMean": 18.8,
+      "nDays": 365
+    },
+    {
+      "y": 1967,
+      "tmaxMean": 30.63,
+      "tminMean": 18.86,
+      "nDays": 365
+    },
+    {
+      "y": 1968,
+      "tmaxMean": 30.79,
+      "tminMean": 18.75,
+      "nDays": 366
+    },
+    {
+      "y": 1969,
+      "tmaxMean": 31.45,
+      "tminMean": 19.18,
+      "nDays": 365
+    },
+    {
+      "y": 1970,
+      "tmaxMean": 30.73,
+      "tminMean": 18.92,
+      "nDays": 365
+    },
+    {
+      "y": 1971,
+      "tmaxMean": 30.08,
+      "tminMean": 18.45,
+      "nDays": 365
+    },
+    {
+      "y": 1972,
+      "tmaxMean": 30.79,
+      "tminMean": 18.83,
+      "nDays": 366
+    },
+    {
+      "y": 1973,
+      "tmaxMean": 30.94,
+      "tminMean": 19,
+      "nDays": 365
+    },
+    {
+      "y": 1974,
+      "tmaxMean": 31.89,
+      "tminMean": 19.16,
+      "nDays": 365
+    },
+    {
+      "y": 1975,
+      "tmaxMean": 30.56,
+      "tminMean": 18.51,
+      "nDays": 365
+    },
+    {
+      "y": 1976,
+      "tmaxMean": 30.5,
+      "tminMean": 18.77,
+      "nDays": 366
+    },
+    {
+      "y": 1977,
+      "tmaxMean": 30.39,
+      "tminMean": 18.8,
+      "nDays": 365
+    },
+    {
+      "y": 1978,
+      "tmaxMean": 30.21,
+      "tminMean": 18.5,
+      "nDays": 365
+    },
+    {
+      "y": 1979,
+      "tmaxMean": 31.57,
+      "tminMean": 19.36,
+      "nDays": 365
+    },
+    {
+      "y": 1980,
+      "tmaxMean": 30.98,
+      "tminMean": 19.08,
+      "nDays": 366
+    },
+    {
+      "y": 1981,
+      "tmaxMean": 30.81,
+      "tminMean": 18.97,
+      "nDays": 365
+    },
+    {
+      "y": 1982,
+      "tmaxMean": 30.12,
+      "tminMean": 18.72,
+      "nDays": 365
+    },
+    {
+      "y": 1983,
+      "tmaxMean": 29.21,
+      "tminMean": 17.95,
+      "nDays": 365
+    },
+    {
+      "y": 1984,
+      "tmaxMean": 30.84,
+      "tminMean": 18.54,
+      "nDays": 366
+    },
+    {
+      "y": 1985,
+      "tmaxMean": 30.93,
+      "tminMean": 19.14,
+      "nDays": 365
+    },
+    {
+      "y": 1986,
+      "tmaxMean": 30.53,
+      "tminMean": 18.52,
+      "nDays": 365
+    },
+    {
+      "y": 1987,
+      "tmaxMean": 32.68,
+      "tminMean": 19.91,
+      "nDays": 365
+    },
+    {
+      "y": 1988,
+      "tmaxMean": 31.46,
+      "tminMean": 19.55,
+      "nDays": 366
+    },
+    {
+      "y": 1989,
+      "tmaxMean": 31.03,
+      "tminMean": 18.66,
+      "nDays": 365
+    },
+    {
+      "y": 1990,
+      "tmaxMean": 30.39,
+      "tminMean": 19.14,
+      "nDays": 365
+    },
+    {
+      "y": 1991,
+      "tmaxMean": 31.24,
+      "tminMean": 19.21,
+      "nDays": 365
+    },
+    {
+      "y": 1992,
+      "tmaxMean": 30.82,
+      "tminMean": 19.09,
+      "nDays": 366
+    },
+    {
+      "y": 1993,
+      "tmaxMean": 31.3,
+      "tminMean": 19.24,
+      "nDays": 365
+    },
+    {
+      "y": 1994,
+      "tmaxMean": 30.96,
+      "tminMean": 18.99,
+      "nDays": 365
+    },
+    {
+      "y": 1995,
+      "tmaxMean": 30.68,
+      "tminMean": 19.15,
+      "nDays": 365
+    },
+    {
+      "y": 1996,
+      "tmaxMean": 29.98,
+      "tminMean": 18.43,
+      "nDays": 366
+    },
+    {
+      "y": 1997,
+      "tmaxMean": 28.79,
+      "tminMean": 17.95,
+      "nDays": 365
+    },
+    {
+      "y": 1998,
+      "tmaxMean": 30.09,
+      "tminMean": 18.89,
+      "nDays": 365
+    },
+    {
+      "y": 1999,
+      "tmaxMean": 30.98,
+      "tminMean": 19.27,
+      "nDays": 365
+    },
+    {
+      "y": 2000,
+      "tmaxMean": 30.52,
+      "tminMean": 18.82,
+      "nDays": 366
+    },
+    {
+      "y": 2001,
+      "tmaxMean": 30.62,
+      "tminMean": 18.82,
+      "nDays": 365
+    },
+    {
+      "y": 2002,
+      "tmaxMean": 31.67,
+      "tminMean": 19.67,
+      "nDays": 365
+    },
+    {
+      "y": 2003,
+      "tmaxMean": 29.76,
+      "tminMean": 18.47,
+      "nDays": 365
+    },
+    {
+      "y": 2004,
+      "tmaxMean": 31.22,
+      "tminMean": 19.44,
+      "nDays": 366
+    },
+    {
+      "y": 2005,
+      "tmaxMean": 30.61,
+      "tminMean": 18.84,
+      "nDays": 365
+    },
+    {
+      "y": 2006,
+      "tmaxMean": 31.59,
+      "tminMean": 19.9,
+      "nDays": 365
+    },
+    {
+      "y": 2007,
+      "tmaxMean": 31.02,
+      "tminMean": 19.44,
+      "nDays": 365
+    },
+    {
+      "y": 2008,
+      "tmaxMean": 30.48,
+      "tminMean": 19.1,
+      "nDays": 366
+    },
+    {
+      "y": 2009,
+      "tmaxMean": 31.93,
+      "tminMean": 19.76,
+      "nDays": 365
+    },
+    {
+      "y": 2010,
+      "tmaxMean": 31.47,
+      "tminMean": 19.87,
+      "nDays": 365
+    },
+    {
+      "y": 2011,
+      "tmaxMean": 30.28,
+      "tminMean": 18.98,
+      "nDays": 365
+    },
+    {
+      "y": 2012,
+      "tmaxMean": 30.27,
+      "tminMean": 18.79,
+      "nDays": 366
+    },
+    {
+      "y": 2013,
+      "tmaxMean": 29.54,
+      "tminMean": 18.88,
+      "nDays": 365
+    },
+    {
+      "y": 2014,
+      "tmaxMean": 30.43,
+      "tminMean": 19.05,
+      "nDays": 365
+    },
+    {
+      "y": 2015,
+      "tmaxMean": 30.11,
+      "tminMean": 19.1,
+      "nDays": 365
+    },
+    {
+      "y": 2016,
+      "tmaxMean": 31.07,
+      "tminMean": 19.71,
+      "nDays": 366
+    },
+    {
+      "y": 2017,
+      "tmaxMean": 30.71,
+      "tminMean": 19.6,
+      "nDays": 365
+    },
+    {
+      "y": 2018,
+      "tmaxMean": 30.49,
+      "tminMean": 19.32,
+      "nDays": 365
+    },
+    {
+      "y": 2019,
+      "tmaxMean": 29.89,
+      "tminMean": 19.31,
+      "nDays": 365
+    },
+    {
+      "y": 2020,
+      "tmaxMean": 29.77,
+      "tminMean": 18.87,
+      "nDays": 366
+    },
+    {
+      "y": 2021,
+      "tmaxMean": 30.25,
+      "tminMean": 19.4,
+      "nDays": 365
+    },
+    {
+      "y": 2022,
+      "tmaxMean": 30.73,
+      "tminMean": 19.6,
+      "nDays": 365
+    },
+    {
+      "y": 2023,
+      "tmaxMean": 30.13,
+      "tminMean": 18.99,
+      "nDays": 365
+    },
+    {
+      "y": 2024,
+      "tmaxMean": 30.61,
+      "tminMean": 19.52,
+      "nDays": 366
+    }
+  ],
+  "monthly": [
+    {
+      "ym": "1951-01",
+      "tmaxMean": 17.76,
+      "tminMean": 7.21,
+      "nDays": 31
+    },
+    {
+      "ym": "1951-02",
+      "tmaxMean": 21.64,
+      "tminMean": 8.13,
+      "nDays": 28
+    },
+    {
+      "ym": "1951-03",
+      "tmaxMean": 28.24,
+      "tminMean": 13.31,
+      "nDays": 31
+    },
+    {
+      "ym": "1951-04",
+      "tmaxMean": 32.23,
+      "tminMean": 17.34,
+      "nDays": 30
+    },
+    {
+      "ym": "1951-05",
+      "tmaxMean": 40.28,
+      "tminMean": 24.87,
+      "nDays": 31
+    },
+    {
+      "ym": "1951-06",
+      "tmaxMean": 41.74,
+      "tminMean": 29.33,
+      "nDays": 30
+    },
+    {
+      "ym": "1951-07",
+      "tmaxMean": 37.39,
+      "tminMean": 28.34,
+      "nDays": 31
+    },
+    {
+      "ym": "1951-08",
+      "tmaxMean": 31.73,
+      "tminMean": 25.82,
+      "nDays": 31
+    },
+    {
+      "ym": "1951-09",
+      "tmaxMean": 32.81,
+      "tminMean": 24.39,
+      "nDays": 30
+    },
+    {
+      "ym": "1951-10",
+      "tmaxMean": 32.06,
+      "tminMean": 20.92,
+      "nDays": 31
+    },
+    {
+      "ym": "1951-11",
+      "tmaxMean": 29.65,
+      "tminMean": 14.28,
+      "nDays": 30
+    },
+    {
+      "ym": "1951-12",
+      "tmaxMean": 25.54,
+      "tminMean": 8.76,
+      "nDays": 31
+    },
+    {
+      "ym": "1952-01",
+      "tmaxMean": 21.19,
+      "tminMean": 8.18,
+      "nDays": 31
+    },
+    {
+      "ym": "1952-02",
+      "tmaxMean": 23.9,
+      "tminMean": 10.98,
+      "nDays": 29
+    },
+    {
+      "ym": "1952-03",
+      "tmaxMean": 27.57,
+      "tminMean": 13.26,
+      "nDays": 31
+    },
+    {
+      "ym": "1952-04",
+      "tmaxMean": 36.71,
+      "tminMean": 21.28,
+      "nDays": 30
+    },
+    {
+      "ym": "1952-05",
+      "tmaxMean": 39.49,
+      "tminMean": 25.3,
+      "nDays": 31
+    },
+    {
+      "ym": "1952-06",
+      "tmaxMean": 39.76,
+      "tminMean": 27.86,
+      "nDays": 30
+    },
+    {
+      "ym": "1952-07",
+      "tmaxMean": 35.26,
+      "tminMean": 27.39,
+      "nDays": 31
+    },
+    {
+      "ym": "1952-08",
+      "tmaxMean": 30.55,
+      "tminMean": 25.15,
+      "nDays": 31
+    },
+    {
+      "ym": "1952-09",
+      "tmaxMean": 34.77,
+      "tminMean": 24.07,
+      "nDays": 30
+    },
+    {
+      "ym": "1952-10",
+      "tmaxMean": 34.75,
+      "tminMean": 19.33,
+      "nDays": 31
+    },
+    {
+      "ym": "1952-11",
+      "tmaxMean": 30.02,
+      "tminMean": 13.3,
+      "nDays": 30
+    },
+    {
+      "ym": "1952-12",
+      "tmaxMean": 24.49,
+      "tminMean": 9.55,
+      "nDays": 31
+    },
+    {
+      "ym": "1953-01",
+      "tmaxMean": 20.27,
+      "tminMean": 6.83,
+      "nDays": 31
+    },
+    {
+      "ym": "1953-02",
+      "tmaxMean": 25.81,
+      "tminMean": 11.34,
+      "nDays": 28
+    },
+    {
+      "ym": "1953-03",
+      "tmaxMean": 34.31,
+      "tminMean": 17.76,
+      "nDays": 31
+    },
+    {
+      "ym": "1953-04",
+      "tmaxMean": 37.85,
+      "tminMean": 21.12,
+      "nDays": 30
+    },
+    {
+      "ym": "1953-05",
+      "tmaxMean": 41.17,
+      "tminMean": 26.93,
+      "nDays": 31
+    },
+    {
+      "ym": "1953-06",
+      "tmaxMean": 39.78,
+      "tminMean": 28.64,
+      "nDays": 30
+    },
+    {
+      "ym": "1953-07",
+      "tmaxMean": 31.91,
+      "tminMean": 26.13,
+      "nDays": 31
+    },
+    {
+      "ym": "1953-08",
+      "tmaxMean": 30.37,
+      "tminMean": 25.03,
+      "nDays": 31
+    },
+    {
+      "ym": "1953-09",
+      "tmaxMean": 30.12,
+      "tminMean": 23.33,
+      "nDays": 30
+    },
+    {
+      "ym": "1953-10",
+      "tmaxMean": 29.16,
+      "tminMean": 18.06,
+      "nDays": 31
+    },
+    {
+      "ym": "1953-11",
+      "tmaxMean": 26.95,
+      "tminMean": 12.35,
+      "nDays": 30
+    },
+    {
+      "ym": "1953-12",
+      "tmaxMean": 25.14,
+      "tminMean": 11.36,
+      "nDays": 31
+    },
+    {
+      "ym": "1954-01",
+      "tmaxMean": 19.05,
+      "tminMean": 6.71,
+      "nDays": 31
+    },
+    {
+      "ym": "1954-02",
+      "tmaxMean": 21.89,
+      "tminMean": 10.98,
+      "nDays": 28
+    },
+    {
+      "ym": "1954-03",
+      "tmaxMean": 30.07,
+      "tminMean": 14.31,
+      "nDays": 31
+    },
+    {
+      "ym": "1954-04",
+      "tmaxMean": 38.75,
+      "tminMean": 21.3,
+      "nDays": 30
+    },
+    {
+      "ym": "1954-05",
+      "tmaxMean": 43.87,
+      "tminMean": 26.46,
+      "nDays": 31
+    },
+    {
+      "ym": "1954-06",
+      "tmaxMean": 42.16,
+      "tminMean": 30.6,
+      "nDays": 30
+    },
+    {
+      "ym": "1954-07",
+      "tmaxMean": 33.4,
+      "tminMean": 26.81,
+      "nDays": 31
+    },
+    {
+      "ym": "1954-08",
+      "tmaxMean": 32.21,
+      "tminMean": 25.81,
+      "nDays": 31
+    },
+    {
+      "ym": "1954-09",
+      "tmaxMean": 30.35,
+      "tminMean": 24.55,
+      "nDays": 30
+    },
+    {
+      "ym": "1954-10",
+      "tmaxMean": 28.65,
+      "tminMean": 16.03,
+      "nDays": 31
+    },
+    {
+      "ym": "1954-11",
+      "tmaxMean": 28.17,
+      "tminMean": 12.74,
+      "nDays": 30
+    },
+    {
+      "ym": "1954-12",
+      "tmaxMean": 23.69,
+      "tminMean": 7.79,
+      "nDays": 31
+    },
+    {
+      "ym": "1955-01",
+      "tmaxMean": 21.55,
+      "tminMean": 8.39,
+      "nDays": 31
+    },
+    {
+      "ym": "1955-02",
+      "tmaxMean": 25.98,
+      "tminMean": 9.19,
+      "nDays": 28
+    },
+    {
+      "ym": "1955-03",
+      "tmaxMean": 34.02,
+      "tminMean": 17.58,
+      "nDays": 31
+    },
+    {
+      "ym": "1955-04",
+      "tmaxMean": 36.96,
+      "tminMean": 19.29,
+      "nDays": 30
+    },
+    {
+      "ym": "1955-05",
+      "tmaxMean": 40.75,
+      "tminMean": 25.06,
+      "nDays": 31
+    },
+    {
+      "ym": "1955-06",
+      "tmaxMean": 42.37,
+      "tminMean": 30.18,
+      "nDays": 30
+    },
+    {
+      "ym": "1955-07",
+      "tmaxMean": 37.12,
+      "tminMean": 28.77,
+      "nDays": 31
+    },
+    {
+      "ym": "1955-08",
+      "tmaxMean": 30.67,
+      "tminMean": 24.97,
+      "nDays": 31
+    },
+    {
+      "ym": "1955-09",
+      "tmaxMean": 29.93,
+      "tminMean": 23.78,
+      "nDays": 30
+    },
+    {
+      "ym": "1955-10",
+      "tmaxMean": 27.73,
+      "tminMean": 17.93,
+      "nDays": 31
+    },
+    {
+      "ym": "1955-11",
+      "tmaxMean": 25.82,
+      "tminMean": 10.65,
+      "nDays": 30
+    },
+    {
+      "ym": "1955-12",
+      "tmaxMean": 22.54,
+      "tminMean": 8.13,
+      "nDays": 31
+    },
+    {
+      "ym": "1956-01",
+      "tmaxMean": 21.73,
+      "tminMean": 7.65,
+      "nDays": 31
+    },
+    {
+      "ym": "1956-02",
+      "tmaxMean": 26.98,
+      "tminMean": 9.49,
+      "nDays": 29
+    },
+    {
+      "ym": "1956-03",
+      "tmaxMean": 31.6,
+      "tminMean": 15.93,
+      "nDays": 31
+    },
+    {
+      "ym": "1956-04",
+      "tmaxMean": 39.31,
+      "tminMean": 21.93,
+      "nDays": 30
+    },
+    {
+      "ym": "1956-05",
+      "tmaxMean": 44,
+      "tminMean": 28.64,
+      "nDays": 31
+    },
+    {
+      "ym": "1956-06",
+      "tmaxMean": 41.21,
+      "tminMean": 30.22,
+      "nDays": 30
+    },
+    {
+      "ym": "1956-07",
+      "tmaxMean": 30.58,
+      "tminMean": 25.09,
+      "nDays": 31
+    },
+    {
+      "ym": "1956-08",
+      "tmaxMean": 30.79,
+      "tminMean": 24.75,
+      "nDays": 31
+    },
+    {
+      "ym": "1956-09",
+      "tmaxMean": 33.09,
+      "tminMean": 24.52,
+      "nDays": 30
+    },
+    {
+      "ym": "1956-10",
+      "tmaxMean": 27.71,
+      "tminMean": 18.77,
+      "nDays": 31
+    },
+    {
+      "ym": "1956-11",
+      "tmaxMean": 24.96,
+      "tminMean": 10.3,
+      "nDays": 30
+    },
+    {
+      "ym": "1956-12",
+      "tmaxMean": 22.43,
+      "tminMean": 8.56,
+      "nDays": 31
+    },
+    {
+      "ym": "1957-01",
+      "tmaxMean": 19.39,
+      "tminMean": 8,
+      "nDays": 31
+    },
+    {
+      "ym": "1957-02",
+      "tmaxMean": 23.57,
+      "tminMean": 7.79,
+      "nDays": 28
+    },
+    {
+      "ym": "1957-03",
+      "tmaxMean": 30.16,
+      "tminMean": 14.5,
+      "nDays": 31
+    },
+    {
+      "ym": "1957-04",
+      "tmaxMean": 36.51,
+      "tminMean": 20.51,
+      "nDays": 30
+    },
+    {
+      "ym": "1957-05",
+      "tmaxMean": 40.56,
+      "tminMean": 25.87,
+      "nDays": 31
+    },
+    {
+      "ym": "1957-06",
+      "tmaxMean": 42.04,
+      "tminMean": 29.3,
+      "nDays": 30
+    },
+    {
+      "ym": "1957-07",
+      "tmaxMean": 34.32,
+      "tminMean": 27.15,
+      "nDays": 31
+    },
+    {
+      "ym": "1957-08",
+      "tmaxMean": 31.86,
+      "tminMean": 25.82,
+      "nDays": 31
+    },
+    {
+      "ym": "1957-09",
+      "tmaxMean": 30.72,
+      "tminMean": 22.51,
+      "nDays": 30
+    },
+    {
+      "ym": "1957-10",
+      "tmaxMean": 31.46,
+      "tminMean": 18.49,
+      "nDays": 31
+    },
+    {
+      "ym": "1957-11",
+      "tmaxMean": 27.35,
+      "tminMean": 13.26,
+      "nDays": 30
+    },
+    {
+      "ym": "1957-12",
+      "tmaxMean": 21.88,
+      "tminMean": 9.64,
+      "nDays": 31
+    },
+    {
+      "ym": "1958-01",
+      "tmaxMean": 22.66,
+      "tminMean": 9.79,
+      "nDays": 31
+    },
+    {
+      "ym": "1958-02",
+      "tmaxMean": 24.7,
+      "tminMean": 10.41,
+      "nDays": 28
+    },
+    {
+      "ym": "1958-03",
+      "tmaxMean": 31.77,
+      "tminMean": 16.3,
+      "nDays": 31
+    },
+    {
+      "ym": "1958-04",
+      "tmaxMean": 39.22,
+      "tminMean": 23.36,
+      "nDays": 30
+    },
+    {
+      "ym": "1958-05",
+      "tmaxMean": 41.38,
+      "tminMean": 24.89,
+      "nDays": 31
+    },
+    {
+      "ym": "1958-06",
+      "tmaxMean": 41.7,
+      "tminMean": 29.22,
+      "nDays": 30
+    },
+    {
+      "ym": "1958-07",
+      "tmaxMean": 33.15,
+      "tminMean": 26.63,
+      "nDays": 31
+    },
+    {
+      "ym": "1958-08",
+      "tmaxMean": 31.78,
+      "tminMean": 25.61,
+      "nDays": 31
+    },
+    {
+      "ym": "1958-09",
+      "tmaxMean": 30.28,
+      "tminMean": 24.63,
+      "nDays": 30
+    },
+    {
+      "ym": "1958-10",
+      "tmaxMean": 29.55,
+      "tminMean": 18.66,
+      "nDays": 31
+    },
+    {
+      "ym": "1958-11",
+      "tmaxMean": 26.17,
+      "tminMean": 12.46,
+      "nDays": 30
+    },
+    {
+      "ym": "1958-12",
+      "tmaxMean": 21.98,
+      "tminMean": 9.9,
+      "nDays": 31
+    },
+    {
+      "ym": "1959-01",
+      "tmaxMean": 19.95,
+      "tminMean": 8.11,
+      "nDays": 31
+    },
+    {
+      "ym": "1959-02",
+      "tmaxMean": 22.66,
+      "tminMean": 9.54,
+      "nDays": 28
+    },
+    {
+      "ym": "1959-03",
+      "tmaxMean": 32.63,
+      "tminMean": 16.1,
+      "nDays": 31
+    },
+    {
+      "ym": "1959-04",
+      "tmaxMean": 37.78,
+      "tminMean": 21.3,
+      "nDays": 30
+    },
+    {
+      "ym": "1959-05",
+      "tmaxMean": 40.52,
+      "tminMean": 25.87,
+      "nDays": 31
+    },
+    {
+      "ym": "1959-06",
+      "tmaxMean": 41.88,
+      "tminMean": 29.97,
+      "nDays": 30
+    },
+    {
+      "ym": "1959-07",
+      "tmaxMean": 34.72,
+      "tminMean": 27.2,
+      "nDays": 31
+    },
+    {
+      "ym": "1959-08",
+      "tmaxMean": 32.06,
+      "tminMean": 26.07,
+      "nDays": 31
+    },
+    {
+      "ym": "1959-09",
+      "tmaxMean": 31.27,
+      "tminMean": 25.21,
+      "nDays": 30
+    },
+    {
+      "ym": "1959-10",
+      "tmaxMean": 32.29,
+      "tminMean": 21.03,
+      "nDays": 31
+    },
+    {
+      "ym": "1959-11",
+      "tmaxMean": 27.22,
+      "tminMean": 13.6,
+      "nDays": 30
+    },
+    {
+      "ym": "1959-12",
+      "tmaxMean": 23.44,
+      "tminMean": 9.39,
+      "nDays": 31
+    },
+    {
+      "ym": "1960-01",
+      "tmaxMean": 21.17,
+      "tminMean": 7.18,
+      "nDays": 31
+    },
+    {
+      "ym": "1960-02",
+      "tmaxMean": 28.75,
+      "tminMean": 12.12,
+      "nDays": 29
+    },
+    {
+      "ym": "1960-03",
+      "tmaxMean": 29.77,
+      "tminMean": 15.55,
+      "nDays": 31
+    },
+    {
+      "ym": "1960-04",
+      "tmaxMean": 36.74,
+      "tminMean": 20.38,
+      "nDays": 30
+    },
+    {
+      "ym": "1960-05",
+      "tmaxMean": 42.12,
+      "tminMean": 26.68,
+      "nDays": 31
+    },
+    {
+      "ym": "1960-06",
+      "tmaxMean": 41.8,
+      "tminMean": 30.96,
+      "nDays": 30
+    },
+    {
+      "ym": "1960-07",
+      "tmaxMean": 33.25,
+      "tminMean": 26.69,
+      "nDays": 31
+    },
+    {
+      "ym": "1960-08",
+      "tmaxMean": 31.12,
+      "tminMean": 25.78,
+      "nDays": 31
+    },
+    {
+      "ym": "1960-09",
+      "tmaxMean": 33.8,
+      "tminMean": 24.3,
+      "nDays": 30
+    },
+    {
+      "ym": "1960-10",
+      "tmaxMean": 30.76,
+      "tminMean": 17.82,
+      "nDays": 31
+    },
+    {
+      "ym": "1960-11",
+      "tmaxMean": 27.77,
+      "tminMean": 11.93,
+      "nDays": 30
+    },
+    {
+      "ym": "1960-12",
+      "tmaxMean": 23.8,
+      "tminMean": 9.02,
+      "nDays": 31
+    },
+    {
+      "ym": "1961-01",
+      "tmaxMean": 20.88,
+      "tminMean": 8.29,
+      "nDays": 31
+    },
+    {
+      "ym": "1961-02",
+      "tmaxMean": 21.06,
+      "tminMean": 8.98,
+      "nDays": 28
+    },
+    {
+      "ym": "1961-03",
+      "tmaxMean": 31.35,
+      "tminMean": 15.78,
+      "nDays": 31
+    },
+    {
+      "ym": "1961-04",
+      "tmaxMean": 36.44,
+      "tminMean": 21.02,
+      "nDays": 30
+    },
+    {
+      "ym": "1961-05",
+      "tmaxMean": 40.39,
+      "tminMean": 25.88,
+      "nDays": 31
+    },
+    {
+      "ym": "1961-06",
+      "tmaxMean": 39.16,
+      "tminMean": 29.42,
+      "nDays": 30
+    },
+    {
+      "ym": "1961-07",
+      "tmaxMean": 34.18,
+      "tminMean": 27.34,
+      "nDays": 31
+    },
+    {
+      "ym": "1961-08",
+      "tmaxMean": 30.76,
+      "tminMean": 25.5,
+      "nDays": 31
+    },
+    {
+      "ym": "1961-09",
+      "tmaxMean": 31.21,
+      "tminMean": 24.99,
+      "nDays": 30
+    },
+    {
+      "ym": "1961-10",
+      "tmaxMean": 29.45,
+      "tminMean": 18.8,
+      "nDays": 31
+    },
+    {
+      "ym": "1961-11",
+      "tmaxMean": 23.85,
+      "tminMean": 11.92,
+      "nDays": 30
+    },
+    {
+      "ym": "1961-12",
+      "tmaxMean": 19.35,
+      "tminMean": 5.95,
+      "nDays": 31
+    },
+    {
+      "ym": "1962-01",
+      "tmaxMean": 19.47,
+      "tminMean": 5.9,
+      "nDays": 31
+    },
+    {
+      "ym": "1962-02",
+      "tmaxMean": 23.5,
+      "tminMean": 10.7,
+      "nDays": 28
+    },
+    {
+      "ym": "1962-03",
+      "tmaxMean": 29.69,
+      "tminMean": 14.69,
+      "nDays": 31
+    },
+    {
+      "ym": "1962-04",
+      "tmaxMean": 37.39,
+      "tminMean": 21.76,
+      "nDays": 30
+    },
+    {
+      "ym": "1962-05",
+      "tmaxMean": 40.7,
+      "tminMean": 25.4,
+      "nDays": 31
+    },
+    {
+      "ym": "1962-06",
+      "tmaxMean": 40.92,
+      "tminMean": 29.42,
+      "nDays": 30
+    },
+    {
+      "ym": "1962-07",
+      "tmaxMean": 34.58,
+      "tminMean": 27.37,
+      "nDays": 31
+    },
+    {
+      "ym": "1962-08",
+      "tmaxMean": 32.35,
+      "tminMean": 26.08,
+      "nDays": 31
+    },
+    {
+      "ym": "1962-09",
+      "tmaxMean": 30.94,
+      "tminMean": 23.68,
+      "nDays": 30
+    },
+    {
+      "ym": "1962-10",
+      "tmaxMean": 32.01,
+      "tminMean": 17.18,
+      "nDays": 31
+    },
+    {
+      "ym": "1962-11",
+      "tmaxMean": 27.62,
+      "tminMean": 13.53,
+      "nDays": 30
+    },
+    {
+      "ym": "1962-12",
+      "tmaxMean": 21.42,
+      "tminMean": 8.63,
+      "nDays": 31
+    },
+    {
+      "ym": "1963-01",
+      "tmaxMean": 21.85,
+      "tminMean": 5.62,
+      "nDays": 31
+    },
+    {
+      "ym": "1963-02",
+      "tmaxMean": 27.31,
+      "tminMean": 11.78,
+      "nDays": 28
+    },
+    {
+      "ym": "1963-03",
+      "tmaxMean": 31.15,
+      "tminMean": 15.71,
+      "nDays": 31
+    },
+    {
+      "ym": "1963-04",
+      "tmaxMean": 36.92,
+      "tminMean": 21.82,
+      "nDays": 30
+    },
+    {
+      "ym": "1963-05",
+      "tmaxMean": 40.85,
+      "tminMean": 25.85,
+      "nDays": 31
+    },
+    {
+      "ym": "1963-06",
+      "tmaxMean": 41.33,
+      "tminMean": 30.27,
+      "nDays": 30
+    },
+    {
+      "ym": "1963-07",
+      "tmaxMean": 38.8,
+      "tminMean": 29.22,
+      "nDays": 31
+    },
+    {
+      "ym": "1963-08",
+      "tmaxMean": 30.06,
+      "tminMean": 25.33,
+      "nDays": 31
+    },
+    {
+      "ym": "1963-09",
+      "tmaxMean": 30.98,
+      "tminMean": 22.73,
+      "nDays": 30
+    },
+    {
+      "ym": "1963-10",
+      "tmaxMean": 32.92,
+      "tminMean": 19.95,
+      "nDays": 31
+    },
+    {
+      "ym": "1963-11",
+      "tmaxMean": 27.37,
+      "tminMean": 15.96,
+      "nDays": 30
+    },
+    {
+      "ym": "1963-12",
+      "tmaxMean": 22.15,
+      "tminMean": 8.45,
+      "nDays": 31
+    },
+    {
+      "ym": "1964-01",
+      "tmaxMean": 19.05,
+      "tminMean": 6.32,
+      "nDays": 31
+    },
+    {
+      "ym": "1964-02",
+      "tmaxMean": 25,
+      "tminMean": 9.8,
+      "nDays": 29
+    },
+    {
+      "ym": "1964-03",
+      "tmaxMean": 33.29,
+      "tminMean": 16.33,
+      "nDays": 31
+    },
+    {
+      "ym": "1964-04",
+      "tmaxMean": 39.09,
+      "tminMean": 22.61,
+      "nDays": 30
+    },
+    {
+      "ym": "1964-05",
+      "tmaxMean": 40.88,
+      "tminMean": 25.17,
+      "nDays": 31
+    },
+    {
+      "ym": "1964-06",
+      "tmaxMean": 41.05,
+      "tminMean": 29.55,
+      "nDays": 30
+    },
+    {
+      "ym": "1964-07",
+      "tmaxMean": 31.07,
+      "tminMean": 25.54,
+      "nDays": 31
+    },
+    {
+      "ym": "1964-08",
+      "tmaxMean": 31.37,
+      "tminMean": 25.82,
+      "nDays": 31
+    },
+    {
+      "ym": "1964-09",
+      "tmaxMean": 30.79,
+      "tminMean": 23.46,
+      "nDays": 30
+    },
+    {
+      "ym": "1964-10",
+      "tmaxMean": 31.04,
+      "tminMean": 17.55,
+      "nDays": 31
+    },
+    {
+      "ym": "1964-11",
+      "tmaxMean": 27.53,
+      "tminMean": 11.34,
+      "nDays": 30
+    },
+    {
+      "ym": "1964-12",
+      "tmaxMean": 22.95,
+      "tminMean": 9.02,
+      "nDays": 31
+    },
+    {
+      "ym": "1965-01",
+      "tmaxMean": 23.35,
+      "tminMean": 9.18,
+      "nDays": 31
+    },
+    {
+      "ym": "1965-02",
+      "tmaxMean": 24.94,
+      "tminMean": 10.52,
+      "nDays": 28
+    },
+    {
+      "ym": "1965-03",
+      "tmaxMean": 29.85,
+      "tminMean": 13.49,
+      "nDays": 31
+    },
+    {
+      "ym": "1965-04",
+      "tmaxMean": 34.25,
+      "tminMean": 18.99,
+      "nDays": 30
+    },
+    {
+      "ym": "1965-05",
+      "tmaxMean": 40.06,
+      "tminMean": 23.88,
+      "nDays": 31
+    },
+    {
+      "ym": "1965-06",
+      "tmaxMean": 42.58,
+      "tminMean": 30.67,
+      "nDays": 30
+    },
+    {
+      "ym": "1965-07",
+      "tmaxMean": 35.4,
+      "tminMean": 27.75,
+      "nDays": 31
+    },
+    {
+      "ym": "1965-08",
+      "tmaxMean": 33.16,
+      "tminMean": 25.82,
+      "nDays": 31
+    },
+    {
+      "ym": "1965-09",
+      "tmaxMean": 34.73,
+      "tminMean": 24.55,
+      "nDays": 30
+    },
+    {
+      "ym": "1965-10",
+      "tmaxMean": 34.63,
+      "tminMean": 20.59,
+      "nDays": 31
+    },
+    {
+      "ym": "1965-11",
+      "tmaxMean": 30.1,
+      "tminMean": 14.73,
+      "nDays": 30
+    },
+    {
+      "ym": "1965-12",
+      "tmaxMean": 23.45,
+      "tminMean": 7.94,
+      "nDays": 31
+    },
+    {
+      "ym": "1966-01",
+      "tmaxMean": 23.25,
+      "tminMean": 7.54,
+      "nDays": 31
+    },
+    {
+      "ym": "1966-02",
+      "tmaxMean": 27.21,
+      "tminMean": 12.68,
+      "nDays": 28
+    },
+    {
+      "ym": "1966-03",
+      "tmaxMean": 31.51,
+      "tminMean": 14.34,
+      "nDays": 31
+    },
+    {
+      "ym": "1966-04",
+      "tmaxMean": 37.59,
+      "tminMean": 20.99,
+      "nDays": 30
+    },
+    {
+      "ym": "1966-05",
+      "tmaxMean": 41.54,
+      "tminMean": 25.75,
+      "nDays": 31
+    },
+    {
+      "ym": "1966-06",
+      "tmaxMean": 38.54,
+      "tminMean": 28.37,
+      "nDays": 30
+    },
+    {
+      "ym": "1966-07",
+      "tmaxMean": 35.77,
+      "tminMean": 27.07,
+      "nDays": 31
+    },
+    {
+      "ym": "1966-08",
+      "tmaxMean": 31.57,
+      "tminMean": 25.51,
+      "nDays": 31
+    },
+    {
+      "ym": "1966-09",
+      "tmaxMean": 31.91,
+      "tminMean": 22.94,
+      "nDays": 30
+    },
+    {
+      "ym": "1966-10",
+      "tmaxMean": 33.54,
+      "tminMean": 19.34,
+      "nDays": 31
+    },
+    {
+      "ym": "1966-11",
+      "tmaxMean": 28.75,
+      "tminMean": 13.21,
+      "nDays": 30
+    },
+    {
+      "ym": "1966-12",
+      "tmaxMean": 23.67,
+      "tminMean": 7.58,
+      "nDays": 31
+    },
+    {
+      "ym": "1967-01",
+      "tmaxMean": 20.97,
+      "tminMean": 5.47,
+      "nDays": 31
+    },
+    {
+      "ym": "1967-02",
+      "tmaxMean": 27.28,
+      "tminMean": 11.93,
+      "nDays": 28
+    },
+    {
+      "ym": "1967-03",
+      "tmaxMean": 28.29,
+      "tminMean": 14.74,
+      "nDays": 31
+    },
+    {
+      "ym": "1967-04",
+      "tmaxMean": 35.66,
+      "tminMean": 20.35,
+      "nDays": 30
+    },
+    {
+      "ym": "1967-05",
+      "tmaxMean": 40.86,
+      "tminMean": 25.24,
+      "nDays": 31
+    },
+    {
+      "ym": "1967-06",
+      "tmaxMean": 40.99,
+      "tminMean": 29.51,
+      "nDays": 30
+    },
+    {
+      "ym": "1967-07",
+      "tmaxMean": 33.16,
+      "tminMean": 26.75,
+      "nDays": 31
+    },
+    {
+      "ym": "1967-08",
+      "tmaxMean": 30.64,
+      "tminMean": 25.39,
+      "nDays": 31
+    },
+    {
+      "ym": "1967-09",
+      "tmaxMean": 31.23,
+      "tminMean": 23.88,
+      "nDays": 30
+    },
+    {
+      "ym": "1967-10",
+      "tmaxMean": 31.37,
+      "tminMean": 18.47,
+      "nDays": 31
+    },
+    {
+      "ym": "1967-11",
+      "tmaxMean": 26.51,
+      "tminMean": 13.72,
+      "nDays": 30
+    },
+    {
+      "ym": "1967-12",
+      "tmaxMean": 20.63,
+      "tminMean": 10.57,
+      "nDays": 31
+    },
+    {
+      "ym": "1968-01",
+      "tmaxMean": 18.28,
+      "tminMean": 7.35,
+      "nDays": 31
+    },
+    {
+      "ym": "1968-02",
+      "tmaxMean": 20.88,
+      "tminMean": 8.6,
+      "nDays": 29
+    },
+    {
+      "ym": "1968-03",
+      "tmaxMean": 29.09,
+      "tminMean": 14.5,
+      "nDays": 31
+    },
+    {
+      "ym": "1968-04",
+      "tmaxMean": 36.19,
+      "tminMean": 19.89,
+      "nDays": 30
+    },
+    {
+      "ym": "1968-05",
+      "tmaxMean": 39.81,
+      "tminMean": 24.5,
+      "nDays": 31
+    },
+    {
+      "ym": "1968-06",
+      "tmaxMean": 39.97,
+      "tminMean": 29.55,
+      "nDays": 30
+    },
+    {
+      "ym": "1968-07",
+      "tmaxMean": 33.33,
+      "tminMean": 26.53,
+      "nDays": 31
+    },
+    {
+      "ym": "1968-08",
+      "tmaxMean": 32.29,
+      "tminMean": 25.72,
+      "nDays": 31
+    },
+    {
+      "ym": "1968-09",
+      "tmaxMean": 35.54,
+      "tminMean": 25.14,
+      "nDays": 30
+    },
+    {
+      "ym": "1968-10",
+      "tmaxMean": 32.45,
+      "tminMean": 19.62,
+      "nDays": 31
+    },
+    {
+      "ym": "1968-11",
+      "tmaxMean": 28.38,
+      "tminMean": 13.88,
+      "nDays": 30
+    },
+    {
+      "ym": "1968-12",
+      "tmaxMean": 23.14,
+      "tminMean": 9.47,
+      "nDays": 31
+    },
+    {
+      "ym": "1969-01",
+      "tmaxMean": 21.77,
+      "tminMean": 8.07,
+      "nDays": 31
+    },
+    {
+      "ym": "1969-02",
+      "tmaxMean": 25.74,
+      "tminMean": 11.05,
+      "nDays": 28
+    },
+    {
+      "ym": "1969-03",
+      "tmaxMean": 33.19,
+      "tminMean": 17.34,
+      "nDays": 31
+    },
+    {
+      "ym": "1969-04",
+      "tmaxMean": 37.09,
+      "tminMean": 21.16,
+      "nDays": 30
+    },
+    {
+      "ym": "1969-05",
+      "tmaxMean": 38.12,
+      "tminMean": 24.01,
+      "nDays": 31
+    },
+    {
+      "ym": "1969-06",
+      "tmaxMean": 41.36,
+      "tminMean": 29.4,
+      "nDays": 30
+    },
+    {
+      "ym": "1969-07",
+      "tmaxMean": 34.04,
+      "tminMean": 26.64,
+      "nDays": 31
+    },
+    {
+      "ym": "1969-08",
+      "tmaxMean": 31.92,
+      "tminMean": 25.76,
+      "nDays": 31
+    },
+    {
+      "ym": "1969-09",
+      "tmaxMean": 31.38,
+      "tminMean": 23.71,
+      "nDays": 30
+    },
+    {
+      "ym": "1969-10",
+      "tmaxMean": 31.86,
+      "tminMean": 19.6,
+      "nDays": 31
+    },
+    {
+      "ym": "1969-11",
+      "tmaxMean": 27.68,
+      "tminMean": 14.72,
+      "nDays": 30
+    },
+    {
+      "ym": "1969-12",
+      "tmaxMean": 23.06,
+      "tminMean": 8.36,
+      "nDays": 31
+    },
+    {
+      "ym": "1970-01",
+      "tmaxMean": 20.55,
+      "tminMean": 8.34,
+      "nDays": 31
+    },
+    {
+      "ym": "1970-02",
+      "tmaxMean": 22.41,
+      "tminMean": 9.28,
+      "nDays": 28
+    },
+    {
+      "ym": "1970-03",
+      "tmaxMean": 28.23,
+      "tminMean": 14.16,
+      "nDays": 31
+    },
+    {
+      "ym": "1970-04",
+      "tmaxMean": 37.95,
+      "tminMean": 21.1,
+      "nDays": 30
+    },
+    {
+      "ym": "1970-05",
+      "tmaxMean": 40.74,
+      "tminMean": 26.45,
+      "nDays": 31
+    },
+    {
+      "ym": "1970-06",
+      "tmaxMean": 36.73,
+      "tminMean": 27.29,
+      "nDays": 30
+    },
+    {
+      "ym": "1970-07",
+      "tmaxMean": 35.15,
+      "tminMean": 27.35,
+      "nDays": 31
+    },
+    {
+      "ym": "1970-08",
+      "tmaxMean": 31.13,
+      "tminMean": 25.38,
+      "nDays": 31
+    },
+    {
+      "ym": "1970-09",
+      "tmaxMean": 31.68,
+      "tminMean": 24.6,
+      "nDays": 30
+    },
+    {
+      "ym": "1970-10",
+      "tmaxMean": 32.11,
+      "tminMean": 19.99,
+      "nDays": 31
+    },
+    {
+      "ym": "1970-11",
+      "tmaxMean": 27.72,
+      "tminMean": 12.98,
+      "nDays": 30
+    },
+    {
+      "ym": "1970-12",
+      "tmaxMean": 23.92,
+      "tminMean": 9.53,
+      "nDays": 31
+    },
+    {
+      "ym": "1971-01",
+      "tmaxMean": 20.38,
+      "tminMean": 7.01,
+      "nDays": 31
+    },
+    {
+      "ym": "1971-02",
+      "tmaxMean": 24.46,
+      "tminMean": 10.24,
+      "nDays": 28
+    },
+    {
+      "ym": "1971-03",
+      "tmaxMean": 30.74,
+      "tminMean": 15.03,
+      "nDays": 31
+    },
+    {
+      "ym": "1971-04",
+      "tmaxMean": 36.56,
+      "tminMean": 22.09,
+      "nDays": 30
+    },
+    {
+      "ym": "1971-05",
+      "tmaxMean": 37.21,
+      "tminMean": 24.8,
+      "nDays": 31
+    },
+    {
+      "ym": "1971-06",
+      "tmaxMean": 36.37,
+      "tminMean": 27.55,
+      "nDays": 30
+    },
+    {
+      "ym": "1971-07",
+      "tmaxMean": 32.01,
+      "tminMean": 25.57,
+      "nDays": 31
+    },
+    {
+      "ym": "1971-08",
+      "tmaxMean": 30.26,
+      "tminMean": 24.79,
+      "nDays": 31
+    },
+    {
+      "ym": "1971-09",
+      "tmaxMean": 31.22,
+      "tminMean": 22.54,
+      "nDays": 30
+    },
+    {
+      "ym": "1971-10",
+      "tmaxMean": 30.92,
+      "tminMean": 18.94,
+      "nDays": 31
+    },
+    {
+      "ym": "1971-11",
+      "tmaxMean": 27.05,
+      "tminMean": 13.15,
+      "nDays": 30
+    },
+    {
+      "ym": "1971-12",
+      "tmaxMean": 23.57,
+      "tminMean": 9.31,
+      "nDays": 31
+    },
+    {
+      "ym": "1972-01",
+      "tmaxMean": 21.58,
+      "tminMean": 8.43,
+      "nDays": 31
+    },
+    {
+      "ym": "1972-02",
+      "tmaxMean": 20.88,
+      "tminMean": 8.11,
+      "nDays": 29
+    },
+    {
+      "ym": "1972-03",
+      "tmaxMean": 30.39,
+      "tminMean": 15.24,
+      "nDays": 31
+    },
+    {
+      "ym": "1972-04",
+      "tmaxMean": 34.98,
+      "tminMean": 19.84,
+      "nDays": 30
+    },
+    {
+      "ym": "1972-05",
+      "tmaxMean": 41.44,
+      "tminMean": 26.01,
+      "nDays": 31
+    },
+    {
+      "ym": "1972-06",
+      "tmaxMean": 40.7,
+      "tminMean": 29.36,
+      "nDays": 30
+    },
+    {
+      "ym": "1972-07",
+      "tmaxMean": 35.21,
+      "tminMean": 27.98,
+      "nDays": 31
+    },
+    {
+      "ym": "1972-08",
+      "tmaxMean": 31.51,
+      "tminMean": 25.65,
+      "nDays": 31
+    },
+    {
+      "ym": "1972-09",
+      "tmaxMean": 31.78,
+      "tminMean": 22.03,
+      "nDays": 30
+    },
+    {
+      "ym": "1972-10",
+      "tmaxMean": 30.87,
+      "tminMean": 18.36,
+      "nDays": 31
+    },
+    {
+      "ym": "1972-11",
+      "tmaxMean": 27.48,
+      "tminMean": 14.27,
+      "nDays": 30
+    },
+    {
+      "ym": "1972-12",
+      "tmaxMean": 22.44,
+      "tminMean": 10.3,
+      "nDays": 31
+    },
+    {
+      "ym": "1973-01",
+      "tmaxMean": 20.74,
+      "tminMean": 8.33,
+      "nDays": 31
+    },
+    {
+      "ym": "1973-02",
+      "tmaxMean": 25.48,
+      "tminMean": 11.47,
+      "nDays": 28
+    },
+    {
+      "ym": "1973-03",
+      "tmaxMean": 30.03,
+      "tminMean": 14.65,
+      "nDays": 31
+    },
+    {
+      "ym": "1973-04",
+      "tmaxMean": 38.97,
+      "tminMean": 22.54,
+      "nDays": 30
+    },
+    {
+      "ym": "1973-05",
+      "tmaxMean": 40.79,
+      "tminMean": 26.4,
+      "nDays": 31
+    },
+    {
+      "ym": "1973-06",
+      "tmaxMean": 38.65,
+      "tminMean": 28.1,
+      "nDays": 30
+    },
+    {
+      "ym": "1973-07",
+      "tmaxMean": 34.28,
+      "tminMean": 27.04,
+      "nDays": 31
+    },
+    {
+      "ym": "1973-08",
+      "tmaxMean": 30.97,
+      "tminMean": 25.35,
+      "nDays": 31
+    },
+    {
+      "ym": "1973-09",
+      "tmaxMean": 31.93,
+      "tminMean": 24.46,
+      "nDays": 30
+    },
+    {
+      "ym": "1973-10",
+      "tmaxMean": 30.94,
+      "tminMean": 18.9,
+      "nDays": 31
+    },
+    {
+      "ym": "1973-11",
+      "tmaxMean": 27.61,
+      "tminMean": 12.64,
+      "nDays": 30
+    },
+    {
+      "ym": "1973-12",
+      "tmaxMean": 20.83,
+      "tminMean": 7.84,
+      "nDays": 31
+    },
+    {
+      "ym": "1974-01",
+      "tmaxMean": 21.73,
+      "tminMean": 7.37,
+      "nDays": 31
+    },
+    {
+      "ym": "1974-02",
+      "tmaxMean": 24.06,
+      "tminMean": 8.7,
+      "nDays": 28
+    },
+    {
+      "ym": "1974-03",
+      "tmaxMean": 32.25,
+      "tminMean": 16.93,
+      "nDays": 31
+    },
+    {
+      "ym": "1974-04",
+      "tmaxMean": 38.63,
+      "tminMean": 22.85,
+      "nDays": 30
+    },
+    {
+      "ym": "1974-05",
+      "tmaxMean": 40.64,
+      "tminMean": 26.26,
+      "nDays": 31
+    },
+    {
+      "ym": "1974-06",
+      "tmaxMean": 39.21,
+      "tminMean": 27.75,
+      "nDays": 30
+    },
+    {
+      "ym": "1974-07",
+      "tmaxMean": 34.04,
+      "tminMean": 26.75,
+      "nDays": 31
+    },
+    {
+      "ym": "1974-08",
+      "tmaxMean": 32.81,
+      "tminMean": 26.05,
+      "nDays": 31
+    },
+    {
+      "ym": "1974-09",
+      "tmaxMean": 36.4,
+      "tminMean": 25.89,
+      "nDays": 30
+    },
+    {
+      "ym": "1974-10",
+      "tmaxMean": 33.04,
+      "tminMean": 19.41,
+      "nDays": 31
+    },
+    {
+      "ym": "1974-11",
+      "tmaxMean": 28.5,
+      "tminMean": 13.02,
+      "nDays": 30
+    },
+    {
+      "ym": "1974-12",
+      "tmaxMean": 21.09,
+      "tminMean": 8.35,
+      "nDays": 31
+    },
+    {
+      "ym": "1975-01",
+      "tmaxMean": 19.35,
+      "tminMean": 7.4,
+      "nDays": 31
+    },
+    {
+      "ym": "1975-02",
+      "tmaxMean": 23.86,
+      "tminMean": 9.19,
+      "nDays": 28
+    },
+    {
+      "ym": "1975-03",
+      "tmaxMean": 30.61,
+      "tminMean": 14.74,
+      "nDays": 31
+    },
+    {
+      "ym": "1975-04",
+      "tmaxMean": 37.93,
+      "tminMean": 21.09,
+      "nDays": 30
+    },
+    {
+      "ym": "1975-05",
+      "tmaxMean": 41.69,
+      "tminMean": 26.99,
+      "nDays": 31
+    },
+    {
+      "ym": "1975-06",
+      "tmaxMean": 37.28,
+      "tminMean": 27.18,
+      "nDays": 30
+    },
+    {
+      "ym": "1975-07",
+      "tmaxMean": 33.31,
+      "tminMean": 26.04,
+      "nDays": 31
+    },
+    {
+      "ym": "1975-08",
+      "tmaxMean": 31.28,
+      "tminMean": 25.51,
+      "nDays": 31
+    },
+    {
+      "ym": "1975-09",
+      "tmaxMean": 29.84,
+      "tminMean": 23.56,
+      "nDays": 30
+    },
+    {
+      "ym": "1975-10",
+      "tmaxMean": 31.11,
+      "tminMean": 19.48,
+      "nDays": 31
+    },
+    {
+      "ym": "1975-11",
+      "tmaxMean": 26.68,
+      "tminMean": 11.56,
+      "nDays": 30
+    },
+    {
+      "ym": "1975-12",
+      "tmaxMean": 23.48,
+      "tminMean": 8.83,
+      "nDays": 31
+    },
+    {
+      "ym": "1976-01",
+      "tmaxMean": 22.03,
+      "tminMean": 8.98,
+      "nDays": 31
+    },
+    {
+      "ym": "1976-02",
+      "tmaxMean": 23.27,
+      "tminMean": 11.23,
+      "nDays": 29
+    },
+    {
+      "ym": "1976-03",
+      "tmaxMean": 28.84,
+      "tminMean": 14.81,
+      "nDays": 31
+    },
+    {
+      "ym": "1976-04",
+      "tmaxMean": 35.8,
+      "tminMean": 20.54,
+      "nDays": 30
+    },
+    {
+      "ym": "1976-05",
+      "tmaxMean": 39.27,
+      "tminMean": 25.35,
+      "nDays": 31
+    },
+    {
+      "ym": "1976-06",
+      "tmaxMean": 36.53,
+      "tminMean": 26.43,
+      "nDays": 30
+    },
+    {
+      "ym": "1976-07",
+      "tmaxMean": 33.64,
+      "tminMean": 26.76,
+      "nDays": 31
+    },
+    {
+      "ym": "1976-08",
+      "tmaxMean": 30.3,
+      "tminMean": 24.68,
+      "nDays": 31
+    },
+    {
+      "ym": "1976-09",
+      "tmaxMean": 31.9,
+      "tminMean": 23.99,
+      "nDays": 30
+    },
+    {
+      "ym": "1976-10",
+      "tmaxMean": 33.28,
+      "tminMean": 19.56,
+      "nDays": 31
+    },
+    {
+      "ym": "1976-11",
+      "tmaxMean": 28.22,
+      "tminMean": 14.3,
+      "nDays": 30
+    },
+    {
+      "ym": "1976-12",
+      "tmaxMean": 22.74,
+      "tminMean": 8.41,
+      "nDays": 31
+    },
+    {
+      "ym": "1977-01",
+      "tmaxMean": 20.1,
+      "tminMean": 7.67,
+      "nDays": 31
+    },
+    {
+      "ym": "1977-02",
+      "tmaxMean": 24.1,
+      "tminMean": 8.65,
+      "nDays": 28
+    },
+    {
+      "ym": "1977-03",
+      "tmaxMean": 32.89,
+      "tminMean": 15.83,
+      "nDays": 31
+    },
+    {
+      "ym": "1977-04",
+      "tmaxMean": 35.39,
+      "tminMean": 20.99,
+      "nDays": 30
+    },
+    {
+      "ym": "1977-05",
+      "tmaxMean": 37.95,
+      "tminMean": 24.03,
+      "nDays": 31
+    },
+    {
+      "ym": "1977-06",
+      "tmaxMean": 38.47,
+      "tminMean": 27.61,
+      "nDays": 30
+    },
+    {
+      "ym": "1977-07",
+      "tmaxMean": 31.19,
+      "tminMean": 25.63,
+      "nDays": 31
+    },
+    {
+      "ym": "1977-08",
+      "tmaxMean": 31.7,
+      "tminMean": 25.68,
+      "nDays": 31
+    },
+    {
+      "ym": "1977-09",
+      "tmaxMean": 30.55,
+      "tminMean": 23.48,
+      "nDays": 30
+    },
+    {
+      "ym": "1977-10",
+      "tmaxMean": 31.31,
+      "tminMean": 19.75,
+      "nDays": 31
+    },
+    {
+      "ym": "1977-11",
+      "tmaxMean": 28.21,
+      "tminMean": 15.75,
+      "nDays": 30
+    },
+    {
+      "ym": "1977-12",
+      "tmaxMean": 22.62,
+      "tminMean": 9.96,
+      "nDays": 31
+    },
+    {
+      "ym": "1978-01",
+      "tmaxMean": 19.56,
+      "tminMean": 6.01,
+      "nDays": 31
+    },
+    {
+      "ym": "1978-02",
+      "tmaxMean": 21.62,
+      "tminMean": 8.32,
+      "nDays": 28
+    },
+    {
+      "ym": "1978-03",
+      "tmaxMean": 27.21,
+      "tminMean": 13.33,
+      "nDays": 31
+    },
+    {
+      "ym": "1978-04",
+      "tmaxMean": 36.16,
+      "tminMean": 20.83,
+      "nDays": 30
+    },
+    {
+      "ym": "1978-05",
+      "tmaxMean": 42.9,
+      "tminMean": 27.85,
+      "nDays": 31
+    },
+    {
+      "ym": "1978-06",
+      "tmaxMean": 38.26,
+      "tminMean": 28.69,
+      "nDays": 30
+    },
+    {
+      "ym": "1978-07",
+      "tmaxMean": 31.39,
+      "tminMean": 25.74,
+      "nDays": 31
+    },
+    {
+      "ym": "1978-08",
+      "tmaxMean": 31.08,
+      "tminMean": 25.51,
+      "nDays": 31
+    },
+    {
+      "ym": "1978-09",
+      "tmaxMean": 31.34,
+      "tminMean": 23.85,
+      "nDays": 30
+    },
+    {
+      "ym": "1978-10",
+      "tmaxMean": 32.54,
+      "tminMean": 18.21,
+      "nDays": 31
+    },
+    {
+      "ym": "1978-11",
+      "tmaxMean": 27.25,
+      "tminMean": 14.41,
+      "nDays": 30
+    },
+    {
+      "ym": "1978-12",
+      "tmaxMean": 22.75,
+      "tminMean": 8.7,
+      "nDays": 31
+    },
+    {
+      "ym": "1979-01",
+      "tmaxMean": 21.14,
+      "tminMean": 8.62,
+      "nDays": 31
+    },
+    {
+      "ym": "1979-02",
+      "tmaxMean": 21.54,
+      "tminMean": 9.6,
+      "nDays": 28
+    },
+    {
+      "ym": "1979-03",
+      "tmaxMean": 27.84,
+      "tminMean": 13.51,
+      "nDays": 31
+    },
+    {
+      "ym": "1979-04",
+      "tmaxMean": 38,
+      "tminMean": 21.33,
+      "nDays": 30
+    },
+    {
+      "ym": "1979-05",
+      "tmaxMean": 38.64,
+      "tminMean": 23.96,
+      "nDays": 31
+    },
+    {
+      "ym": "1979-06",
+      "tmaxMean": 40,
+      "tminMean": 27.95,
+      "nDays": 30
+    },
+    {
+      "ym": "1979-07",
+      "tmaxMean": 34.79,
+      "tminMean": 27.55,
+      "nDays": 31
+    },
+    {
+      "ym": "1979-08",
+      "tmaxMean": 34.59,
+      "tminMean": 26.59,
+      "nDays": 31
+    },
+    {
+      "ym": "1979-09",
+      "tmaxMean": 36.15,
+      "tminMean": 24.26,
+      "nDays": 30
+    },
+    {
+      "ym": "1979-10",
+      "tmaxMean": 34.25,
+      "tminMean": 21.13,
+      "nDays": 31
+    },
+    {
+      "ym": "1979-11",
+      "tmaxMean": 28.61,
+      "tminMean": 16.71,
+      "nDays": 30
+    },
+    {
+      "ym": "1979-12",
+      "tmaxMean": 22.89,
+      "tminMean": 10.56,
+      "nDays": 31
+    },
+    {
+      "ym": "1980-01",
+      "tmaxMean": 20.45,
+      "tminMean": 7.4,
+      "nDays": 31
+    },
+    {
+      "ym": "1980-02",
+      "tmaxMean": 24.65,
+      "tminMean": 11.18,
+      "nDays": 29
+    },
+    {
+      "ym": "1980-03",
+      "tmaxMean": 27.65,
+      "tminMean": 14.08,
+      "nDays": 31
+    },
+    {
+      "ym": "1980-04",
+      "tmaxMean": 38.01,
+      "tminMean": 21.91,
+      "nDays": 30
+    },
+    {
+      "ym": "1980-05",
+      "tmaxMean": 41.65,
+      "tminMean": 26.59,
+      "nDays": 31
+    },
+    {
+      "ym": "1980-06",
+      "tmaxMean": 38.12,
+      "tminMean": 28.29,
+      "nDays": 30
+    },
+    {
+      "ym": "1980-07",
+      "tmaxMean": 32.12,
+      "tminMean": 25.91,
+      "nDays": 31
+    },
+    {
+      "ym": "1980-08",
+      "tmaxMean": 32.89,
+      "tminMean": 25.86,
+      "nDays": 31
+    },
+    {
+      "ym": "1980-09",
+      "tmaxMean": 33.87,
+      "tminMean": 24.01,
+      "nDays": 30
+    },
+    {
+      "ym": "1980-10",
+      "tmaxMean": 33.07,
+      "tminMean": 19.97,
+      "nDays": 31
+    },
+    {
+      "ym": "1980-11",
+      "tmaxMean": 27.02,
+      "tminMean": 13.95,
+      "nDays": 30
+    },
+    {
+      "ym": "1980-12",
+      "tmaxMean": 22.23,
+      "tminMean": 9.64,
+      "nDays": 31
+    },
+    {
+      "ym": "1981-01",
+      "tmaxMean": 19.55,
+      "tminMean": 8.05,
+      "nDays": 31
+    },
+    {
+      "ym": "1981-02",
+      "tmaxMean": 24.21,
+      "tminMean": 10.77,
+      "nDays": 28
+    },
+    {
+      "ym": "1981-03",
+      "tmaxMean": 28,
+      "tminMean": 14.72,
+      "nDays": 31
+    },
+    {
+      "ym": "1981-04",
+      "tmaxMean": 37.13,
+      "tminMean": 21.48,
+      "nDays": 30
+    },
+    {
+      "ym": "1981-05",
+      "tmaxMean": 40,
+      "tminMean": 25.98,
+      "nDays": 31
+    },
+    {
+      "ym": "1981-06",
+      "tmaxMean": 40.69,
+      "tminMean": 28.15,
+      "nDays": 30
+    },
+    {
+      "ym": "1981-07",
+      "tmaxMean": 32.41,
+      "tminMean": 26.43,
+      "nDays": 31
+    },
+    {
+      "ym": "1981-08",
+      "tmaxMean": 32.91,
+      "tminMean": 26.3,
+      "nDays": 31
+    },
+    {
+      "ym": "1981-09",
+      "tmaxMean": 34.74,
+      "tminMean": 25.38,
+      "nDays": 30
+    },
+    {
+      "ym": "1981-10",
+      "tmaxMean": 32.72,
+      "tminMean": 18.49,
+      "nDays": 31
+    },
+    {
+      "ym": "1981-11",
+      "tmaxMean": 25.1,
+      "tminMean": 13.5,
+      "nDays": 30
+    },
+    {
+      "ym": "1981-12",
+      "tmaxMean": 22.1,
+      "tminMean": 8.02,
+      "nDays": 31
+    },
+    {
+      "ym": "1982-01",
+      "tmaxMean": 20.02,
+      "tminMean": 8.75,
+      "nDays": 31
+    },
+    {
+      "ym": "1982-02",
+      "tmaxMean": 20.4,
+      "tminMean": 9.28,
+      "nDays": 28
+    },
+    {
+      "ym": "1982-03",
+      "tmaxMean": 25.44,
+      "tminMean": 12.95,
+      "nDays": 31
+    },
+    {
+      "ym": "1982-04",
+      "tmaxMean": 34,
+      "tminMean": 19.6,
+      "nDays": 30
+    },
+    {
+      "ym": "1982-05",
+      "tmaxMean": 35.89,
+      "tminMean": 22.69,
+      "nDays": 31
+    },
+    {
+      "ym": "1982-06",
+      "tmaxMean": 39.86,
+      "tminMean": 28.04,
+      "nDays": 30
+    },
+    {
+      "ym": "1982-07",
+      "tmaxMean": 35.93,
+      "tminMean": 28.05,
+      "nDays": 31
+    },
+    {
+      "ym": "1982-08",
+      "tmaxMean": 31.96,
+      "tminMean": 25.48,
+      "nDays": 31
+    },
+    {
+      "ym": "1982-09",
+      "tmaxMean": 35.07,
+      "tminMean": 24.09,
+      "nDays": 30
+    },
+    {
+      "ym": "1982-10",
+      "tmaxMean": 32.55,
+      "tminMean": 20.63,
+      "nDays": 31
+    },
+    {
+      "ym": "1982-11",
+      "tmaxMean": 27.52,
+      "tminMean": 14.86,
+      "nDays": 30
+    },
+    {
+      "ym": "1982-12",
+      "tmaxMean": 22.4,
+      "tminMean": 9.75,
+      "nDays": 31
+    },
+    {
+      "ym": "1983-01",
+      "tmaxMean": 19.44,
+      "tminMean": 7.32,
+      "nDays": 31
+    },
+    {
+      "ym": "1983-02",
+      "tmaxMean": 21.34,
+      "tminMean": 8.98,
+      "nDays": 28
+    },
+    {
+      "ym": "1983-03",
+      "tmaxMean": 28.04,
+      "tminMean": 14.01,
+      "nDays": 31
+    },
+    {
+      "ym": "1983-04",
+      "tmaxMean": 31.34,
+      "tminMean": 18.1,
+      "nDays": 30
+    },
+    {
+      "ym": "1983-05",
+      "tmaxMean": 36.56,
+      "tminMean": 23.84,
+      "nDays": 31
+    },
+    {
+      "ym": "1983-06",
+      "tmaxMean": 38.28,
+      "tminMean": 26.58,
+      "nDays": 30
+    },
+    {
+      "ym": "1983-07",
+      "tmaxMean": 32.92,
+      "tminMean": 26.13,
+      "nDays": 31
+    },
+    {
+      "ym": "1983-08",
+      "tmaxMean": 31.25,
+      "tminMean": 25.6,
+      "nDays": 31
+    },
+    {
+      "ym": "1983-09",
+      "tmaxMean": 31.33,
+      "tminMean": 24.4,
+      "nDays": 30
+    },
+    {
+      "ym": "1983-10",
+      "tmaxMean": 30.64,
+      "tminMean": 18.6,
+      "nDays": 31
+    },
+    {
+      "ym": "1983-11",
+      "tmaxMean": 26.98,
+      "tminMean": 12.15,
+      "nDays": 30
+    },
+    {
+      "ym": "1983-12",
+      "tmaxMean": 22.03,
+      "tminMean": 9.1,
+      "nDays": 31
+    },
+    {
+      "ym": "1984-01",
+      "tmaxMean": 19.69,
+      "tminMean": 6.08,
+      "nDays": 31
+    },
+    {
+      "ym": "1984-02",
+      "tmaxMean": 21.46,
+      "tminMean": 8.1,
+      "nDays": 29
+    },
+    {
+      "ym": "1984-03",
+      "tmaxMean": 32.11,
+      "tminMean": 16.21,
+      "nDays": 31
+    },
+    {
+      "ym": "1984-04",
+      "tmaxMean": 36.26,
+      "tminMean": 20.57,
+      "nDays": 30
+    },
+    {
+      "ym": "1984-05",
+      "tmaxMean": 42.53,
+      "tminMean": 26.96,
+      "nDays": 31
+    },
+    {
+      "ym": "1984-06",
+      "tmaxMean": 39.82,
+      "tminMean": 30.19,
+      "nDays": 30
+    },
+    {
+      "ym": "1984-07",
+      "tmaxMean": 33.05,
+      "tminMean": 26.15,
+      "nDays": 31
+    },
+    {
+      "ym": "1984-08",
+      "tmaxMean": 31.34,
+      "tminMean": 25.61,
+      "nDays": 31
+    },
+    {
+      "ym": "1984-09",
+      "tmaxMean": 31,
+      "tminMean": 22.82,
+      "nDays": 30
+    },
+    {
+      "ym": "1984-10",
+      "tmaxMean": 32.41,
+      "tminMean": 17.08,
+      "nDays": 31
+    },
+    {
+      "ym": "1984-11",
+      "tmaxMean": 27.05,
+      "tminMean": 12.61,
+      "nDays": 30
+    },
+    {
+      "ym": "1984-12",
+      "tmaxMean": 23.09,
+      "tminMean": 9.77,
+      "nDays": 31
+    },
+    {
+      "ym": "1985-01",
+      "tmaxMean": 20.15,
+      "tminMean": 7.95,
+      "nDays": 31
+    },
+    {
+      "ym": "1985-02",
+      "tmaxMean": 25.89,
+      "tminMean": 9.73,
+      "nDays": 28
+    },
+    {
+      "ym": "1985-03",
+      "tmaxMean": 32.34,
+      "tminMean": 16.81,
+      "nDays": 31
+    },
+    {
+      "ym": "1985-04",
+      "tmaxMean": 36.51,
+      "tminMean": 21.54,
+      "nDays": 30
+    },
+    {
+      "ym": "1985-05",
+      "tmaxMean": 40.92,
+      "tminMean": 26.01,
+      "nDays": 31
+    },
+    {
+      "ym": "1985-06",
+      "tmaxMean": 39.58,
+      "tminMean": 29.35,
+      "nDays": 30
+    },
+    {
+      "ym": "1985-07",
+      "tmaxMean": 32.8,
+      "tminMean": 26.03,
+      "nDays": 31
+    },
+    {
+      "ym": "1985-08",
+      "tmaxMean": 32.3,
+      "tminMean": 25.84,
+      "nDays": 31
+    },
+    {
+      "ym": "1985-09",
+      "tmaxMean": 32.21,
+      "tminMean": 24.33,
+      "nDays": 30
+    },
+    {
+      "ym": "1985-10",
+      "tmaxMean": 28.92,
+      "tminMean": 18.05,
+      "nDays": 31
+    },
+    {
+      "ym": "1985-11",
+      "tmaxMean": 27.02,
+      "tminMean": 12.99,
+      "nDays": 30
+    },
+    {
+      "ym": "1985-12",
+      "tmaxMean": 22.42,
+      "tminMean": 10.52,
+      "nDays": 31
+    },
+    {
+      "ym": "1986-01",
+      "tmaxMean": 20.5,
+      "tminMean": 7.18,
+      "nDays": 31
+    },
+    {
+      "ym": "1986-02",
+      "tmaxMean": 21.98,
+      "tminMean": 9.43,
+      "nDays": 28
+    },
+    {
+      "ym": "1986-03",
+      "tmaxMean": 29.06,
+      "tminMean": 14.7,
+      "nDays": 31
+    },
+    {
+      "ym": "1986-04",
+      "tmaxMean": 36.33,
+      "tminMean": 20.77,
+      "nDays": 30
+    },
+    {
+      "ym": "1986-05",
+      "tmaxMean": 37.96,
+      "tminMean": 23.42,
+      "nDays": 31
+    },
+    {
+      "ym": "1986-06",
+      "tmaxMean": 38.62,
+      "tminMean": 27.78,
+      "nDays": 30
+    },
+    {
+      "ym": "1986-07",
+      "tmaxMean": 32.63,
+      "tminMean": 26.08,
+      "nDays": 31
+    },
+    {
+      "ym": "1986-08",
+      "tmaxMean": 33.42,
+      "tminMean": 26.06,
+      "nDays": 31
+    },
+    {
+      "ym": "1986-09",
+      "tmaxMean": 34.66,
+      "tminMean": 24.66,
+      "nDays": 30
+    },
+    {
+      "ym": "1986-10",
+      "tmaxMean": 31.11,
+      "tminMean": 19.19,
+      "nDays": 31
+    },
+    {
+      "ym": "1986-11",
+      "tmaxMean": 28.25,
+      "tminMean": 14.46,
+      "nDays": 30
+    },
+    {
+      "ym": "1986-12",
+      "tmaxMean": 21.48,
+      "tminMean": 8.03,
+      "nDays": 31
+    },
+    {
+      "ym": "1987-01",
+      "tmaxMean": 21.77,
+      "tminMean": 8.62,
+      "nDays": 31
+    },
+    {
+      "ym": "1987-02",
+      "tmaxMean": 25.63,
+      "tminMean": 11.81,
+      "nDays": 28
+    },
+    {
+      "ym": "1987-03",
+      "tmaxMean": 30.71,
+      "tminMean": 16.22,
+      "nDays": 31
+    },
+    {
+      "ym": "1987-04",
+      "tmaxMean": 36.94,
+      "tminMean": 21.35,
+      "nDays": 30
+    },
+    {
+      "ym": "1987-05",
+      "tmaxMean": 36.44,
+      "tminMean": 22.84,
+      "nDays": 31
+    },
+    {
+      "ym": "1987-06",
+      "tmaxMean": 41.21,
+      "tminMean": 28.98,
+      "nDays": 30
+    },
+    {
+      "ym": "1987-07",
+      "tmaxMean": 39.96,
+      "tminMean": 30.26,
+      "nDays": 31
+    },
+    {
+      "ym": "1987-08",
+      "tmaxMean": 36.13,
+      "tminMean": 28.19,
+      "nDays": 31
+    },
+    {
+      "ym": "1987-09",
+      "tmaxMean": 36.77,
+      "tminMean": 26.22,
+      "nDays": 30
+    },
+    {
+      "ym": "1987-10",
+      "tmaxMean": 34.12,
+      "tminMean": 20.61,
+      "nDays": 31
+    },
+    {
+      "ym": "1987-11",
+      "tmaxMean": 29,
+      "tminMean": 13.84,
+      "nDays": 30
+    },
+    {
+      "ym": "1987-12",
+      "tmaxMean": 23.19,
+      "tminMean": 9.49,
+      "nDays": 31
+    },
+    {
+      "ym": "1988-01",
+      "tmaxMean": 22.98,
+      "tminMean": 9.52,
+      "nDays": 31
+    },
+    {
+      "ym": "1988-02",
+      "tmaxMean": 25.63,
+      "tminMean": 12.14,
+      "nDays": 29
+    },
+    {
+      "ym": "1988-03",
+      "tmaxMean": 29.32,
+      "tminMean": 15.34,
+      "nDays": 31
+    },
+    {
+      "ym": "1988-04",
+      "tmaxMean": 38.02,
+      "tminMean": 22.22,
+      "nDays": 30
+    },
+    {
+      "ym": "1988-05",
+      "tmaxMean": 42.54,
+      "tminMean": 27.69,
+      "nDays": 31
+    },
+    {
+      "ym": "1988-06",
+      "tmaxMean": 39.61,
+      "tminMean": 28.05,
+      "nDays": 30
+    },
+    {
+      "ym": "1988-07",
+      "tmaxMean": 31.64,
+      "tminMean": 26.03,
+      "nDays": 31
+    },
+    {
+      "ym": "1988-08",
+      "tmaxMean": 31.58,
+      "tminMean": 25.69,
+      "nDays": 31
+    },
+    {
+      "ym": "1988-09",
+      "tmaxMean": 32.91,
+      "tminMean": 25.15,
+      "nDays": 30
+    },
+    {
+      "ym": "1988-10",
+      "tmaxMean": 32.25,
+      "tminMean": 18.79,
+      "nDays": 31
+    },
+    {
+      "ym": "1988-11",
+      "tmaxMean": 27.71,
+      "tminMean": 14.05,
+      "nDays": 30
+    },
+    {
+      "ym": "1988-12",
+      "tmaxMean": 23.35,
+      "tminMean": 9.77,
+      "nDays": 31
+    },
+    {
+      "ym": "1989-01",
+      "tmaxMean": 19.82,
+      "tminMean": 7.04,
+      "nDays": 31
+    },
+    {
+      "ym": "1989-02",
+      "tmaxMean": 24.31,
+      "tminMean": 9.06,
+      "nDays": 28
+    },
+    {
+      "ym": "1989-03",
+      "tmaxMean": 29.67,
+      "tminMean": 15.26,
+      "nDays": 31
+    },
+    {
+      "ym": "1989-04",
+      "tmaxMean": 35.64,
+      "tminMean": 19.48,
+      "nDays": 30
+    },
+    {
+      "ym": "1989-05",
+      "tmaxMean": 40.93,
+      "tminMean": 25.56,
+      "nDays": 31
+    },
+    {
+      "ym": "1989-06",
+      "tmaxMean": 38.66,
+      "tminMean": 27.79,
+      "nDays": 30
+    },
+    {
+      "ym": "1989-07",
+      "tmaxMean": 34.99,
+      "tminMean": 27.16,
+      "nDays": 31
+    },
+    {
+      "ym": "1989-08",
+      "tmaxMean": 32.46,
+      "tminMean": 25.31,
+      "nDays": 31
+    },
+    {
+      "ym": "1989-09",
+      "tmaxMean": 32.94,
+      "tminMean": 24.16,
+      "nDays": 30
+    },
+    {
+      "ym": "1989-10",
+      "tmaxMean": 33.68,
+      "tminMean": 19.27,
+      "nDays": 31
+    },
+    {
+      "ym": "1989-11",
+      "tmaxMean": 27.71,
+      "tminMean": 14.25,
+      "nDays": 30
+    },
+    {
+      "ym": "1989-12",
+      "tmaxMean": 21.23,
+      "tminMean": 9.04,
+      "nDays": 31
+    },
+    {
+      "ym": "1990-01",
+      "tmaxMean": 23.81,
+      "tminMean": 10.08,
+      "nDays": 31
+    },
+    {
+      "ym": "1990-02",
+      "tmaxMean": 21.87,
+      "tminMean": 11.62,
+      "nDays": 28
+    },
+    {
+      "ym": "1990-03",
+      "tmaxMean": 26.98,
+      "tminMean": 13.83,
+      "nDays": 31
+    },
+    {
+      "ym": "1990-04",
+      "tmaxMean": 36.46,
+      "tminMean": 20.54,
+      "nDays": 30
+    },
+    {
+      "ym": "1990-05",
+      "tmaxMean": 38.82,
+      "tminMean": 26.23,
+      "nDays": 31
+    },
+    {
+      "ym": "1990-06",
+      "tmaxMean": 39.69,
+      "tminMean": 29.04,
+      "nDays": 30
+    },
+    {
+      "ym": "1990-07",
+      "tmaxMean": 32.21,
+      "tminMean": 26.25,
+      "nDays": 31
+    },
+    {
+      "ym": "1990-08",
+      "tmaxMean": 31.8,
+      "tminMean": 25.52,
+      "nDays": 31
+    },
+    {
+      "ym": "1990-09",
+      "tmaxMean": 31.01,
+      "tminMean": 24.49,
+      "nDays": 30
+    },
+    {
+      "ym": "1990-10",
+      "tmaxMean": 31.14,
+      "tminMean": 18.47,
+      "nDays": 31
+    },
+    {
+      "ym": "1990-11",
+      "tmaxMean": 27.97,
+      "tminMean": 13.95,
+      "nDays": 30
+    },
+    {
+      "ym": "1990-12",
+      "tmaxMean": 22.51,
+      "tminMean": 9.29,
+      "nDays": 31
+    },
+    {
+      "ym": "1991-01",
+      "tmaxMean": 20.65,
+      "tminMean": 7.02,
+      "nDays": 31
+    },
+    {
+      "ym": "1991-02",
+      "tmaxMean": 24.13,
+      "tminMean": 11.32,
+      "nDays": 28
+    },
+    {
+      "ym": "1991-03",
+      "tmaxMean": 28.8,
+      "tminMean": 14.92,
+      "nDays": 31
+    },
+    {
+      "ym": "1991-04",
+      "tmaxMean": 35.4,
+      "tminMean": 20.19,
+      "nDays": 30
+    },
+    {
+      "ym": "1991-05",
+      "tmaxMean": 40.84,
+      "tminMean": 26.02,
+      "nDays": 31
+    },
+    {
+      "ym": "1991-06",
+      "tmaxMean": 39.08,
+      "tminMean": 28.53,
+      "nDays": 30
+    },
+    {
+      "ym": "1991-07",
+      "tmaxMean": 36.96,
+      "tminMean": 28.68,
+      "nDays": 31
+    },
+    {
+      "ym": "1991-08",
+      "tmaxMean": 33.26,
+      "tminMean": 26.25,
+      "nDays": 31
+    },
+    {
+      "ym": "1991-09",
+      "tmaxMean": 33.24,
+      "tminMean": 24.47,
+      "nDays": 30
+    },
+    {
+      "ym": "1991-10",
+      "tmaxMean": 33.08,
+      "tminMean": 18.62,
+      "nDays": 31
+    },
+    {
+      "ym": "1991-11",
+      "tmaxMean": 26.94,
+      "tminMean": 13.64,
+      "nDays": 30
+    },
+    {
+      "ym": "1991-12",
+      "tmaxMean": 22.07,
+      "tminMean": 10.44,
+      "nDays": 31
+    },
+    {
+      "ym": "1992-01",
+      "tmaxMean": 21.27,
+      "tminMean": 9.15,
+      "nDays": 31
+    },
+    {
+      "ym": "1992-02",
+      "tmaxMean": 22.33,
+      "tminMean": 9.41,
+      "nDays": 29
+    },
+    {
+      "ym": "1992-03",
+      "tmaxMean": 29.88,
+      "tminMean": 16.29,
+      "nDays": 31
+    },
+    {
+      "ym": "1992-04",
+      "tmaxMean": 35.92,
+      "tminMean": 21.07,
+      "nDays": 30
+    },
+    {
+      "ym": "1992-05",
+      "tmaxMean": 39.12,
+      "tminMean": 24.75,
+      "nDays": 31
+    },
+    {
+      "ym": "1992-06",
+      "tmaxMean": 40.66,
+      "tminMean": 29.21,
+      "nDays": 30
+    },
+    {
+      "ym": "1992-07",
+      "tmaxMean": 34.35,
+      "tminMean": 26.68,
+      "nDays": 31
+    },
+    {
+      "ym": "1992-08",
+      "tmaxMean": 31.11,
+      "tminMean": 25.41,
+      "nDays": 31
+    },
+    {
+      "ym": "1992-09",
+      "tmaxMean": 31.92,
+      "tminMean": 23.28,
+      "nDays": 30
+    },
+    {
+      "ym": "1992-10",
+      "tmaxMean": 32.36,
+      "tminMean": 18.87,
+      "nDays": 31
+    },
+    {
+      "ym": "1992-11",
+      "tmaxMean": 26.86,
+      "tminMean": 14.37,
+      "nDays": 30
+    },
+    {
+      "ym": "1992-12",
+      "tmaxMean": 23.93,
+      "tminMean": 10.39,
+      "nDays": 31
+    },
+    {
+      "ym": "1993-01",
+      "tmaxMean": 20.67,
+      "tminMean": 8.98,
+      "nDays": 31
+    },
+    {
+      "ym": "1993-02",
+      "tmaxMean": 25.78,
+      "tminMean": 12.3,
+      "nDays": 28
+    },
+    {
+      "ym": "1993-03",
+      "tmaxMean": 27.68,
+      "tminMean": 14.01,
+      "nDays": 31
+    },
+    {
+      "ym": "1993-04",
+      "tmaxMean": 36.47,
+      "tminMean": 20.74,
+      "nDays": 30
+    },
+    {
+      "ym": "1993-05",
+      "tmaxMean": 40.94,
+      "tminMean": 26.59,
+      "nDays": 31
+    },
+    {
+      "ym": "1993-06",
+      "tmaxMean": 39.44,
+      "tminMean": 28.26,
+      "nDays": 30
+    },
+    {
+      "ym": "1993-07",
+      "tmaxMean": 33.26,
+      "tminMean": 26.18,
+      "nDays": 31
+    },
+    {
+      "ym": "1993-08",
+      "tmaxMean": 35.37,
+      "tminMean": 27.54,
+      "nDays": 31
+    },
+    {
+      "ym": "1993-09",
+      "tmaxMean": 30.69,
+      "tminMean": 23.68,
+      "nDays": 30
+    },
+    {
+      "ym": "1993-10",
+      "tmaxMean": 33.07,
+      "tminMean": 18.53,
+      "nDays": 31
+    },
+    {
+      "ym": "1993-11",
+      "tmaxMean": 28.24,
+      "tminMean": 14.43,
+      "nDays": 30
+    },
+    {
+      "ym": "1993-12",
+      "tmaxMean": 23.76,
+      "tminMean": 9.35,
+      "nDays": 31
+    },
+    {
+      "ym": "1994-01",
+      "tmaxMean": 21.42,
+      "tminMean": 9.51,
+      "nDays": 31
+    },
+    {
+      "ym": "1994-02",
+      "tmaxMean": 23.39,
+      "tminMean": 9.99,
+      "nDays": 28
+    },
+    {
+      "ym": "1994-03",
+      "tmaxMean": 32.17,
+      "tminMean": 16.8,
+      "nDays": 31
+    },
+    {
+      "ym": "1994-04",
+      "tmaxMean": 34.8,
+      "tminMean": 19.71,
+      "nDays": 30
+    },
+    {
+      "ym": "1994-05",
+      "tmaxMean": 40.76,
+      "tminMean": 25.9,
+      "nDays": 31
+    },
+    {
+      "ym": "1994-06",
+      "tmaxMean": 39.39,
+      "tminMean": 28.02,
+      "nDays": 30
+    },
+    {
+      "ym": "1994-07",
+      "tmaxMean": 32.24,
+      "tminMean": 26.26,
+      "nDays": 31
+    },
+    {
+      "ym": "1994-08",
+      "tmaxMean": 31.31,
+      "tminMean": 25.69,
+      "nDays": 31
+    },
+    {
+      "ym": "1994-09",
+      "tmaxMean": 32.24,
+      "tminMean": 23.13,
+      "nDays": 30
+    },
+    {
+      "ym": "1994-10",
+      "tmaxMean": 32.76,
+      "tminMean": 18.27,
+      "nDays": 31
+    },
+    {
+      "ym": "1994-11",
+      "tmaxMean": 27.65,
+      "tminMean": 13.89,
+      "nDays": 30
+    },
+    {
+      "ym": "1994-12",
+      "tmaxMean": 23.04,
+      "tminMean": 10.16,
+      "nDays": 31
+    },
+    {
+      "ym": "1995-01",
+      "tmaxMean": 18.92,
+      "tminMean": 7.33,
+      "nDays": 31
+    },
+    {
+      "ym": "1995-02",
+      "tmaxMean": 22.91,
+      "tminMean": 10.28,
+      "nDays": 28
+    },
+    {
+      "ym": "1995-03",
+      "tmaxMean": 28.15,
+      "tminMean": 14.51,
+      "nDays": 31
+    },
+    {
+      "ym": "1995-04",
+      "tmaxMean": 35.64,
+      "tminMean": 20.49,
+      "nDays": 30
+    },
+    {
+      "ym": "1995-05",
+      "tmaxMean": 41.05,
+      "tminMean": 26.69,
+      "nDays": 31
+    },
+    {
+      "ym": "1995-06",
+      "tmaxMean": 41.48,
+      "tminMean": 29.43,
+      "nDays": 30
+    },
+    {
+      "ym": "1995-07",
+      "tmaxMean": 34.92,
+      "tminMean": 27.26,
+      "nDays": 31
+    },
+    {
+      "ym": "1995-08",
+      "tmaxMean": 30.12,
+      "tminMean": 25.23,
+      "nDays": 31
+    },
+    {
+      "ym": "1995-09",
+      "tmaxMean": 32.53,
+      "tminMean": 23.87,
+      "nDays": 30
+    },
+    {
+      "ym": "1995-10",
+      "tmaxMean": 32.49,
+      "tminMean": 20.16,
+      "nDays": 31
+    },
+    {
+      "ym": "1995-11",
+      "tmaxMean": 27.4,
+      "tminMean": 14.05,
+      "nDays": 30
+    },
+    {
+      "ym": "1995-12",
+      "tmaxMean": 22.28,
+      "tminMean": 10.01,
+      "nDays": 31
+    },
+    {
+      "ym": "1996-01",
+      "tmaxMean": 20.42,
+      "tminMean": 8.11,
+      "nDays": 31
+    },
+    {
+      "ym": "1996-02",
+      "tmaxMean": 23.15,
+      "tminMean": 10.7,
+      "nDays": 29
+    },
+    {
+      "ym": "1996-03",
+      "tmaxMean": 29.63,
+      "tminMean": 16.39,
+      "nDays": 31
+    },
+    {
+      "ym": "1996-04",
+      "tmaxMean": 36.51,
+      "tminMean": 20.62,
+      "nDays": 30
+    },
+    {
+      "ym": "1996-05",
+      "tmaxMean": 39.8,
+      "tminMean": 25.03,
+      "nDays": 31
+    },
+    {
+      "ym": "1996-06",
+      "tmaxMean": 36.16,
+      "tminMean": 27.19,
+      "nDays": 30
+    },
+    {
+      "ym": "1996-07",
+      "tmaxMean": 33.35,
+      "tminMean": 26.07,
+      "nDays": 31
+    },
+    {
+      "ym": "1996-08",
+      "tmaxMean": 30.07,
+      "tminMean": 24.92,
+      "nDays": 31
+    },
+    {
+      "ym": "1996-09",
+      "tmaxMean": 30.91,
+      "tminMean": 23.46,
+      "nDays": 30
+    },
+    {
+      "ym": "1996-10",
+      "tmaxMean": 30.95,
+      "tminMean": 18.85,
+      "nDays": 31
+    },
+    {
+      "ym": "1996-11",
+      "tmaxMean": 26.76,
+      "tminMean": 12.2,
+      "nDays": 30
+    },
+    {
+      "ym": "1996-12",
+      "tmaxMean": 21.98,
+      "tminMean": 7.38,
+      "nDays": 31
+    },
+    {
+      "ym": "1997-01",
+      "tmaxMean": 19.42,
+      "tminMean": 6.23,
+      "nDays": 31
+    },
+    {
+      "ym": "1997-02",
+      "tmaxMean": 23.23,
+      "tminMean": 9.12,
+      "nDays": 28
+    },
+    {
+      "ym": "1997-03",
+      "tmaxMean": 28.31,
+      "tminMean": 15.27,
+      "nDays": 31
+    },
+    {
+      "ym": "1997-04",
+      "tmaxMean": 33.08,
+      "tminMean": 18.9,
+      "nDays": 30
+    },
+    {
+      "ym": "1997-05",
+      "tmaxMean": 37.65,
+      "tminMean": 23.76,
+      "nDays": 31
+    },
+    {
+      "ym": "1997-06",
+      "tmaxMean": 36.52,
+      "tminMean": 26.15,
+      "nDays": 30
+    },
+    {
+      "ym": "1997-07",
+      "tmaxMean": 33.64,
+      "tminMean": 26.47,
+      "nDays": 31
+    },
+    {
+      "ym": "1997-08",
+      "tmaxMean": 31.35,
+      "tminMean": 25.27,
+      "nDays": 31
+    },
+    {
+      "ym": "1997-09",
+      "tmaxMean": 32.44,
+      "tminMean": 24.42,
+      "nDays": 30
+    },
+    {
+      "ym": "1997-10",
+      "tmaxMean": 27.44,
+      "tminMean": 17.85,
+      "nDays": 31
+    },
+    {
+      "ym": "1997-11",
+      "tmaxMean": 23.99,
+      "tminMean": 12.97,
+      "nDays": 30
+    },
+    {
+      "ym": "1997-12",
+      "tmaxMean": 18.2,
+      "tminMean": 8.45,
+      "nDays": 31
+    },
+    {
+      "ym": "1998-01",
+      "tmaxMean": 19.42,
+      "tminMean": 6.51,
+      "nDays": 31
+    },
+    {
+      "ym": "1998-02",
+      "tmaxMean": 22.86,
+      "tminMean": 10.33,
+      "nDays": 28
+    },
+    {
+      "ym": "1998-03",
+      "tmaxMean": 26.29,
+      "tminMean": 13.45,
+      "nDays": 31
+    },
+    {
+      "ym": "1998-04",
+      "tmaxMean": 36.59,
+      "tminMean": 21.42,
+      "nDays": 30
+    },
+    {
+      "ym": "1998-05",
+      "tmaxMean": 41.04,
+      "tminMean": 26.02,
+      "nDays": 31
+    },
+    {
+      "ym": "1998-06",
+      "tmaxMean": 38.32,
+      "tminMean": 27.61,
+      "nDays": 30
+    },
+    {
+      "ym": "1998-07",
+      "tmaxMean": 32.79,
+      "tminMean": 26.49,
+      "nDays": 31
+    },
+    {
+      "ym": "1998-08",
+      "tmaxMean": 32.35,
+      "tminMean": 26.06,
+      "nDays": 31
+    },
+    {
+      "ym": "1998-09",
+      "tmaxMean": 32.36,
+      "tminMean": 25.09,
+      "nDays": 30
+    },
+    {
+      "ym": "1998-10",
+      "tmaxMean": 29.86,
+      "tminMean": 20.22,
+      "nDays": 31
+    },
+    {
+      "ym": "1998-11",
+      "tmaxMean": 26.49,
+      "tminMean": 13.85,
+      "nDays": 30
+    },
+    {
+      "ym": "1998-12",
+      "tmaxMean": 22.48,
+      "tminMean": 9.19,
+      "nDays": 31
+    },
+    {
+      "ym": "1999-01",
+      "tmaxMean": 18.42,
+      "tminMean": 7.37,
+      "nDays": 31
+    },
+    {
+      "ym": "1999-02",
+      "tmaxMean": 23.73,
+      "tminMean": 10.68,
+      "nDays": 28
+    },
+    {
+      "ym": "1999-03",
+      "tmaxMean": 30.93,
+      "tminMean": 15.51,
+      "nDays": 31
+    },
+    {
+      "ym": "1999-04",
+      "tmaxMean": 39.27,
+      "tminMean": 21.85,
+      "nDays": 30
+    },
+    {
+      "ym": "1999-05",
+      "tmaxMean": 39.94,
+      "tminMean": 26.38,
+      "nDays": 31
+    },
+    {
+      "ym": "1999-06",
+      "tmaxMean": 38.7,
+      "tminMean": 28.28,
+      "nDays": 30
+    },
+    {
+      "ym": "1999-07",
+      "tmaxMean": 34.85,
+      "tminMean": 28.12,
+      "nDays": 31
+    },
+    {
+      "ym": "1999-08",
+      "tmaxMean": 33,
+      "tminMean": 26.09,
+      "nDays": 31
+    },
+    {
+      "ym": "1999-09",
+      "tmaxMean": 31.13,
+      "tminMean": 24.66,
+      "nDays": 30
+    },
+    {
+      "ym": "1999-10",
+      "tmaxMean": 31.01,
+      "tminMean": 18.96,
+      "nDays": 31
+    },
+    {
+      "ym": "1999-11",
+      "tmaxMean": 28.26,
+      "tminMean": 14.19,
+      "nDays": 30
+    },
+    {
+      "ym": "1999-12",
+      "tmaxMean": 22.22,
+      "tminMean": 8.65,
+      "nDays": 31
+    },
+    {
+      "ym": "2000-01",
+      "tmaxMean": 20.06,
+      "tminMean": 8.24,
+      "nDays": 31
+    },
+    {
+      "ym": "2000-02",
+      "tmaxMean": 20.43,
+      "tminMean": 8.42,
+      "nDays": 29
+    },
+    {
+      "ym": "2000-03",
+      "tmaxMean": 29.05,
+      "tminMean": 13.87,
+      "nDays": 31
+    },
+    {
+      "ym": "2000-04",
+      "tmaxMean": 37.96,
+      "tminMean": 21.43,
+      "nDays": 30
+    },
+    {
+      "ym": "2000-05",
+      "tmaxMean": 39.91,
+      "tminMean": 27.88,
+      "nDays": 31
+    },
+    {
+      "ym": "2000-06",
+      "tmaxMean": 36.36,
+      "tminMean": 27.34,
+      "nDays": 30
+    },
+    {
+      "ym": "2000-07",
+      "tmaxMean": 32.01,
+      "tminMean": 25.72,
+      "nDays": 31
+    },
+    {
+      "ym": "2000-08",
+      "tmaxMean": 32.56,
+      "tminMean": 25.93,
+      "nDays": 31
+    },
+    {
+      "ym": "2000-09",
+      "tmaxMean": 33.49,
+      "tminMean": 24.1,
+      "nDays": 30
+    },
+    {
+      "ym": "2000-10",
+      "tmaxMean": 33.58,
+      "tminMean": 19.88,
+      "nDays": 31
+    },
+    {
+      "ym": "2000-11",
+      "tmaxMean": 27.84,
+      "tminMean": 14.61,
+      "nDays": 30
+    },
+    {
+      "ym": "2000-12",
+      "tmaxMean": 22.79,
+      "tminMean": 8.2,
+      "nDays": 31
+    },
+    {
+      "ym": "2001-01",
+      "tmaxMean": 19.93,
+      "tminMean": 6.83,
+      "nDays": 31
+    },
+    {
+      "ym": "2001-02",
+      "tmaxMean": 24.64,
+      "tminMean": 10.39,
+      "nDays": 28
+    },
+    {
+      "ym": "2001-03",
+      "tmaxMean": 29.8,
+      "tminMean": 14.89,
+      "nDays": 31
+    },
+    {
+      "ym": "2001-04",
+      "tmaxMean": 35.72,
+      "tminMean": 20.15,
+      "nDays": 30
+    },
+    {
+      "ym": "2001-05",
+      "tmaxMean": 38.93,
+      "tminMean": 26.32,
+      "nDays": 31
+    },
+    {
+      "ym": "2001-06",
+      "tmaxMean": 35.22,
+      "tminMean": 26.67,
+      "nDays": 30
+    },
+    {
+      "ym": "2001-07",
+      "tmaxMean": 32.3,
+      "tminMean": 26.1,
+      "nDays": 31
+    },
+    {
+      "ym": "2001-08",
+      "tmaxMean": 32.76,
+      "tminMean": 26.06,
+      "nDays": 31
+    },
+    {
+      "ym": "2001-09",
+      "tmaxMean": 35.26,
+      "tminMean": 24.33,
+      "nDays": 30
+    },
+    {
+      "ym": "2001-10",
+      "tmaxMean": 32.76,
+      "tminMean": 20.29,
+      "nDays": 31
+    },
+    {
+      "ym": "2001-11",
+      "tmaxMean": 27.38,
+      "tminMean": 13.6,
+      "nDays": 30
+    },
+    {
+      "ym": "2001-12",
+      "tmaxMean": 22.53,
+      "tminMean": 9.71,
+      "nDays": 31
+    },
+    {
+      "ym": "2002-01",
+      "tmaxMean": 20.07,
+      "tminMean": 7.87,
+      "nDays": 31
+    },
+    {
+      "ym": "2002-02",
+      "tmaxMean": 23.5,
+      "tminMean": 10.25,
+      "nDays": 28
+    },
+    {
+      "ym": "2002-03",
+      "tmaxMean": 31.26,
+      "tminMean": 15.89,
+      "nDays": 31
+    },
+    {
+      "ym": "2002-04",
+      "tmaxMean": 38.18,
+      "tminMean": 22.03,
+      "nDays": 30
+    },
+    {
+      "ym": "2002-05",
+      "tmaxMean": 41.71,
+      "tminMean": 26.95,
+      "nDays": 31
+    },
+    {
+      "ym": "2002-06",
+      "tmaxMean": 39.34,
+      "tminMean": 28.56,
+      "nDays": 30
+    },
+    {
+      "ym": "2002-07",
+      "tmaxMean": 39.69,
+      "tminMean": 30.88,
+      "nDays": 31
+    },
+    {
+      "ym": "2002-08",
+      "tmaxMean": 32.74,
+      "tminMean": 26.52,
+      "nDays": 31
+    },
+    {
+      "ym": "2002-09",
+      "tmaxMean": 30.92,
+      "tminMean": 22.78,
+      "nDays": 30
+    },
+    {
+      "ym": "2002-10",
+      "tmaxMean": 31.89,
+      "tminMean": 19.22,
+      "nDays": 31
+    },
+    {
+      "ym": "2002-11",
+      "tmaxMean": 27.37,
+      "tminMean": 14.34,
+      "nDays": 30
+    },
+    {
+      "ym": "2002-12",
+      "tmaxMean": 22.81,
+      "tminMean": 10.09,
+      "nDays": 31
+    },
+    {
+      "ym": "2003-01",
+      "tmaxMean": 18.16,
+      "tminMean": 6.79,
+      "nDays": 31
+    },
+    {
+      "ym": "2003-02",
+      "tmaxMean": 22.24,
+      "tminMean": 10.77,
+      "nDays": 28
+    },
+    {
+      "ym": "2003-03",
+      "tmaxMean": 28.9,
+      "tminMean": 15.04,
+      "nDays": 31
+    },
+    {
+      "ym": "2003-04",
+      "tmaxMean": 37.23,
+      "tminMean": 21.53,
+      "nDays": 30
+    },
+    {
+      "ym": "2003-05",
+      "tmaxMean": 39.65,
+      "tminMean": 24.17,
+      "nDays": 31
+    },
+    {
+      "ym": "2003-06",
+      "tmaxMean": 39.64,
+      "tminMean": 28.38,
+      "nDays": 30
+    },
+    {
+      "ym": "2003-07",
+      "tmaxMean": 31.6,
+      "tminMean": 25.78,
+      "nDays": 31
+    },
+    {
+      "ym": "2003-08",
+      "tmaxMean": 31.44,
+      "tminMean": 25.45,
+      "nDays": 31
+    },
+    {
+      "ym": "2003-09",
+      "tmaxMean": 30.3,
+      "tminMean": 23.69,
+      "nDays": 30
+    },
+    {
+      "ym": "2003-10",
+      "tmaxMean": 30.62,
+      "tminMean": 17.36,
+      "nDays": 31
+    },
+    {
+      "ym": "2003-11",
+      "tmaxMean": 25.92,
+      "tminMean": 12.72,
+      "nDays": 30
+    },
+    {
+      "ym": "2003-12",
+      "tmaxMean": 21.19,
+      "tminMean": 9.58,
+      "nDays": 31
+    },
+    {
+      "ym": "2004-01",
+      "tmaxMean": 18.99,
+      "tminMean": 7.74,
+      "nDays": 31
+    },
+    {
+      "ym": "2004-02",
+      "tmaxMean": 24.5,
+      "tminMean": 10.57,
+      "nDays": 29
+    },
+    {
+      "ym": "2004-03",
+      "tmaxMean": 33.39,
+      "tminMean": 17.24,
+      "nDays": 31
+    },
+    {
+      "ym": "2004-04",
+      "tmaxMean": 37.77,
+      "tminMean": 22.53,
+      "nDays": 30
+    },
+    {
+      "ym": "2004-05",
+      "tmaxMean": 39.64,
+      "tminMean": 26.06,
+      "nDays": 31
+    },
+    {
+      "ym": "2004-06",
+      "tmaxMean": 37.37,
+      "tminMean": 27.4,
+      "nDays": 30
+    },
+    {
+      "ym": "2004-07",
+      "tmaxMean": 36.9,
+      "tminMean": 28.1,
+      "nDays": 31
+    },
+    {
+      "ym": "2004-08",
+      "tmaxMean": 32.01,
+      "tminMean": 25.58,
+      "nDays": 31
+    },
+    {
+      "ym": "2004-09",
+      "tmaxMean": 33.87,
+      "tminMean": 24.32,
+      "nDays": 30
+    },
+    {
+      "ym": "2004-10",
+      "tmaxMean": 29.71,
+      "tminMean": 18.69,
+      "nDays": 31
+    },
+    {
+      "ym": "2004-11",
+      "tmaxMean": 27.57,
+      "tminMean": 14.31,
+      "nDays": 30
+    },
+    {
+      "ym": "2004-12",
+      "tmaxMean": 22.83,
+      "tminMean": 10.51,
+      "nDays": 31
+    },
+    {
+      "ym": "2005-01",
+      "tmaxMean": 19.65,
+      "tminMean": 8.5,
+      "nDays": 31
+    },
+    {
+      "ym": "2005-02",
+      "tmaxMean": 22.3,
+      "tminMean": 10.97,
+      "nDays": 28
+    },
+    {
+      "ym": "2005-03",
+      "tmaxMean": 29.95,
+      "tminMean": 16.42,
+      "nDays": 31
+    },
+    {
+      "ym": "2005-04",
+      "tmaxMean": 36.35,
+      "tminMean": 20.18,
+      "nDays": 30
+    },
+    {
+      "ym": "2005-05",
+      "tmaxMean": 39.08,
+      "tminMean": 24.32,
+      "nDays": 31
+    },
+    {
+      "ym": "2005-06",
+      "tmaxMean": 39.98,
+      "tminMean": 28.35,
+      "nDays": 30
+    },
+    {
+      "ym": "2005-07",
+      "tmaxMean": 32.23,
+      "tminMean": 26.06,
+      "nDays": 31
+    },
+    {
+      "ym": "2005-08",
+      "tmaxMean": 34.05,
+      "tminMean": 26.63,
+      "nDays": 31
+    },
+    {
+      "ym": "2005-09",
+      "tmaxMean": 32.06,
+      "tminMean": 24.76,
+      "nDays": 30
+    },
+    {
+      "ym": "2005-10",
+      "tmaxMean": 31.64,
+      "tminMean": 18.43,
+      "nDays": 31
+    },
+    {
+      "ym": "2005-11",
+      "tmaxMean": 27.66,
+      "tminMean": 13.55,
+      "nDays": 30
+    },
+    {
+      "ym": "2005-12",
+      "tmaxMean": 22.05,
+      "tminMean": 7.54,
+      "nDays": 31
+    },
+    {
+      "ym": "2006-01",
+      "tmaxMean": 22.41,
+      "tminMean": 8.32,
+      "nDays": 31
+    },
+    {
+      "ym": "2006-02",
+      "tmaxMean": 29.31,
+      "tminMean": 14.7,
+      "nDays": 28
+    },
+    {
+      "ym": "2006-03",
+      "tmaxMean": 28.95,
+      "tminMean": 15.23,
+      "nDays": 31
+    },
+    {
+      "ym": "2006-04",
+      "tmaxMean": 37.55,
+      "tminMean": 21.55,
+      "nDays": 30
+    },
+    {
+      "ym": "2006-05",
+      "tmaxMean": 39.82,
+      "tminMean": 27.24,
+      "nDays": 31
+    },
+    {
+      "ym": "2006-06",
+      "tmaxMean": 37.23,
+      "tminMean": 26.94,
+      "nDays": 30
+    },
+    {
+      "ym": "2006-07",
+      "tmaxMean": 33.01,
+      "tminMean": 26.91,
+      "nDays": 31
+    },
+    {
+      "ym": "2006-08",
+      "tmaxMean": 33.03,
+      "tminMean": 26.34,
+      "nDays": 31
+    },
+    {
+      "ym": "2006-09",
+      "tmaxMean": 34.06,
+      "tminMean": 24.38,
+      "nDays": 30
+    },
+    {
+      "ym": "2006-10",
+      "tmaxMean": 33.12,
+      "tminMean": 21.05,
+      "nDays": 31
+    },
+    {
+      "ym": "2006-11",
+      "tmaxMean": 27.93,
+      "tminMean": 15.7,
+      "nDays": 30
+    },
+    {
+      "ym": "2006-12",
+      "tmaxMean": 22.77,
+      "tminMean": 10.21,
+      "nDays": 31
+    },
+    {
+      "ym": "2007-01",
+      "tmaxMean": 21.94,
+      "tminMean": 8.1,
+      "nDays": 31
+    },
+    {
+      "ym": "2007-02",
+      "tmaxMean": 22.6,
+      "tminMean": 11.98,
+      "nDays": 28
+    },
+    {
+      "ym": "2007-03",
+      "tmaxMean": 27.65,
+      "tminMean": 14.79,
+      "nDays": 31
+    },
+    {
+      "ym": "2007-04",
+      "tmaxMean": 38.47,
+      "tminMean": 22.49,
+      "nDays": 30
+    },
+    {
+      "ym": "2007-05",
+      "tmaxMean": 39.41,
+      "tminMean": 25.99,
+      "nDays": 31
+    },
+    {
+      "ym": "2007-06",
+      "tmaxMean": 37.97,
+      "tminMean": 28.51,
+      "nDays": 30
+    },
+    {
+      "ym": "2007-07",
+      "tmaxMean": 34.6,
+      "tminMean": 27.39,
+      "nDays": 31
+    },
+    {
+      "ym": "2007-08",
+      "tmaxMean": 32.5,
+      "tminMean": 26.34,
+      "nDays": 31
+    },
+    {
+      "ym": "2007-09",
+      "tmaxMean": 32.55,
+      "tminMean": 24.61,
+      "nDays": 30
+    },
+    {
+      "ym": "2007-10",
+      "tmaxMean": 33.36,
+      "tminMean": 18.38,
+      "nDays": 31
+    },
+    {
+      "ym": "2007-11",
+      "tmaxMean": 28.53,
+      "tminMean": 14.8,
+      "nDays": 30
+    },
+    {
+      "ym": "2007-12",
+      "tmaxMean": 22.27,
+      "tminMean": 9.6,
+      "nDays": 31
+    },
+    {
+      "ym": "2008-01",
+      "tmaxMean": 20.73,
+      "tminMean": 8.01,
+      "nDays": 31
+    },
+    {
+      "ym": "2008-02",
+      "tmaxMean": 23.71,
+      "tminMean": 9.31,
+      "nDays": 29
+    },
+    {
+      "ym": "2008-03",
+      "tmaxMean": 32.68,
+      "tminMean": 16.97,
+      "nDays": 31
+    },
+    {
+      "ym": "2008-04",
+      "tmaxMean": 36.53,
+      "tminMean": 21.29,
+      "nDays": 30
+    },
+    {
+      "ym": "2008-05",
+      "tmaxMean": 37.45,
+      "tminMean": 24.98,
+      "nDays": 31
+    },
+    {
+      "ym": "2008-06",
+      "tmaxMean": 33.46,
+      "tminMean": 25.93,
+      "nDays": 30
+    },
+    {
+      "ym": "2008-07",
+      "tmaxMean": 33.04,
+      "tminMean": 26.45,
+      "nDays": 31
+    },
+    {
+      "ym": "2008-08",
+      "tmaxMean": 31.22,
+      "tminMean": 25.36,
+      "nDays": 31
+    },
+    {
+      "ym": "2008-09",
+      "tmaxMean": 32.13,
+      "tminMean": 23.95,
+      "nDays": 30
+    },
+    {
+      "ym": "2008-10",
+      "tmaxMean": 32.52,
+      "tminMean": 20.5,
+      "nDays": 31
+    },
+    {
+      "ym": "2008-11",
+      "tmaxMean": 27.99,
+      "tminMean": 14.54,
+      "nDays": 30
+    },
+    {
+      "ym": "2008-12",
+      "tmaxMean": 24.18,
+      "tminMean": 11.61,
+      "nDays": 31
+    },
+    {
+      "ym": "2009-01",
+      "tmaxMean": 22.28,
+      "tminMean": 10.02,
+      "nDays": 31
+    },
+    {
+      "ym": "2009-02",
+      "tmaxMean": 25.48,
+      "tminMean": 11.93,
+      "nDays": 28
+    },
+    {
+      "ym": "2009-03",
+      "tmaxMean": 30.67,
+      "tminMean": 16,
+      "nDays": 31
+    },
+    {
+      "ym": "2009-04",
+      "tmaxMean": 36.66,
+      "tminMean": 21.25,
+      "nDays": 30
+    },
+    {
+      "ym": "2009-05",
+      "tmaxMean": 39.39,
+      "tminMean": 25.45,
+      "nDays": 31
+    },
+    {
+      "ym": "2009-06",
+      "tmaxMean": 41.12,
+      "tminMean": 28.33,
+      "nDays": 30
+    },
+    {
+      "ym": "2009-07",
+      "tmaxMean": 35.36,
+      "tminMean": 27.75,
+      "nDays": 31
+    },
+    {
+      "ym": "2009-08",
+      "tmaxMean": 34.91,
+      "tminMean": 27.8,
+      "nDays": 31
+    },
+    {
+      "ym": "2009-09",
+      "tmaxMean": 33.2,
+      "tminMean": 24.21,
+      "nDays": 30
+    },
+    {
+      "ym": "2009-10",
+      "tmaxMean": 33.09,
+      "tminMean": 19.25,
+      "nDays": 31
+    },
+    {
+      "ym": "2009-11",
+      "tmaxMean": 27.07,
+      "tminMean": 14.48,
+      "nDays": 30
+    },
+    {
+      "ym": "2009-12",
+      "tmaxMean": 23.6,
+      "tminMean": 10.21,
+      "nDays": 31
+    },
+    {
+      "ym": "2010-01",
+      "tmaxMean": 21.06,
+      "tminMean": 8.89,
+      "nDays": 31
+    },
+    {
+      "ym": "2010-02",
+      "tmaxMean": 25.61,
+      "tminMean": 11.58,
+      "nDays": 28
+    },
+    {
+      "ym": "2010-03",
+      "tmaxMean": 33.85,
+      "tminMean": 18.31,
+      "nDays": 31
+    },
+    {
+      "ym": "2010-04",
+      "tmaxMean": 40.4,
+      "tminMean": 23.93,
+      "nDays": 30
+    },
+    {
+      "ym": "2010-05",
+      "tmaxMean": 41.58,
+      "tminMean": 26.39,
+      "nDays": 31
+    },
+    {
+      "ym": "2010-06",
+      "tmaxMean": 40.51,
+      "tminMean": 28.29,
+      "nDays": 30
+    },
+    {
+      "ym": "2010-07",
+      "tmaxMean": 33.15,
+      "tminMean": 26.98,
+      "nDays": 31
+    },
+    {
+      "ym": "2010-08",
+      "tmaxMean": 31.61,
+      "tminMean": 25.89,
+      "nDays": 31
+    },
+    {
+      "ym": "2010-09",
+      "tmaxMean": 29.92,
+      "tminMean": 23.44,
+      "nDays": 30
+    },
+    {
+      "ym": "2010-10",
+      "tmaxMean": 31.27,
+      "tminMean": 19.86,
+      "nDays": 31
+    },
+    {
+      "ym": "2010-11",
+      "tmaxMean": 26.79,
+      "tminMean": 15.63,
+      "nDays": 30
+    },
+    {
+      "ym": "2010-12",
+      "tmaxMean": 21.74,
+      "tminMean": 8.78,
+      "nDays": 31
+    },
+    {
+      "ym": "2011-01",
+      "tmaxMean": 19.3,
+      "tminMean": 6.89,
+      "nDays": 31
+    },
+    {
+      "ym": "2011-02",
+      "tmaxMean": 23.47,
+      "tminMean": 11,
+      "nDays": 28
+    },
+    {
+      "ym": "2011-03",
+      "tmaxMean": 30.05,
+      "tminMean": 15.44,
+      "nDays": 31
+    },
+    {
+      "ym": "2011-04",
+      "tmaxMean": 34.91,
+      "tminMean": 19.8,
+      "nDays": 30
+    },
+    {
+      "ym": "2011-05",
+      "tmaxMean": 39.91,
+      "tminMean": 25.94,
+      "nDays": 31
+    },
+    {
+      "ym": "2011-06",
+      "tmaxMean": 37.13,
+      "tminMean": 27.54,
+      "nDays": 30
+    },
+    {
+      "ym": "2011-07",
+      "tmaxMean": 32.56,
+      "tminMean": 26.04,
+      "nDays": 31
+    },
+    {
+      "ym": "2011-08",
+      "tmaxMean": 31.54,
+      "tminMean": 25.5,
+      "nDays": 31
+    },
+    {
+      "ym": "2011-09",
+      "tmaxMean": 31.54,
+      "tminMean": 24.42,
+      "nDays": 30
+    },
+    {
+      "ym": "2011-10",
+      "tmaxMean": 31.76,
+      "tminMean": 19.24,
+      "nDays": 31
+    },
+    {
+      "ym": "2011-11",
+      "tmaxMean": 28.19,
+      "tminMean": 16.02,
+      "nDays": 30
+    },
+    {
+      "ym": "2011-12",
+      "tmaxMean": 22.73,
+      "tminMean": 9.55,
+      "nDays": 31
+    },
+    {
+      "ym": "2012-01",
+      "tmaxMean": 18.86,
+      "tminMean": 7.69,
+      "nDays": 31
+    },
+    {
+      "ym": "2012-02",
+      "tmaxMean": 23.16,
+      "tminMean": 9.8,
+      "nDays": 29
+    },
+    {
+      "ym": "2012-03",
+      "tmaxMean": 29.75,
+      "tminMean": 14.57,
+      "nDays": 31
+    },
+    {
+      "ym": "2012-04",
+      "tmaxMean": 34.69,
+      "tminMean": 20.62,
+      "nDays": 30
+    },
+    {
+      "ym": "2012-05",
+      "tmaxMean": 40.05,
+      "tminMean": 25.28,
+      "nDays": 31
+    },
+    {
+      "ym": "2012-06",
+      "tmaxMean": 41.38,
+      "tminMean": 30.48,
+      "nDays": 30
+    },
+    {
+      "ym": "2012-07",
+      "tmaxMean": 34.49,
+      "tminMean": 27.47,
+      "nDays": 31
+    },
+    {
+      "ym": "2012-08",
+      "tmaxMean": 30.69,
+      "tminMean": 25.37,
+      "nDays": 31
+    },
+    {
+      "ym": "2012-09",
+      "tmaxMean": 31.34,
+      "tminMean": 23.66,
+      "nDays": 30
+    },
+    {
+      "ym": "2012-10",
+      "tmaxMean": 30.85,
+      "tminMean": 17.87,
+      "nDays": 31
+    },
+    {
+      "ym": "2012-11",
+      "tmaxMean": 26.31,
+      "tminMean": 13.05,
+      "nDays": 30
+    },
+    {
+      "ym": "2012-12",
+      "tmaxMean": 21.66,
+      "tminMean": 9.42,
+      "nDays": 31
+    },
+    {
+      "ym": "2013-01",
+      "tmaxMean": 18.68,
+      "tminMean": 6.75,
+      "nDays": 31
+    },
+    {
+      "ym": "2013-02",
+      "tmaxMean": 21.22,
+      "tminMean": 10.52,
+      "nDays": 28
+    },
+    {
+      "ym": "2013-03",
+      "tmaxMean": 28.28,
+      "tminMean": 14.79,
+      "nDays": 31
+    },
+    {
+      "ym": "2013-04",
+      "tmaxMean": 34.68,
+      "tminMean": 20.28,
+      "nDays": 30
+    },
+    {
+      "ym": "2013-05",
+      "tmaxMean": 40.5,
+      "tminMean": 25.82,
+      "nDays": 31
+    },
+    {
+      "ym": "2013-06",
+      "tmaxMean": 36.95,
+      "tminMean": 27.73,
+      "nDays": 30
+    },
+    {
+      "ym": "2013-07",
+      "tmaxMean": 32.37,
+      "tminMean": 26.15,
+      "nDays": 31
+    },
+    {
+      "ym": "2013-08",
+      "tmaxMean": 30.88,
+      "tminMean": 25.48,
+      "nDays": 31
+    },
+    {
+      "ym": "2013-09",
+      "tmaxMean": 32.49,
+      "tminMean": 24.74,
+      "nDays": 30
+    },
+    {
+      "ym": "2013-10",
+      "tmaxMean": 30.13,
+      "tminMean": 20.57,
+      "nDays": 31
+    },
+    {
+      "ym": "2013-11",
+      "tmaxMean": 26.02,
+      "tminMean": 13.07,
+      "nDays": 30
+    },
+    {
+      "ym": "2013-12",
+      "tmaxMean": 21.8,
+      "tminMean": 10.24,
+      "nDays": 31
+    },
+    {
+      "ym": "2014-01",
+      "tmaxMean": 18.91,
+      "tminMean": 8.25,
+      "nDays": 31
+    },
+    {
+      "ym": "2014-02",
+      "tmaxMean": 20.93,
+      "tminMean": 9.38,
+      "nDays": 28
+    },
+    {
+      "ym": "2014-03",
+      "tmaxMean": 26.87,
+      "tminMean": 13.98,
+      "nDays": 31
+    },
+    {
+      "ym": "2014-04",
+      "tmaxMean": 34.31,
+      "tminMean": 19.33,
+      "nDays": 30
+    },
+    {
+      "ym": "2014-05",
+      "tmaxMean": 37.91,
+      "tminMean": 24.18,
+      "nDays": 31
+    },
+    {
+      "ym": "2014-06",
+      "tmaxMean": 40.62,
+      "tminMean": 29.18,
+      "nDays": 30
+    },
+    {
+      "ym": "2014-07",
+      "tmaxMean": 35.27,
+      "tminMean": 27.47,
+      "nDays": 31
+    },
+    {
+      "ym": "2014-08",
+      "tmaxMean": 34.34,
+      "tminMean": 26.63,
+      "nDays": 31
+    },
+    {
+      "ym": "2014-09",
+      "tmaxMean": 33.36,
+      "tminMean": 24.8,
+      "nDays": 30
+    },
+    {
+      "ym": "2014-10",
+      "tmaxMean": 32.76,
+      "tminMean": 20.93,
+      "nDays": 31
+    },
+    {
+      "ym": "2014-11",
+      "tmaxMean": 28.23,
+      "tminMean": 14.37,
+      "nDays": 30
+    },
+    {
+      "ym": "2014-12",
+      "tmaxMean": 21.25,
+      "tminMean": 9.48,
+      "nDays": 31
+    },
+    {
+      "ym": "2015-01",
+      "tmaxMean": 18.48,
+      "tminMean": 8.68,
+      "nDays": 31
+    },
+    {
+      "ym": "2015-02",
+      "tmaxMean": 24.13,
+      "tminMean": 11.87,
+      "nDays": 28
+    },
+    {
+      "ym": "2015-03",
+      "tmaxMean": 26.45,
+      "tminMean": 14.59,
+      "nDays": 31
+    },
+    {
+      "ym": "2015-04",
+      "tmaxMean": 33.65,
+      "tminMean": 20.22,
+      "nDays": 30
+    },
+    {
+      "ym": "2015-05",
+      "tmaxMean": 40.24,
+      "tminMean": 25.12,
+      "nDays": 31
+    },
+    {
+      "ym": "2015-06",
+      "tmaxMean": 37.46,
+      "tminMean": 27.38,
+      "nDays": 30
+    },
+    {
+      "ym": "2015-07",
+      "tmaxMean": 32.12,
+      "tminMean": 25.91,
+      "nDays": 31
+    },
+    {
+      "ym": "2015-08",
+      "tmaxMean": 32.04,
+      "tminMean": 25.73,
+      "nDays": 31
+    },
+    {
+      "ym": "2015-09",
+      "tmaxMean": 33.87,
+      "tminMean": 23.77,
+      "nDays": 30
+    },
+    {
+      "ym": "2015-10",
+      "tmaxMean": 32.71,
+      "tminMean": 20.02,
+      "nDays": 31
+    },
+    {
+      "ym": "2015-11",
+      "tmaxMean": 27.71,
+      "tminMean": 15.59,
+      "nDays": 30
+    },
+    {
+      "ym": "2015-12",
+      "tmaxMean": 22.3,
+      "tminMean": 10,
+      "nDays": 31
+    },
+    {
+      "ym": "2016-01",
+      "tmaxMean": 21.15,
+      "tminMean": 9.13,
+      "nDays": 31
+    },
+    {
+      "ym": "2016-02",
+      "tmaxMean": 24.51,
+      "tminMean": 11.28,
+      "nDays": 29
+    },
+    {
+      "ym": "2016-03",
+      "tmaxMean": 30.24,
+      "tminMean": 16.69,
+      "nDays": 31
+    },
+    {
+      "ym": "2016-04",
+      "tmaxMean": 37.65,
+      "tminMean": 22.48,
+      "nDays": 30
+    },
+    {
+      "ym": "2016-05",
+      "tmaxMean": 39.35,
+      "tminMean": 26.24,
+      "nDays": 31
+    },
+    {
+      "ym": "2016-06",
+      "tmaxMean": 38.42,
+      "tminMean": 28,
+      "nDays": 30
+    },
+    {
+      "ym": "2016-07",
+      "tmaxMean": 32.16,
+      "tminMean": 26.21,
+      "nDays": 31
+    },
+    {
+      "ym": "2016-08",
+      "tmaxMean": 31.6,
+      "tminMean": 25.75,
+      "nDays": 31
+    },
+    {
+      "ym": "2016-09",
+      "tmaxMean": 32.53,
+      "tminMean": 24.74,
+      "nDays": 30
+    },
+    {
+      "ym": "2016-10",
+      "tmaxMean": 32.73,
+      "tminMean": 20.14,
+      "nDays": 31
+    },
+    {
+      "ym": "2016-11",
+      "tmaxMean": 28.48,
+      "tminMean": 14.76,
+      "nDays": 30
+    },
+    {
+      "ym": "2016-12",
+      "tmaxMean": 23.94,
+      "tminMean": 10.97,
+      "nDays": 31
+    },
+    {
+      "ym": "2017-01",
+      "tmaxMean": 20.31,
+      "tminMean": 9.15,
+      "nDays": 31
+    },
+    {
+      "ym": "2017-02",
+      "tmaxMean": 24.29,
+      "tminMean": 11.81,
+      "nDays": 28
+    },
+    {
+      "ym": "2017-03",
+      "tmaxMean": 29.19,
+      "tminMean": 15.65,
+      "nDays": 31
+    },
+    {
+      "ym": "2017-04",
+      "tmaxMean": 37.7,
+      "tminMean": 22.49,
+      "nDays": 30
+    },
+    {
+      "ym": "2017-05",
+      "tmaxMean": 39.45,
+      "tminMean": 25.91,
+      "nDays": 31
+    },
+    {
+      "ym": "2017-06",
+      "tmaxMean": 37.14,
+      "tminMean": 26.83,
+      "nDays": 30
+    },
+    {
+      "ym": "2017-07",
+      "tmaxMean": 32.84,
+      "tminMean": 26.62,
+      "nDays": 31
+    },
+    {
+      "ym": "2017-08",
+      "tmaxMean": 32.12,
+      "tminMean": 26.37,
+      "nDays": 31
+    },
+    {
+      "ym": "2017-09",
+      "tmaxMean": 32.65,
+      "tminMean": 24.58,
+      "nDays": 30
+    },
+    {
+      "ym": "2017-10",
+      "tmaxMean": 33.76,
+      "tminMean": 20.54,
+      "nDays": 31
+    },
+    {
+      "ym": "2017-11",
+      "tmaxMean": 26.7,
+      "tminMean": 14.66,
+      "nDays": 30
+    },
+    {
+      "ym": "2017-12",
+      "tmaxMean": 22.16,
+      "tminMean": 10.22,
+      "nDays": 31
+    },
+    {
+      "ym": "2018-01",
+      "tmaxMean": 20.9,
+      "tminMean": 7.73,
+      "nDays": 31
+    },
+    {
+      "ym": "2018-02",
+      "tmaxMean": 24.95,
+      "tminMean": 11.71,
+      "nDays": 28
+    },
+    {
+      "ym": "2018-03",
+      "tmaxMean": 31.29,
+      "tminMean": 17.15,
+      "nDays": 31
+    },
+    {
+      "ym": "2018-04",
+      "tmaxMean": 35.94,
+      "tminMean": 21.85,
+      "nDays": 30
+    },
+    {
+      "ym": "2018-05",
+      "tmaxMean": 39.1,
+      "tminMean": 25.3,
+      "nDays": 31
+    },
+    {
+      "ym": "2018-06",
+      "tmaxMean": 38.44,
+      "tminMean": 28.88,
+      "nDays": 30
+    },
+    {
+      "ym": "2018-07",
+      "tmaxMean": 33.21,
+      "tminMean": 26.82,
+      "nDays": 31
+    },
+    {
+      "ym": "2018-08",
+      "tmaxMean": 32.3,
+      "tminMean": 26.33,
+      "nDays": 31
+    },
+    {
+      "ym": "2018-09",
+      "tmaxMean": 31.09,
+      "tminMean": 23.91,
+      "nDays": 30
+    },
+    {
+      "ym": "2018-10",
+      "tmaxMean": 30.89,
+      "tminMean": 18.88,
+      "nDays": 31
+    },
+    {
+      "ym": "2018-11",
+      "tmaxMean": 26.6,
+      "tminMean": 14.68,
+      "nDays": 30
+    },
+    {
+      "ym": "2018-12",
+      "tmaxMean": 20.98,
+      "tminMean": 8.26,
+      "nDays": 31
+    },
+    {
+      "ym": "2019-01",
+      "tmaxMean": 19.33,
+      "tminMean": 7.76,
+      "nDays": 31
+    },
+    {
+      "ym": "2019-02",
+      "tmaxMean": 20.78,
+      "tminMean": 10.41,
+      "nDays": 28
+    },
+    {
+      "ym": "2019-03",
+      "tmaxMean": 27.21,
+      "tminMean": 14,
+      "nDays": 31
+    },
+    {
+      "ym": "2019-04",
+      "tmaxMean": 36.27,
+      "tminMean": 22.04,
+      "nDays": 30
+    },
+    {
+      "ym": "2019-05",
+      "tmaxMean": 38.77,
+      "tminMean": 25.25,
+      "nDays": 31
+    },
+    {
+      "ym": "2019-06",
+      "tmaxMean": 40.61,
+      "tminMean": 28.55,
+      "nDays": 30
+    },
+    {
+      "ym": "2019-07",
+      "tmaxMean": 34.66,
+      "tminMean": 27.27,
+      "nDays": 31
+    },
+    {
+      "ym": "2019-08",
+      "tmaxMean": 32.15,
+      "tminMean": 26.1,
+      "nDays": 31
+    },
+    {
+      "ym": "2019-09",
+      "tmaxMean": 31.93,
+      "tminMean": 25.25,
+      "nDays": 30
+    },
+    {
+      "ym": "2019-10",
+      "tmaxMean": 31.42,
+      "tminMean": 20.65,
+      "nDays": 31
+    },
+    {
+      "ym": "2019-11",
+      "tmaxMean": 26.86,
+      "tminMean": 16.07,
+      "nDays": 30
+    },
+    {
+      "ym": "2019-12",
+      "tmaxMean": 18.33,
+      "tminMean": 8.05,
+      "nDays": 31
+    },
+    {
+      "ym": "2020-01",
+      "tmaxMean": 18.17,
+      "tminMean": 8.13,
+      "nDays": 31
+    },
+    {
+      "ym": "2020-02",
+      "tmaxMean": 22.23,
+      "tminMean": 10.59,
+      "nDays": 29
+    },
+    {
+      "ym": "2020-03",
+      "tmaxMean": 25.86,
+      "tminMean": 14.71,
+      "nDays": 31
+    },
+    {
+      "ym": "2020-04",
+      "tmaxMean": 33.66,
+      "tminMean": 20.63,
+      "nDays": 30
+    },
+    {
+      "ym": "2020-05",
+      "tmaxMean": 37.78,
+      "tminMean": 24.61,
+      "nDays": 31
+    },
+    {
+      "ym": "2020-06",
+      "tmaxMean": 37.23,
+      "tminMean": 27.48,
+      "nDays": 30
+    },
+    {
+      "ym": "2020-07",
+      "tmaxMean": 34.88,
+      "tminMean": 27.14,
+      "nDays": 31
+    },
+    {
+      "ym": "2020-08",
+      "tmaxMean": 32.35,
+      "tminMean": 26.4,
+      "nDays": 31
+    },
+    {
+      "ym": "2020-09",
+      "tmaxMean": 34.23,
+      "tminMean": 25.61,
+      "nDays": 30
+    },
+    {
+      "ym": "2020-10",
+      "tmaxMean": 32.91,
+      "tminMean": 19.12,
+      "nDays": 31
+    },
+    {
+      "ym": "2020-11",
+      "tmaxMean": 26.07,
+      "tminMean": 12.92,
+      "nDays": 30
+    },
+    {
+      "ym": "2020-12",
+      "tmaxMean": 21.77,
+      "tminMean": 8.97,
+      "nDays": 31
+    },
+    {
+      "ym": "2021-01",
+      "tmaxMean": 19.39,
+      "tminMean": 8.41,
+      "nDays": 31
+    },
+    {
+      "ym": "2021-02",
+      "tmaxMean": 25.46,
+      "tminMean": 11.69,
+      "nDays": 28
+    },
+    {
+      "ym": "2021-03",
+      "tmaxMean": 31.95,
+      "tminMean": 17.61,
+      "nDays": 31
+    },
+    {
+      "ym": "2021-04",
+      "tmaxMean": 36.45,
+      "tminMean": 20.91,
+      "nDays": 30
+    },
+    {
+      "ym": "2021-05",
+      "tmaxMean": 35.8,
+      "tminMean": 24.08,
+      "nDays": 31
+    },
+    {
+      "ym": "2021-06",
+      "tmaxMean": 37.47,
+      "tminMean": 26.96,
+      "nDays": 30
+    },
+    {
+      "ym": "2021-07",
+      "tmaxMean": 34.87,
+      "tminMean": 27.87,
+      "nDays": 31
+    },
+    {
+      "ym": "2021-08",
+      "tmaxMean": 32.79,
+      "tminMean": 26.35,
+      "nDays": 31
+    },
+    {
+      "ym": "2021-09",
+      "tmaxMean": 30.89,
+      "tminMean": 24.94,
+      "nDays": 30
+    },
+    {
+      "ym": "2021-10",
+      "tmaxMean": 30.85,
+      "tminMean": 20.69,
+      "nDays": 31
+    },
+    {
+      "ym": "2021-11",
+      "tmaxMean": 26.52,
+      "tminMean": 13.4,
+      "nDays": 30
+    },
+    {
+      "ym": "2021-12",
+      "tmaxMean": 20.4,
+      "tminMean": 9.46,
+      "nDays": 31
+    },
+    {
+      "ym": "2022-01",
+      "tmaxMean": 17.64,
+      "tminMean": 8.01,
+      "nDays": 31
+    },
+    {
+      "ym": "2022-02",
+      "tmaxMean": 22.03,
+      "tminMean": 10.25,
+      "nDays": 28
+    },
+    {
+      "ym": "2022-03",
+      "tmaxMean": 32.16,
+      "tminMean": 17.5,
+      "nDays": 31
+    },
+    {
+      "ym": "2022-04",
+      "tmaxMean": 39.91,
+      "tminMean": 23.89,
+      "nDays": 30
+    },
+    {
+      "ym": "2022-05",
+      "tmaxMean": 40.04,
+      "tminMean": 26.53,
+      "nDays": 31
+    },
+    {
+      "ym": "2022-06",
+      "tmaxMean": 39.28,
+      "tminMean": 27.75,
+      "nDays": 30
+    },
+    {
+      "ym": "2022-07",
+      "tmaxMean": 33.7,
+      "tminMean": 26.47,
+      "nDays": 31
+    },
+    {
+      "ym": "2022-08",
+      "tmaxMean": 33,
+      "tminMean": 26.01,
+      "nDays": 31
+    },
+    {
+      "ym": "2022-09",
+      "tmaxMean": 33.11,
+      "tminMean": 24.92,
+      "nDays": 30
+    },
+    {
+      "ym": "2022-10",
+      "tmaxMean": 29.49,
+      "tminMean": 19.32,
+      "nDays": 31
+    },
+    {
+      "ym": "2022-11",
+      "tmaxMean": 26.41,
+      "tminMean": 14.54,
+      "nDays": 30
+    },
+    {
+      "ym": "2022-12",
+      "tmaxMean": 21.61,
+      "tminMean": 9.54,
+      "nDays": 31
+    },
+    {
+      "ym": "2023-01",
+      "tmaxMean": 18.13,
+      "tminMean": 7.3,
+      "nDays": 31
+    },
+    {
+      "ym": "2023-02",
+      "tmaxMean": 25.61,
+      "tminMean": 12.28,
+      "nDays": 28
+    },
+    {
+      "ym": "2023-03",
+      "tmaxMean": 28.53,
+      "tminMean": 16.37,
+      "nDays": 31
+    },
+    {
+      "ym": "2023-04",
+      "tmaxMean": 33.89,
+      "tminMean": 20.48,
+      "nDays": 30
+    },
+    {
+      "ym": "2023-05",
+      "tmaxMean": 36.29,
+      "tminMean": 23.37,
+      "nDays": 31
+    },
+    {
+      "ym": "2023-06",
+      "tmaxMean": 36.59,
+      "tminMean": 26.12,
+      "nDays": 30
+    },
+    {
+      "ym": "2023-07",
+      "tmaxMean": 33.25,
+      "tminMean": 25.83,
+      "nDays": 31
+    },
+    {
+      "ym": "2023-08",
+      "tmaxMean": 34.59,
+      "tminMean": 26.73,
+      "nDays": 31
+    },
+    {
+      "ym": "2023-09",
+      "tmaxMean": 33.88,
+      "tminMean": 25,
+      "nDays": 30
+    },
+    {
+      "ym": "2023-10",
+      "tmaxMean": 32.08,
+      "tminMean": 19.33,
+      "nDays": 31
+    },
+    {
+      "ym": "2023-11",
+      "tmaxMean": 26.37,
+      "tminMean": 14.8,
+      "nDays": 30
+    },
+    {
+      "ym": "2023-12",
+      "tmaxMean": 22.26,
+      "tminMean": 9.93,
+      "nDays": 31
+    },
+    {
+      "ym": "2024-01",
+      "tmaxMean": 17.63,
+      "tminMean": 5.95,
+      "nDays": 31
+    },
+    {
+      "ym": "2024-02",
+      "tmaxMean": 22.71,
+      "tminMean": 10.07,
+      "nDays": 29
+    },
+    {
+      "ym": "2024-03",
+      "tmaxMean": 29.08,
+      "tminMean": 15.1,
+      "nDays": 31
+    },
+    {
+      "ym": "2024-04",
+      "tmaxMean": 36.67,
+      "tminMean": 21.92,
+      "nDays": 30
+    },
+    {
+      "ym": "2024-05",
+      "tmaxMean": 41.66,
+      "tminMean": 27.21,
+      "nDays": 31
+    },
+    {
+      "ym": "2024-06",
+      "tmaxMean": 40.32,
+      "tminMean": 29.45,
+      "nDays": 30
+    },
+    {
+      "ym": "2024-07",
+      "tmaxMean": 34.17,
+      "tminMean": 26.76,
+      "nDays": 31
+    },
+    {
+      "ym": "2024-08",
+      "tmaxMean": 31.65,
+      "tminMean": 25.48,
+      "nDays": 31
+    },
+    {
+      "ym": "2024-09",
+      "tmaxMean": 31.23,
+      "tminMean": 24.28,
+      "nDays": 30
+    },
+    {
+      "ym": "2024-10",
+      "tmaxMean": 32.59,
+      "tminMean": 21.03,
+      "nDays": 31
+    },
+    {
+      "ym": "2024-11",
+      "tmaxMean": 28.36,
+      "tminMean": 16.54,
+      "nDays": 30
+    },
+    {
+      "ym": "2024-12",
+      "tmaxMean": 21.15,
+      "tminMean": 10.27,
+      "nDays": 31
+    }
+  ]
+}

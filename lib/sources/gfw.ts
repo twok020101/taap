@@ -1,3 +1,6 @@
+import type { CityConfig } from '@/cities/types'
+import { bangalore } from '@/cities/bangalore'
+
 export interface TreeLossYear {
   year: number
   lossHa: number
@@ -10,16 +13,22 @@ export interface TreeLoss {
   byYear: TreeLossYear[]
 }
 
-const SQL =
-  `SELECT umd_tree_cover_loss__year, SUM(umd_tree_cover_loss__ha) as loss_ha` +
-  ` FROM data` +
-  ` WHERE iso='IND' AND adm1=17 AND adm2=5 AND umd_tree_cover_density_2000__threshold = 10` +
-  ` GROUP BY umd_tree_cover_loss__year` +
-  ` ORDER BY umd_tree_cover_loss__year`
+function buildSql(iso: string, adm1: number, adm2: number): string {
+  return (
+    `SELECT umd_tree_cover_loss__year, SUM(umd_tree_cover_loss__ha) as loss_ha` +
+    ` FROM data` +
+    ` WHERE iso='${iso}' AND adm1=${adm1} AND adm2=${adm2} AND umd_tree_cover_density_2000__threshold = 10` +
+    ` GROUP BY umd_tree_cover_loss__year` +
+    ` ORDER BY umd_tree_cover_loss__year`
+  )
+}
 
-const GFW_URL =
-  `https://data-api.globalforestwatch.org/dataset/gadm__tcl__adm2_change/latest/query` +
-  `?sql=${encodeURIComponent(SQL)}`
+function buildUrl(iso: string, adm1: number, adm2: number): string {
+  return (
+    `https://data-api.globalforestwatch.org/dataset/gadm__tcl__adm2_change/latest/query` +
+    `?sql=${encodeURIComponent(buildSql(iso, adm1, adm2))}`
+  )
+}
 
 interface GfwRow {
   umd_tree_cover_loss__year: number
@@ -48,9 +57,13 @@ function isGfwResponse(data: unknown): data is GfwResponse {
   return d.data.every(isGfwRow)
 }
 
-export async function fetchBangaloreTreeLoss(): Promise<TreeLoss | null> {
+export async function fetchTreeLoss(city: CityConfig): Promise<TreeLoss | null> {
+  if (!city.gadm) return null
+  const { iso, adm1, adm2 } = city.gadm
+  const url = buildUrl(iso, adm1, adm2)
+
   try {
-    const res = await fetch(GFW_URL, {
+    const res = await fetch(url, {
       next: { revalidate: 86400 },
       signal: AbortSignal.timeout(8000),
       headers: { 'x-api-key': process.env.GFW_API_KEY ?? '' },
@@ -80,3 +93,6 @@ export async function fetchBangaloreTreeLoss(): Promise<TreeLoss | null> {
     return null
   }
 }
+
+/** Back-compat shim. */
+export const fetchBangaloreTreeLoss = () => fetchTreeLoss(bangalore)

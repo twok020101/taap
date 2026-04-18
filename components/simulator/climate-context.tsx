@@ -3,8 +3,7 @@
 import { useState } from 'react'
 import { Slider } from '@/components/ui/slider'
 import { Button } from '@/components/ui/button'
-import { zones } from '@/data/bangalore/zones'
-import type { SimContext, ZoneKey, WindDir } from '@/cities/types'
+import type { CityConfig, SimContext, ZoneKey, WindDir } from '@/cities/types'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 
 const MONTHS = [
@@ -22,16 +21,15 @@ const MONTHS = [
   { label: 'Dec', value: 12 },
 ]
 
-const WIND_DIRS: { label: string; value: WindDir; arrow: string; tip: string }[] = [
-  { label: 'N', value: 'N', arrow: '↑', tip: 'Airport / mixed (+0.05× delta)' },
-  { label: 'E', value: 'E', arrow: '→', tip: 'Whitefield / IT corridor (+0.15× delta, +8 µg/m³)' },
-  { label: 'S', value: 'S', arrow: '↓', tip: 'Electronic City / built-up (+0.10× delta, +4 µg/m³)' },
-  { label: 'W', value: 'W', arrow: '←', tip: 'Mysuru road / green belt (−0.20× delta, −5 µg/m³)' },
+const WIND_DIRS: { label: string; value: WindDir; arrow: string }[] = [
+  { label: 'N', value: 'N', arrow: '↑' },
+  { label: 'E', value: 'E', arrow: '→' },
+  { label: 'S', value: 'S', arrow: '↓' },
+  { label: 'W', value: 'W', arrow: '←' },
 ]
 
-const ZONE_KEYS = Object.keys(zones) as ZoneKey[]
-
 interface ClimateContextProps {
+  city: CityConfig
   ctx: SimContext
   onMonthChange: (month: number) => void
   onWindDirChange: (dir: WindDir) => void
@@ -41,6 +39,7 @@ interface ClimateContextProps {
 }
 
 export function ClimateContext({
+  city,
   ctx,
   onMonthChange,
   onWindDirChange,
@@ -48,6 +47,7 @@ export function ClimateContext({
   onZoneChange,
   onTimeOfDayChange,
 }: ClimateContextProps) {
+  const zoneKeys = Object.keys(city.zones)
   const [open, setOpen] = useState(true)
 
   const aodLabel =
@@ -90,7 +90,7 @@ export function ClimateContext({
               ))}
             </div>
             <p className="mt-1.5 text-xs text-muted-foreground">
-              Source: IMD climatology Bangalore 1991–2020
+              Source: IMD climatology {city.name} 1991–2020
             </p>
           </div>
 
@@ -100,12 +100,11 @@ export function ClimateContext({
               Wind direction (advection)
             </p>
             <div className="flex flex-wrap gap-2">
-              {WIND_DIRS.map(({ label, value, arrow, tip }) => (
+              {WIND_DIRS.map(({ label, value, arrow }) => (
                 <button
                   key={value}
                   type="button"
                   onClick={() => onWindDirChange(value)}
-                  title={tip}
                   className={[
                     'flex flex-col items-center gap-0.5 rounded-md border px-3 py-2 text-xs font-medium transition-colors',
                     ctx.windDir === value
@@ -119,7 +118,7 @@ export function ClimateContext({
               ))}
             </div>
             <p className="mt-1.5 text-xs text-muted-foreground">
-              Source: KSPCB wind-rose 2022 + zone land-use
+              Source: State PCB wind-rose + zone land-use ({city.name})
             </p>
           </div>
 
@@ -151,7 +150,7 @@ export function ClimateContext({
               <span>High</span>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              Source: Babu et al., ARFI 2013 — Bangalore AOD-forcing.
+              Source: Babu et al., ARFI 2013 — Indian urban AOD-forcing.
               Day: −0.8°C / +0.3 AOD · Night: +0.5°C / +0.3 AOD · PM2.5: +30 µg/m³ / +0.3 AOD
             </p>
           </div>
@@ -162,7 +161,7 @@ export function ClimateContext({
               Zone (spatial heterogeneity)
             </p>
             <div className="flex flex-wrap gap-2">
-              {ZONE_KEYS.map(key => (
+              {zoneKeys.map(key => (
                 <Button
                   key={key}
                   variant={ctx.zone === key ? 'default' : 'outline'}
@@ -170,12 +169,12 @@ export function ClimateContext({
                   className="h-auto whitespace-normal py-1 text-xs"
                   onClick={() => onZoneChange(key)}
                 >
-                  {zones[key].label}
+                  {city.zones[key].label}
                 </Button>
               ))}
             </div>
             <p className="mt-1.5 text-xs text-muted-foreground">
-              Selecting a zone resets sliders to that zone&apos;s baseline. Source: Ramachandra &amp; Bharath 2023; IISc LST maps.
+              Selecting a zone resets sliders to that zone&apos;s baseline.
             </p>
           </div>
 

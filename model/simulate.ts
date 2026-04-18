@@ -1,6 +1,5 @@
 import { coefficients } from './coefficients'
-import { zones } from '@/data/bangalore/zones'
-import type { Baseline, ModelOutput, SliderState, SimContext } from '@/cities/types'
+import type { Baseline, CityConfig, ModelOutput, SliderState, SimContext } from '@/cities/types'
 
 /**
  * Propagate a coefficient's [low, high] interval through a signed linear term.
@@ -46,11 +45,19 @@ function rangedContrib(
  * @returns ModelOutput with absolute values, deltas, and breakdown
  */
 export function simulate(
+  city: CityConfig,
   baseline: Baseline,
   sliders: SliderState,
   ctx: SimContext = { month: 4, windDir: 'N', aod: 0.4, zone: 'central' },
 ): ModelOutput {
-  const c = coefficients
+  const o = city.coefficientOverrides
+  const c = {
+    ...coefficients,
+    monsoonOffsets: o?.monsoonOffsets ?? coefficients.monsoonOffsets,
+    windAdvectionMultiplier: { ...coefficients.windAdvectionMultiplier, ...o?.windAdvectionMultiplier },
+    windPm25Offset: { ...coefficients.windPm25Offset, ...o?.windPm25Offset },
+    aod: { ...coefficients.aod, referenceAod: o?.aod?.referenceAod ?? coefficients.aod.referenceAod },
+  }
   const tod = ctx.timeOfDay ?? 'day'
 
   // ── 1. Land-use deltas ──────────────────────────────────────────────────
@@ -104,8 +111,8 @@ export function simulate(
 
   // ── 5. Zone offset ───────────────────────────────────────────────────────
   // Residual zone-specific LST not captured by the aggregate sliders.
-  // Source: Ramachandra & Bharath 2023 zone-wise LULC; IISc LST maps.
-  const zoneConfig = zones[ctx.zone]
+  // Per-city zone table carried on CityConfig.
+  const zoneConfig = city.zones[ctx.zone] ?? Object.values(city.zones)[0]
   const tempFromZone = zoneConfig.tempOffsetC
 
   // ── 6. Total temperature delta ───────────────────────────────────────────

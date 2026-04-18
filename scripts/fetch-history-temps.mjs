@@ -1,13 +1,29 @@
-// Open-Meteo ERA5 archive fetcher for Bangalore historical temps (1951–2024).
+// Open-Meteo ERA5 archive fetcher for per-city historical temps (1951–2024).
+//
+// Usage: pnpm history --city=<bangalore|delhi|mumbai|chennai>
+// Default city: bangalore.
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
-const LAT = 12.9716;
-const LON = 77.5946;
+const CITIES = {
+  bangalore: { lat: 12.9716, lon: 77.5946, station: "IMD Bangalore (Kempegowda)" },
+  delhi:     { lat: 28.5918, lon: 77.2100, station: "IMD Safdarjung" },
+  mumbai:    { lat: 19.0899, lon: 72.8680, station: "IMD Santa Cruz" },
+  chennai:   { lat: 13.0610, lon: 80.2404, station: "IMD Nungambakkam" },
+};
+
+const argCity = process.argv.slice(2).find((a) => a.startsWith("--city="));
+const cityId = argCity ? argCity.slice("--city=".length) : "bangalore";
+if (!(cityId in CITIES)) {
+  console.error(`[history] ERROR: unknown city "${cityId}". Valid: ${Object.keys(CITIES).join(", ")}`);
+  process.exit(1);
+}
+
+const { lat: LAT, lon: LON, station: STATION } = CITIES[cityId];
 const START_DATE = "1951-01-01";
 const END_DATE = "2024-12-31";
-const OUTPUT_PATH = "data/bangalore/temperature-history.json";
+const OUTPUT_PATH = `data/${cityId}/temperature-history.json`;
 
 const BASE_URL = "https://archive-api.open-meteo.com/v1/archive";
 
@@ -135,6 +151,8 @@ async function main() {
       source: "Open-Meteo ERA5 Archive",
       url: BASE_URL,
       variable: "temperature_2m (daily max / min)",
+      city: cityId,
+      station: STATION,
       lat: LAT,
       lon: LON,
       timezone: "Asia/Kolkata",

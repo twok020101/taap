@@ -1,0 +1,252 @@
+{
+  "$comment": "Chennai curated land-cover features for heatmap grid. Coastal sea + rivers + historical eri/temple tanks + dense OMR + T. Nagar. Sources: OpenStreetMap via Nominatim (2026-04-18) where available; approximate centroids used for linear river/canal segments, Chembarambakkam Lake (west of bbox but required), and a few small parks not found in Nominatim. Chembarambakkam (lng 80.056) and Porur Lake lie near the western bbox edge but are included per task spec as major reservoirs serving Chennai.",
+  "features": [
+    {
+      "type": "water",
+      "name": "Marina Beach – central segment",
+      "center": [80.2833, 13.0534],
+      "radius_m": 3000,
+      "strength": 0.92
+    },
+    {
+      "type": "water",
+      "name": "Besant Nagar / Elliot's Beach",
+      "center": [80.2709, 12.9973],
+      "radius_m": 2000,
+      "strength": 0.90
+    },
+    {
+      "type": "water",
+      "name": "Neelankarai – ECR coastal segment",
+      "center": [80.2607, 12.9516],
+      "radius_m": 2500,
+      "strength": 0.90
+    },
+    {
+      "type": "water",
+      "name": "Adyar River estuary",
+      "center": [80.2650, 13.0050],
+      "radius_m": 2000,
+      "strength": 0.85
+    },
+    {
+      "type": "water",
+      "name": "Cooum River – midcity segment",
+      "center": [80.2200, 13.0760],
+      "radius_m": 1500,
+      "strength": 0.78
+    },
+    {
+      "type": "water",
+      "name": "Buckingham Canal – central segment",
+      "center": [80.2523, 12.9854],
+      "radius_m": 1500,
+      "strength": 0.76
+    },
+    {
+      "type": "water",
+      "name": "Pallikaranai Marsh",
+      "center": [80.2246, 12.9365],
+      "radius_m": 1380,
+      "strength": 0.88
+    },
+    {
+      "type": "water",
+      "name": "Porur Lake",
+      "center": [80.1503, 13.0339],
+      "radius_m": 900,
+      "strength": 0.82
+    },
+    {
+      "type": "water",
+      "name": "Red Hills Lake (Puzhal)",
+      "center": [80.2038, 13.1636],
+      "radius_m": 2820,
+      "strength": 0.92
+    },
+    {
+      "type": "water",
+      "name": "Chembarambakkam Lake",
+      "center": [80.0560, 13.0324],
+      "radius_m": 2820,
+      "strength": 0.92
+    },
+    {
+      "type": "water",
+      "name": "Sholinganallur Marsh",
+      "center": [80.2025, 12.8965],
+      "radius_m": 850,
+      "strength": 0.82
+    },
+    {
+      "type": "water",
+      "name": "Velachery Lake",
+      "center": [80.2105, 12.9883],
+      "radius_m": 500,
+      "strength": 0.80
+    },
+    {
+      "type": "water",
+      "name": "Retteri Lake",
+      "center": [80.2121, 13.1412],
+      "radius_m": 600,
+      "strength": 0.80
+    },
+    {
+      "type": "water",
+      "name": "Ambattur Lake",
+      "center": [80.1434, 13.1059],
+      "radius_m": 750,
+      "strength": 0.82
+    },
+    {
+      "type": "water",
+      "name": "Kapaleeshwarar Temple Tank (Mylapore)",
+      "center": [80.2687, 13.0334],
+      "radius_m": 150,
+      "strength": 0.70
+    },
+
+    {
+      "type": "green",
+      "name": "Guindy National Park",
+      "center": [80.2280, 13.0000],
+      "radius_m": 940,
+      "strength": 0.92
+    },
+    {
+      "type": "green",
+      "name": "IIT Madras campus",
+      "center": [80.2337, 12.9915],
+      "radius_m": 890,
+      "strength": 0.88
+    },
+    {
+      "type": "green",
+      "name": "Anna University campus",
+      "center": [80.2334, 13.0083],
+      "radius_m": 700,
+      "strength": 0.80
+    },
+    {
+      "type": "green",
+      "name": "Theosophical Society gardens (Adyar)",
+      "center": [80.2709, 13.0076],
+      "radius_m": 560,
+      "strength": 0.78
+    },
+    {
+      "type": "green",
+      "name": "Semmozhi Poonga botanical garden",
+      "center": [80.2515, 13.0507],
+      "radius_m": 400,
+      "strength": 0.72
+    },
+    {
+      "type": "green",
+      "name": "Madras Race Club / Equestrian greens",
+      "center": [80.2152, 13.0096],
+      "radius_m": 500,
+      "strength": 0.70
+    },
+    {
+      "type": "green",
+      "name": "Tower Park Anna Nagar",
+      "center": [80.2143, 13.0865],
+      "radius_m": 350,
+      "strength": 0.68
+    },
+    {
+      "type": "green",
+      "name": "Kotturpuram Tree Park + Children's Park",
+      "center": [80.2450, 13.0236],
+      "radius_m": 400,
+      "strength": 0.68
+    },
+    {
+      "type": "green",
+      "name": "Huddleston Gardens (Nungambakkam)",
+      "center": [80.2430, 13.0610],
+      "radius_m": 300,
+      "strength": 0.65
+    },
+    {
+      "type": "green",
+      "name": "Nageswara Rao Park (Mylapore)",
+      "center": [80.2636, 13.0368],
+      "radius_m": 250,
+      "strength": 0.65
+    },
+
+    {
+      "type": "builtup",
+      "name": "T. Nagar – dense commercial",
+      "center": [80.2309, 13.0294],
+      "radius_m": 1200,
+      "strength": 0.90
+    },
+    {
+      "type": "builtup",
+      "name": "Egmore / Central",
+      "center": [80.2577, 13.0728],
+      "radius_m": 1400,
+      "strength": 0.88
+    },
+    {
+      "type": "builtup",
+      "name": "Mylapore dense residential",
+      "center": [80.2700, 13.0316],
+      "radius_m": 1100,
+      "strength": 0.82
+    },
+    {
+      "type": "builtup",
+      "name": "Parry's Corner / George Town",
+      "center": [80.2904, 13.0888],
+      "radius_m": 1300,
+      "strength": 0.88
+    },
+    {
+      "type": "builtup",
+      "name": "OMR IT Corridor – Taramani / Tidel Park",
+      "center": [80.2489, 12.9896],
+      "radius_m": 800,
+      "strength": 0.85
+    },
+    {
+      "type": "builtup",
+      "name": "OMR IT Corridor – Siruseri",
+      "center": [80.2204, 12.8283],
+      "radius_m": 900,
+      "strength": 0.85
+    },
+    {
+      "type": "builtup",
+      "name": "Ambattur Industrial Estate",
+      "center": [80.1675, 13.0923],
+      "radius_m": 1600,
+      "strength": 0.88
+    },
+    {
+      "type": "builtup",
+      "name": "Guindy Industrial Estate",
+      "center": [80.2153, 13.0102],
+      "radius_m": 1000,
+      "strength": 0.84
+    },
+    {
+      "type": "builtup",
+      "name": "Manali / North Chennai industrial",
+      "center": [80.2679, 13.1706],
+      "radius_m": 1800,
+      "strength": 0.90
+    },
+    {
+      "type": "builtup",
+      "name": "Tambaram urban dense",
+      "center": [80.1015, 12.9156],
+      "radius_m": 1200,
+      "strength": 0.78
+    }
+  ]
+}

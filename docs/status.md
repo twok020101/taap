@@ -1,6 +1,6 @@
 # Taap — Project Status
 
-_Last updated: 2026-04-18 (v0.3 data pipeline completed + v0.4 validation & honesty landed)_
+_Last updated: 2026-04-18 (v1 multi-city landed — Bangalore, Delhi, Mumbai, Chennai)_
 
 This document tracks what has been shipped vs. what remains per the original plan in `docs/feat-bangalore-heat-simulator.md` (gitignored branch spec).
 
@@ -95,11 +95,26 @@ Clamping: Δ°C ∈ [−8, +12], PM2.5 ∈ [0, 500]. Model returns a `breakdown`
 - [x] **Citation hover tooltips on simulator** — every BreakdownRow in `readouts.tsx` (canopy, built-up, water, aerosol-day, aerosol-night, monsoon, advection, zone) now carries an `Info` tooltip with description + source.
 
 ### v1 — Multi-city
-- [ ] `cities/delhi.ts`, `cities/mumbai.ts`, `cities/chennai.ts` with per-city coefficients + zone overrides + baselines
-- [ ] City switcher in header (currently placeholders)
-- [ ] Per-city globe-intro markers and zone maps
+- [x] **Architecture refactor**: `cities/types.ts` decoupled from Bangalore (`ZoneKey = string`, `zones`/`features` carried on `CityConfig`); `model/{simulate,simulate-grid,grid}.ts` and all three `lib/sources/*` fetchers parameterized with `CityConfig`; API routes accept `?city=<id>`; `scripts/{snapshot-rasters,fetch-history-temps}.mjs` accept `--city=<id>`.
+- [x] **Route refactor**: `/` is now a city-picker splash. `/[city]` / `/[city]/simulator` / `/[city]/about` dynamic-segment routes with `generateStaticParams`; 12 city×route combinations prerendered. Unknown `[city]` ids return 404.
+- [x] **Header switcher**: 4 cities as highlight-current chips (`useSelectedLayoutSegment`); Sim/About links live when a city is active; live-weather pill fetches `/api/weather?city=<id>` client-side.
+- [x] **Per-city globe-intro**: `GlobeIntro` accepts `cityName + target=[lat,lng]` and a per-city sessionStorage dedup key; mounted in `app/[city]/layout.tsx`.
+- [x] **`cities/delhi.ts`**: full `CityConfig`, GADM codes (IND/7/1), IMD Safdarjung 1991–2020 monsoon-offset table (verbatim quoted from Climate of Delhi, Wikipedia), AOD reference 0.77 (MODIS peak, flagged).
+- [x] **`cities/mumbai.ts`**: full `CityConfig`, GADM codes (IND/20/18 Suburban), IMD Santacruz 1991–2020 monsoon offsets (verbatim) capturing Jul/Aug monsoon cooling −3.0/−3.4 °C and October Heat +2.5 °C — absent from Bangalore's profile.
+- [x] **`cities/chennai.ts`**: full `CityConfig`, GADM codes (IND/31/2), 5 zones with engineering-estimate land-use at zone level anchored to cited citywide aggregates (ISFR 2023 4.66% canopy; MDPI 2017 70.35% built-up; 90% Pallikaranai loss). Coefficient overrides deferred — Chennai T3 requires a re-run with web tools (first pass blanket-inherited).
+- [x] **Per-city data**: `data/<city>/{baseline,presets,history,zones,features,temperature-history}` for all four cities. Baselines sourced from IMD (April Tmax), CPCB/CSE (PM2.5), FSI ISFR (canopy), published LULC (built-up), mapped / Wikipedia-cited (water), transport-dept ratios (vehicles index vs Bangalore=100), UN/Census projections (population). Presets anchored to cited 2024/2000 data where citable; historical estimates flagged in the `$comment` field.
+- [x] **Per-city rasters**: `public/rasters/<city>/{2000,2024,2026}-{ndvi,lst}.png` + `sources.json` generated via `pnpm rasters --city=<id>` for all four cities (NASA GIBS MODIS, keyless).
+- [x] **Per-city temperature history**: `data/<city>/temperature-history.json` generated via `pnpm history --city=<id>` (Open-Meteo ERA5 Archive, 1951–2024 daily aggregated to annual + monthly + anomaly).
+- [x] **Per-city coefficient overrides**: `CityConfig.coefficientOverrides` (monsoon offsets, AOD reference, wind advection/PM2.5) merged onto Bangalore defaults inside `simulate()` / `simulateGrid()`. Delhi + Mumbai plumb real monsoon tables; Chennai inherits Bangalore pending T3 re-run.
+- [x] **Model-honesty preserved**: every city's `/<city>/about` renders its own validation card (or a "not wired — pending citable IMD 1951–1970 observed" banner for cities without one), its own ERA5 annual Tmax/Tmin chart, and the shared coefficient table with "inherited from Bangalore where no city-specific peer-reviewed calibration exists" disclosure.
+- [x] **`pnpm build` clean**: 12 city-route combinations + splash + 3 API routes prerendered with Next.js 16 + Turbopack.
 
 ### v1.1 — Polish & deploy
+- [ ] **Chennai T3 coefficient re-run** — first pass blanket-inherited Bangalore; second pass with WebFetch-enabled agent should pull Devadas & Rose / Devi & Rose / Care Earth Trust verbatim quotes.
+- [ ] **Dev-mode canvas stability** — `cobe` + React StrictMode dev double-invoke produces intermittent `removeChild` crashes on `/bangalore` (production build unaffected). Fix: lift `GlobeIntro` to `app/layout.tsx` as a pathname-keyed singleton that never remounts across `[city]` navigations, or replace `cobe` with a stricter-mode-safe alternative.
+- [ ] **Per-city validation target** — only Bangalore currently has a citable April 1951–1970 IMD observed (22.0 °C). Source similar gates for Delhi (IMD Safdarjung), Mumbai (IMD Santacruz), Chennai (IMD Nungambakkam) to light up the validation card on their `/about` pages.
+- [ ] **Chennai pm25 quote year**: baseline cites "Lancet Planetary Health via Citizen Matters" without a pinned year — tighten.
+- [ ] **Bangalore GADM codes** — Mumbai T1 research flagged that our Bangalore query (adm1=17 adm2=5) may actually resolve to Kasaragod, Kerala per GFW dashboard; correct codes per GADM v4.1 JSON = adm1=16 adm2=3. Verify and fix `cities/bangalore.ts`.
 - [ ] Lighthouse perf ≥ 85 on homepage
 - [ ] Mobile QA down to 375 px
 - [ ] `share your scenario` URLs — slider state serialized into the URL hash, regeneratable on load

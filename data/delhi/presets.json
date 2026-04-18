@@ -1,0 +1,43 @@
+{
+  "$comment": "Delhi preset years. 2026 = baseline.json. 2000 canopyPct/populationM cited (FSI 2003 proxy; Census 2001). 2024 tempC/pm25/canopyPct cited (IMD Safdarjung climatology; CSE 2025; ISFR 2023). 1973 populationM cited (Delhi Economic Survey). Other values are engineering estimates anchored to cited trend data (DU 2025 built-up growth +70% 2000\u201322; Shahfahad 2024 vegetation loss 30% 1991\u201321). Flagged in UI.",
+  "1973": {
+    "year": 1973,
+    "tempC": 39.0,
+    "pm25": 15,
+    "canopyPct": 25,
+    "builtUpPct": 15,
+    "waterKm2": 55,
+    "vehiclesIndex": 3,
+    "populationM": 4.07
+  },
+  "2000": {
+    "year": 2000,
+    "tempC": 40.0,
+    "pm25": 60,
+    "canopyPct": 18,
+    "builtUpPct": 33,
+    "waterKm2": 33,
+    "vehiclesIndex": 35,
+    "populationM": 13.85
+  },
+  "2024": {
+    "year": 2024,
+    "tempC": 41.2,
+    "pm25": 95,
+    "canopyPct": 13.5,
+    "builtUpPct": 54,
+    "waterKm2": 31,
+    "vehiclesIndex": 117,
+    "populationM": 21.0
+  },
+  "2026": {
+    "year": 2026,
+    "tempC": 41.4,
+    "pm25": 105,
+    "canopyPct": 13,
+    "builtUpPct": 56,
+    "waterKm2": 30.2,
+    "vehiclesIndex": 121,
+    "populationM": 22.7
+  }
+}

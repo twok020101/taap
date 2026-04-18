@@ -1,5 +1,3 @@
-import type { zones } from '@/data/bangalore/zones'
-
 export interface SliderState {
   canopyPct: number
   builtUpPct: number
@@ -72,6 +70,25 @@ export interface HistoryData {
 
 export type PresetYear = '1973' | '2000' | '2024' | '2026'
 
+/** Generic zone key — any string. Per-city zone sets are heterogeneous. */
+export type ZoneKey = string
+
+export interface ZoneInfo {
+  label: string
+  canopyPct: number
+  builtUpPct: number
+  waterKm2: number
+  tempOffsetC: number
+}
+
+export interface LandFeature {
+  type: 'water' | 'green' | 'builtup'
+  name: string
+  center: [number, number]
+  radius_m: number
+  strength: number
+}
+
 export interface CityConfig {
   id: string
   name: string
@@ -84,7 +101,27 @@ export interface CityConfig {
   /** [west, south, east, north] in lng/lat */
   bbox: [number, number, number, number]
   /** Approximate centroids of each zone, used for nearest-centroid grid-cell assignment */
-  zoneCentroids: Record<string, [number, number]>
+  zoneCentroids: Record<ZoneKey, [number, number]>
+  /** Zone definitions (label + land-use + LST offset) per city. */
+  zones: Record<ZoneKey, ZoneInfo>
+  /** Curated land-cover features (lakes, parks, dense corridors) driving the heatmap grid. */
+  features: LandFeature[]
+  /** GADM v4.1 identifiers for GFW tree-cover-loss queries. */
+  gadm?: { iso: string; adm1: number; adm2: number }
+  /**
+   * Per-city coefficient overrides that take precedence over the default
+   * Bangalore-calibrated `coefficients` table. Only override fields where a
+   * city-specific peer-reviewed source exists; leave others unset to inherit.
+   * `monsoonOffsetsSource` is a human label for UI attribution (e.g.
+   * "IMD Safdarjung 1991–2020 via Climate of Delhi, Wikipedia").
+   */
+  coefficientOverrides?: {
+    monsoonOffsets?: readonly number[]
+    monsoonOffsetsSource?: string
+    aod?: { referenceAod?: number; source?: string }
+    windAdvectionMultiplier?: Partial<Record<'N' | 'E' | 'S' | 'W', number>>
+    windPm25Offset?: Partial<Record<'N' | 'E' | 'S' | 'W', number>>
+  }
   /** MapLibre style URL for the basemap (prefer free / no-key providers) */
   mapStyleUrl: string
   /** Optional structured basemap definitions for toggle UI */
@@ -100,9 +137,6 @@ export interface CityConfig {
 }
 
 export type WindDir = 'N' | 'E' | 'S' | 'W'
-
-// ZoneKey derived from the zones data object
-export type ZoneKey = keyof typeof zones
 
 export interface SimContext {
   month: number         // 1-12

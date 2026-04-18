@@ -1,0 +1,42 @@
+{
+  "$comment": "Delhi curated land-cover features for heatmap grid. Point-and-radius Gaussian approximation — not real polygons. Sources: OpenStreetMap via Nominatim, verified 2026-04-18.",
+  "features": [
+    { "type": "water", "name": "Yamuna — Palla / Wazirabad floodplain",  "center": [77.1700, 28.7300], "radius_m": 1600, "strength": 0.90 },
+    { "type": "water", "name": "Yamuna — Kashmere Gate / Civil Lines",   "center": [77.2299, 28.7101], "radius_m": 1400, "strength": 0.88 },
+    { "type": "water", "name": "Yamuna — ITO / Central Delhi",           "center": [77.2560, 28.6350], "radius_m": 1200, "strength": 0.85 },
+    { "type": "water", "name": "Yamuna — Okhla barrage",                 "center": [77.3090, 28.5570], "radius_m": 1500, "strength": 0.90 },
+    { "type": "water", "name": "Najafgarh Jheel remnant",                "center": [76.9491, 28.5030], "radius_m": 3200, "strength": 0.95 },
+    { "type": "water", "name": "Hauz Khas Lake",                         "center": [77.1958, 28.5493], "radius_m": 220,  "strength": 0.78 },
+    { "type": "water", "name": "Sanjay Lake",                            "center": [77.3064, 28.6155], "radius_m": 450,  "strength": 0.82 },
+    { "type": "water", "name": "Bhalswa Lake",                           "center": [77.1590, 28.7420], "radius_m": 600,  "strength": 0.85 },
+    { "type": "water", "name": "Okhla Bird Sanctuary wetland",           "center": [77.3100, 28.5490], "radius_m": 700,  "strength": 0.87 },
+    { "type": "water", "name": "Tughlakabad reservoir",                  "center": [77.2994, 28.5025], "radius_m": 500,  "strength": 0.80 },
+    { "type": "water", "name": "Nangloi — Najafgarh drain channel",      "center": [77.0647, 28.6824], "radius_m": 800,  "strength": 0.70 },
+    { "type": "water", "name": "Shahdara — Yamuna east floodplain",      "center": [77.3180, 28.6700], "radius_m": 1000, "strength": 0.78 },
+    { "type": "water", "name": "Asola — Tughlakabad johad cluster",      "center": [77.2288, 28.4544], "radius_m": 900,  "strength": 0.75 },
+    { "type": "water", "name": "Western Yamuna Canal — Wazirabad head",  "center": [77.0257, 28.8263], "radius_m": 700,  "strength": 0.72 },
+    { "type": "water", "name": "Delhi Cantonment / Palam pond",          "center": [77.1010, 28.5960], "radius_m": 400,  "strength": 0.68 },
+
+    { "type": "green", "name": "Central Ridge forest",                   "center": [77.1933, 28.6363], "radius_m": 1600, "strength": 0.88 },
+    { "type": "green", "name": "Northern Ridge — Kamla Nehru Ridge",     "center": [77.2100, 28.7050], "radius_m": 1200, "strength": 0.82 },
+    { "type": "green", "name": "Southern Ridge — Asola-Bhatti Wildlife", "center": [77.2288, 28.4544], "radius_m": 3500, "strength": 0.85 },
+    { "type": "green", "name": "Lodi Gardens",                           "center": [77.2219, 28.5946], "radius_m": 340,  "strength": 0.80 },
+    { "type": "green", "name": "Nehru Park",                             "center": [77.1941, 28.5929], "radius_m": 380,  "strength": 0.75 },
+    { "type": "green", "name": "Deer Park, Hauz Khas",                   "center": [77.1878, 28.5576], "radius_m": 500,  "strength": 0.78 },
+    { "type": "green", "name": "Sanjay Van",                             "center": [77.1806, 28.5325], "radius_m": 900,  "strength": 0.83 },
+    { "type": "green", "name": "Buddha Jayanti Park",                    "center": [77.1777, 28.6156], "radius_m": 600,  "strength": 0.77 },
+    { "type": "green", "name": "IARI Pusa campus",                       "center": [77.1663, 28.6392], "radius_m": 900,  "strength": 0.72 },
+    { "type": "green", "name": "JNU forest campus",                      "center": [77.1646, 28.5402], "radius_m": 1400, "strength": 0.80 },
+
+    { "type": "builtup", "name": "Connaught Place CBD",                  "center": [77.2194, 28.6314], "radius_m": 1400, "strength": 0.92 },
+    { "type": "builtup", "name": "Chandni Chowk / Old Delhi",            "center": [77.2322, 28.6560], "radius_m": 1800, "strength": 0.90 },
+    { "type": "builtup", "name": "Karol Bagh",                           "center": [77.1890, 28.6530], "radius_m": 1600, "strength": 0.85 },
+    { "type": "builtup", "name": "Nehru Place",                          "center": [77.2530, 28.5493], "radius_m": 900,  "strength": 0.82 },
+    { "type": "builtup", "name": "Lajpat Nagar",                         "center": [77.2433, 28.5661], "radius_m": 1400, "strength": 0.80 },
+    { "type": "builtup", "name": "Rohini",                               "center": [77.1171, 28.7162], "radius_m": 2800, "strength": 0.80 },
+    { "type": "builtup", "name": "Dwarka sub-city",                      "center": [77.0224, 28.6159], "radius_m": 2800, "strength": 0.82 },
+    { "type": "builtup", "name": "Mayur Vihar",                          "center": [77.2926, 28.6099], "radius_m": 1800, "strength": 0.78 },
+    { "type": "builtup", "name": "Saket / Malviya Nagar",                "center": [77.2022, 28.5212], "radius_m": 1600, "strength": 0.78 },
+    { "type": "builtup", "name": "Vasant Kunj",                          "center": [77.1541, 28.5292], "radius_m": 1500, "strength": 0.75 }
+  ]
+}

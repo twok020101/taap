@@ -16,10 +16,8 @@
  * bare ground, sparse vegetation, roads).
  */
 
-import type { CityConfig, ZoneKey } from '@/cities/types'
-import { zones } from '@/data/bangalore/zones'
+import type { CityConfig, LandFeature as CityLandFeature, ZoneKey } from '@/cities/types'
 import { coefficients as c } from './coefficients'
-import featuresData from '@/data/bangalore/features.json'
 
 /** Target cell size in metres — balances resolution vs MapLibre feature count. */
 const CELL_SIZE_M = 400
@@ -27,13 +25,7 @@ const CELL_SIZE_M = 400
 const M_PER_DEG_LAT = 110_540
 const mPerDegLng = (lat: number) => 111_320 * Math.cos((lat * Math.PI) / 180)
 
-export interface LandFeature {
-  type: 'water' | 'green' | 'builtup'
-  name: string
-  center: [number, number]
-  radius_m: number
-  strength: number
-}
+export type LandFeature = CityLandFeature
 
 export interface Cell {
   /** Cell centre [lng, lat] */
@@ -84,13 +76,14 @@ function nearestZone(
   cell: [number, number],
   centroids: Record<string, [number, number]>,
 ): ZoneKey {
-  let best: ZoneKey = 'central'
+  const keys = Object.keys(centroids)
+  let best: ZoneKey = keys[0] ?? ''
   let bestDist = Infinity
   for (const [key, c] of Object.entries(centroids)) {
     const d = distM(cell, c)
     if (d < bestDist) {
       bestDist = d
-      best = key as ZoneKey
+      best = key
     }
   }
   return best
@@ -110,7 +103,7 @@ export function buildGrid(city: CityConfig): Grid {
   const cols = Math.ceil((east - west) / cellSizeDegLng)
   const rows = Math.ceil((north - south) / cellSizeDegLat)
 
-  const features = featuresData.features as LandFeature[]
+  const features = city.features
   const waterFeats = features.filter(f => f.type === 'water')
   const greenFeats = features.filter(f => f.type === 'green')
   const builtFeats = features.filter(f => f.type === 'builtup')
@@ -128,7 +121,7 @@ export function buildGrid(city: CityConfig): Grid {
       const cellCentre: [number, number] = [lng, lat]
 
       const zone = nearestZone(cellCentre, city.zoneCentroids)
-      const z = zones[zone]
+      const z = city.zones[zone]
 
       let canopy = z.canopyPct / 100
       let builtUp = z.builtUpPct / 100

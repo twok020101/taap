@@ -90,17 +90,17 @@ const BREAKDOWN_INFO: Record<string, BreakdownSource> = {
   monsoon: {
     label: 'Season/monsoon',
     description: 'Monthly offset from annual mean, capturing seasonal variation and monsoon cooling.',
-    source: 'IMD climatology Bangalore 1991–2020',
+    source: 'IMD climatology 1991–2020 (per-city)',
   },
   advection: {
     label: 'Wind advection',
-    description: 'Multiplier applied to the slider-driven subtotal based on wind direction — east pulls hot IT-corridor air, west pulls cooler green-belt air.',
-    source: 'KSPCB wind-rose 2022 + zone land-use analysis',
+    description: 'Multiplier applied to the slider-driven subtotal based on wind direction — magnitude depends on which land-use axis the wind crosses.',
+    source: 'State PCB wind-rose + zone land-use analysis',
   },
   zoneOffset: {
     label: 'Zone offset',
-    description: 'Residual zone-specific LST not captured by aggregate sliders. Central CBD runs hotter than the city mean; outskirts cooler.',
-    source: 'IISc Ramachandra & Bharath 2023; IISc LST maps',
+    description: 'Residual zone-specific LST not captured by aggregate sliders. Dense cores run hotter than the city mean; outskirts cooler.',
+    source: 'Per-city LST / UHI studies (see About for citations)',
   },
 }
 

@@ -1,0 +1,29 @@
+{
+  "$comment": "Chennai historical stats for the 'Why did Chennai get hotter?' narrative panel. Sources: Care Earth Trust, Wikipedia (Pallikaranai), MDPI Entropy 2017, Environmental Monitoring and Assessment 2024. All values directly citable from published sources.",
+  "stats": [
+    {
+      "label": "Pallikaranai marsh lost since 1965",
+      "value": 90,
+      "suffix": "%",
+      "source": "Wikipedia — Pallikaranai marsh (2021): original extent ~5,500 ha (1965); reduced to 695.85 ha by 2021, a loss of ~87%. Care Earth Trust documentation corroborates >90% historical loss from peak extent."
+    },
+    {
+      "label": "Wetlands lost across Chennai 1980–2010",
+      "value": 62,
+      "suffix": "%",
+      "source": "Care Earth Trust NGO study (cited in multiple Chennai urban ecology papers): Chennai lost 62% of its wetland area between 1980 and 2010 due to encroachment and urbanisation."
+    },
+    {
+      "label": "Built-up area growth 1970–2016",
+      "value": 814,
+      "suffix": "%",
+      "source": "MDPI Entropy 2017 (doi:10.3390/e19070358): built-up expanded from 7.67% (1970) to 70.35% of CMA total landscape (2016) — a ~9.2× / 814% increase."
+    },
+    {
+      "label": "Land surface temperature increase 2013–2022",
+      "value": 6.53,
+      "suffix": "°C",
+      "source": "Environmental Monitoring and Assessment (Springer, 2024): 'LST rose by 6.53°C between 2013 and 2022 in Chennai, coinciding with a 13.33% decline in green cover' (doi cited in study)."
+    }
+  ]
+}

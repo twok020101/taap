@@ -14,8 +14,7 @@
  */
 
 import { coefficients as c } from './coefficients'
-import { zones } from '@/data/bangalore/zones'
-import type { Baseline, SliderState, SimContext, ZoneKey } from '@/cities/types'
+import type { Baseline, CityConfig, SliderState, SimContext, ZoneKey } from '@/cities/types'
 import type { Grid } from './grid'
 
 export interface GridSimResult {
@@ -38,11 +37,17 @@ export interface GridSimResult {
 }
 
 export function simulateGrid(
+  city: CityConfig,
   baseline: Baseline,
   sliders: SliderState,
   ctx: SimContext,
   grid: Grid,
 ): GridSimResult {
+  // Per-city wind advection multiplier override merged onto defaults.
+  const advMult =
+    city.coefficientOverrides?.windAdvectionMultiplier?.[ctx.windDir] ??
+    c.windAdvectionMultiplier[ctx.windDir]
+
   // City-level scalar deltas (same as simulate.ts, but we split by component).
   const canopyDeltaPp = sliders.canopyPct - baseline.canopyPct
   const cityCanopy = -canopyDeltaPp * c.canopy.central
@@ -58,7 +63,7 @@ export function simulateGrid(
   // spatial signal, while badly distorting the baseline view (April + central
   // would otherwise produce ~+4.2 °C on every cell at sliders=baseline).
 
-  const advectionMult = c.windAdvectionMultiplier[ctx.windDir]
+  const advectionMult = advMult
 
   // Per-cell weights — normalised so the grid-mean weight is 1, meaning
   // the grid-mean of per-cell contributions matches the city-level value.
@@ -67,13 +72,9 @@ export function simulateGrid(
   const invMeanWater = grid.meanWaterFrac > 0 ? 1 / grid.meanWaterFrac : 0
 
   // Pre-pull zone offsets once to avoid hash lookups per cell.
-  const zoneOffsets: Record<ZoneKey, number> = {
-    central: zones.central.tempOffsetC,
-    south: zones.south.tempOffsetC,
-    east: zones.east.tempOffsetC,
-    north: zones.north.tempOffsetC,
-    outskirts: zones.outskirts.tempOffsetC,
-  }
+  const zoneOffsets: Record<ZoneKey, number> = Object.fromEntries(
+    Object.entries(city.zones).map(([k, z]) => [k, z.tempOffsetC]),
+  )
 
   const cells = grid.cells
   const n = cells.length

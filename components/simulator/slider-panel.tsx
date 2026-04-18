@@ -4,7 +4,7 @@ import { Slider } from '@/components/ui/slider'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { Info } from 'lucide-react'
+import { Info, Link2, Link2Off } from 'lucide-react'
 import type { SliderState, PresetYear } from '@/cities/types'
 import { coefficients } from '@/model/coefficients'
 
@@ -82,34 +82,82 @@ const PRESETS: { label: string; year: PresetYear }[] = [
 interface SliderPanelProps {
   sliders: SliderState
   activePreset: PresetYear | null
+  linkedMode: boolean
   onSliderChange: (key: keyof SliderState, value: number) => void
   onPresetSelect: (year: PresetYear) => void
+  onLinkedModeChange: (linked: boolean) => void
 }
+
+const LINK_EXPLANATION =
+  'When linked, moving built-up pulls canopy down by 0.6× the delta (and vice versa), mirroring how impervious surface has historically replaced vegetation in Bangalore (IISc LULC 1973–2023). Unlinked lets you explore counterfactuals — e.g. canopy gain without built-up loss.'
 
 export function SliderPanel({
   sliders,
   activePreset,
+  linkedMode,
   onSliderChange,
   onPresetSelect,
+  onLinkedModeChange,
 }: SliderPanelProps) {
   return (
     <div className="flex flex-col gap-6">
-      {/* Preset buttons */}
-      <div>
-        <p className="mb-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
-          Historical Presets
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {PRESETS.map(({ label, year }) => (
+      {/* Preset buttons + linked-mode toggle */}
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="mb-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
+            Historical Presets
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {PRESETS.map(({ label, year }) => (
+              <Button
+                key={year}
+                variant={activePreset === year ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => onPresetSelect(year)}
+              >
+                {label}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
+            Slider mode
+          </p>
+          <div className="flex items-center gap-1.5">
             <Button
-              key={year}
-              variant={activePreset === year ? 'default' : 'outline'}
+              variant={linkedMode ? 'default' : 'outline'}
               size="sm"
-              onClick={() => onPresetSelect(year)}
+              onClick={() => onLinkedModeChange(true)}
+              className="gap-1.5"
+              aria-pressed={linkedMode}
             >
-              {label}
+              <Link2 className="h-3.5 w-3.5" />
+              Linked
             </Button>
-          ))}
+            <Button
+              variant={!linkedMode ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onLinkedModeChange(false)}
+              className="gap-1.5"
+              aria-pressed={!linkedMode}
+            >
+              <Link2Off className="h-3.5 w-3.5" />
+              Free
+            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button className="text-muted-foreground hover:text-foreground">
+                  <Info className="h-3 w-3" />
+                  <span className="sr-only">About linked mode</span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-64 text-xs">
+                {LINK_EXPLANATION}
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </div>
       </div>
 

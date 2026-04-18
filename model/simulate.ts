@@ -3,6 +3,28 @@ import { zones } from '@/data/bangalore/zones'
 import type { Baseline, ModelOutput, SliderState, SimContext } from '@/cities/types'
 
 /**
+ * Propagate a coefficient's [low, high] interval through a signed linear term.
+ *
+ * `delta * coeff` has its minimum at whichever of {delta*low, delta*high} is
+ * smaller — the sign of `delta` decides which endpoint lands on which side,
+ * and this helper hides that bookkeeping from the caller.
+ */
+function rangedContrib(
+  delta: number,
+  low: number,
+  central: number,
+  high: number,
+): { low: number; central: number; high: number } {
+  const a = delta * low
+  const b = delta * high
+  return {
+    low: Math.min(a, b),
+    central: delta * central,
+    high: Math.max(a, b),
+  }
+}
+
+/**
  * Pure simulation function.
  *
  * Applies linear additive deltas from the coefficient table to estimate the
@@ -36,25 +58,35 @@ export function simulate(
   // Canopy delta: positive means canopy increased (cooling), negative = warming
   const canopyDeltaPp = sliders.canopyPct - baseline.canopyPct
   // Loss of canopy warms, gain cools — coefficient is per −1pp, so negate
-  const tempFromCanopy = -canopyDeltaPp * c.canopy.central
+  const canopyBand = rangedContrib(-canopyDeltaPp, c.canopy.low, c.canopy.central, c.canopy.high)
+  const tempFromCanopy = canopyBand.central
 
   // Built-up delta: positive means more impervious surface (warming)
   const builtUpDeltaPp = sliders.builtUpPct - baseline.builtUpPct
-  const tempFromBuiltUp = builtUpDeltaPp * c.builtUp.central
+  const builtUpBand = rangedContrib(builtUpDeltaPp, c.builtUp.low, c.builtUp.central, c.builtUp.high)
+  const tempFromBuiltUp = builtUpBand.central
 
   // Water delta: positive means more water (cooling), negative = warming
   const waterDeltaKm2 = sliders.waterKm2 - baseline.waterKm2
   // Less water warms, more water cools — coefficient is per −1 km², so negate
-  const tempFromWater = -waterDeltaKm2 * c.water.central
+  const waterBand = rangedContrib(-waterDeltaKm2, c.water.low, c.water.central, c.water.high)
+  const tempFromWater = waterBand.central
 
   // Slider-driven subtotal (before advection multiplier)
   const sliderSubtotal = tempFromCanopy + tempFromBuiltUp + tempFromWater
+  const sliderSubtotalLow = canopyBand.low + builtUpBand.low + waterBand.low
+  const sliderSubtotalHigh = canopyBand.high + builtUpBand.high + waterBand.high
 
   // ── 2. Advection (wind direction) ────────────────────────────────────────
   // Applies as a multiplier to the slider-driven subtotal only.
   // Source: KSPCB wind-rose 2022 + derived from zone land-use.
   const advectionMultiplier = c.windAdvectionMultiplier[ctx.windDir]
   const tempFromAdvection = sliderSubtotal * advectionMultiplier
+  // Advection with a negative multiplier flips which end of the band is low vs high.
+  const advA = sliderSubtotalLow * advectionMultiplier
+  const advB = sliderSubtotalHigh * advectionMultiplier
+  const tempFromAdvectionLow = Math.min(advA, advB)
+  const tempFromAdvectionHigh = Math.max(advA, advB)
 
   // ── 3. Monsoon / seasonal offset ────────────────────────────────────────
   // Absolute monthly temperature modulation from IMD climatology 1991–2020.
@@ -77,15 +109,13 @@ export function simulate(
   const tempFromZone = zoneConfig.tempOffsetC
 
   // ── 6. Total temperature delta ───────────────────────────────────────────
-  const rawTempDelta =
-    sliderSubtotal +
-    tempFromAdvection +
-    tempFromMonsoon +
-    tempFromAerosol +
-    tempFromZone
+  const fixedTempTerms = tempFromMonsoon + tempFromAerosol + tempFromZone
+  const rawTempDelta = sliderSubtotal + tempFromAdvection + fixedTempTerms
 
-  // Clamp to physically plausible range (−8 to +12 as per spec)
-  const tempDelta = Math.max(-8, Math.min(12, rawTempDelta))
+  const clampT = (v: number) => Math.max(-8, Math.min(12, v))
+  const tempDelta = clampT(rawTempDelta)
+  const tempDeltaLow = clampT(sliderSubtotalLow + tempFromAdvectionLow + fixedTempTerms)
+  const tempDeltaHigh = clampT(sliderSubtotalHigh + tempFromAdvectionHigh + fixedTempTerms)
 
   // Absolute modelled temperature
   const tempC = baseline.tempC + tempDelta
@@ -94,7 +124,13 @@ export function simulate(
 
   // Vehicles contribution
   const vehiclesDeltaIndex = sliders.vehiclesIndex - baseline.vehiclesIndex
-  const pm25FromVehicles = (vehiclesDeltaIndex / 10) * c.vehicles.central
+  const vehiclesBand = rangedContrib(
+    vehiclesDeltaIndex / 10,
+    c.vehicles.low,
+    c.vehicles.central,
+    c.vehicles.high,
+  )
+  const pm25FromVehicles = vehiclesBand.central
 
   // Advection PM2.5 offset
   const pm25FromAdvection = c.windPm25Offset[ctx.windDir]
@@ -103,15 +139,20 @@ export function simulate(
   const pm25FromAod = aodSteps * c.aod.pm25PerStep
 
   const rawPm25 = baseline.pm25 + pm25FromVehicles + pm25FromAdvection + pm25FromAod
+  const clampPm = (v: number) => Math.max(0, Math.min(500, v))
   // Clamp absolute PM2.5 to [0, 500]
-  const pm25 = Math.max(0, Math.min(500, rawPm25))
+  const pm25 = clampPm(rawPm25)
   const pm25Delta = pm25 - baseline.pm25
+  const fixedPm25 = baseline.pm25 + pm25FromAdvection + pm25FromAod
+  const pm25DeltaLow = clampPm(fixedPm25 + vehiclesBand.low) - baseline.pm25
+  const pm25DeltaHigh = clampPm(fixedPm25 + vehiclesBand.high) - baseline.pm25
 
   // ── 8. Night cooling loss ─────────────────────────────────────────────────
   // Fraction of canopy-driven daytime warming that shows up as reduced nighttime
   // cooling (loss of evapotranspiration). Applies to canopy contribution only.
-  const nightCoolLoss =
-    Math.max(-8, Math.min(12, tempFromCanopy)) * c.nightCoolLossFraction
+  const nightCoolLoss = clampT(tempFromCanopy) * c.nightCoolLossFraction
+  const nightCoolLossLow = clampT(canopyBand.low) * c.nightCoolLossFraction
+  const nightCoolLossHigh = clampT(canopyBand.high) * c.nightCoolLossFraction
 
   // ── 9. Breakdown ─────────────────────────────────────────────────────────
   const breakdown = {
@@ -125,12 +166,25 @@ export function simulate(
     zoneOffset: Math.round(tempFromZone * 100) / 100,
   }
 
+  const r2 = (v: number) => Math.round(v * 100) / 100
+  const r1 = (v: number) => Math.round(v * 10) / 10
+
   return {
-    tempC: Math.round(tempC * 10) / 10,
-    tempDelta: Math.round(tempDelta * 100) / 100,
+    tempC: r1(tempC),
+    tempDelta: r2(tempDelta),
     pm25: Math.round(pm25),
-    pm25Delta: Math.round(pm25Delta * 10) / 10,
-    nightCoolLoss: Math.round(nightCoolLoss * 100) / 100,
+    pm25Delta: r1(pm25Delta),
+    nightCoolLoss: r2(nightCoolLoss),
     breakdown,
+    bands: {
+      tempDelta: { low: r2(tempDeltaLow), high: r2(tempDeltaHigh) },
+      pm25Delta: { low: r1(pm25DeltaLow), high: r1(pm25DeltaHigh) },
+      nightCoolLoss: { low: r2(nightCoolLossLow), high: r2(nightCoolLossHigh) },
+      breakdown: {
+        canopy: { low: r2(canopyBand.low), high: r2(canopyBand.high) },
+        builtUp: { low: r2(builtUpBand.low), high: r2(builtUpBand.high) },
+        water: { low: r2(waterBand.low), high: r2(waterBand.high) },
+      },
+    },
   }
 }

@@ -6,7 +6,8 @@ import { simulate } from '@/model/simulate'
 import baselineData from '@/data/bangalore/baseline.json'
 import presetsData from '@/data/bangalore/presets.json'
 import type { Baseline, PresetYear } from '@/cities/types'
-import { AlertTriangle, BookOpen, CheckCircle2, Microscope, Ruler, XCircle } from 'lucide-react'
+import { AlertTriangle, BookOpen, CheckCircle2, Microscope, Ruler, TrendingUp, XCircle } from 'lucide-react'
+import historyData from '@/data/bangalore/temperature-history.json'
 
 interface CaveatItem {
   title: string
@@ -133,6 +134,53 @@ const COEFF_ROWS: CoeffRow[] = [
     source: 'Babu et al., ARFI 2013',
   },
 ]
+
+interface AnnualRow {
+  y: number
+  tmaxMean: number
+  tminMean: number
+  nDays: number
+}
+
+function buildPaths(annual: AnnualRow[]) {
+  const W = 800
+  const H = 260
+  const padL = 44
+  const padR = 14
+  const padT = 14
+  const padB = 28
+
+  const minTmin = Math.min(...annual.map((r) => r.tminMean))
+  const maxTmax = Math.max(...annual.map((r) => r.tmaxMean))
+  const yMin = Math.floor(minTmin - 0.5)
+  const yMax = Math.ceil(maxTmax + 0.5)
+
+  const xRange = annual[annual.length - 1].y - annual[0].y
+  const xScale = (year: number) =>
+    padL + ((year - annual[0].y) / xRange) * (W - padL - padR)
+  const yScale = (val: number) =>
+    padT + ((yMax - val) / (yMax - yMin)) * (H - padT - padB)
+
+  const toPolyline = (key: keyof Pick<AnnualRow, 'tmaxMean' | 'tminMean'>) =>
+    annual.map((r) => `${xScale(r.y).toFixed(1)},${yScale(r[key]).toFixed(1)}`).join(' ')
+
+  const tmaxPath = toPolyline('tmaxMean')
+  const tminPath = toPolyline('tminMean')
+
+  // Y ticks every 2°C
+  const yTicks: number[] = []
+  for (let v = Math.ceil(yMin / 2) * 2; v <= yMax; v += 2) {
+    yTicks.push(v)
+  }
+
+  // X ticks every 10 years
+  const xTicks: number[] = []
+  for (let yr = 1960; yr <= 2020; yr += 10) {
+    xTicks.push(yr)
+  }
+
+  return { tmaxPath, tminPath, yTicks, xTicks, xScale, yScale, yMin, yMax }
+}
 
 /**
  * Backwards validation: rewind the sliders to the 1973 preset values against
@@ -277,6 +325,161 @@ export default function AboutPage() {
           </CardContent>
         </Card>
       </section>
+
+      {/* Historical temperature */}
+      {(() => {
+        const annual = historyData.annual as AnnualRow[]
+        const { tmaxPath, tminPath, yTicks, xTicks, xScale, yScale } = buildPaths(annual)
+        const baseline = historyData.baseline1951_1980
+        const recent = historyData.recent2015_2024
+        const anomaly = historyData.anomalyDegC
+        const baselineTmaxY = yScale(baseline.tmaxMean)
+        return (
+          <section className="mb-14">
+            <div className="mb-4 flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-orange-400" />
+              <h2 className="text-xl font-semibold">Historical temperature · 1951–2024</h2>
+            </div>
+            <Card>
+              <CardContent className="pt-6">
+                {/* Stat strip */}
+                <div className="mb-6 grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-lg border bg-card/50 p-3">
+                    <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                      1951–1980 Baseline
+                    </div>
+                    <div className="mt-1 font-mono text-sm">
+                      Tmax {baseline.tmaxMean.toFixed(2)} °C · Tmin {baseline.tminMean.toFixed(2)} °C
+                    </div>
+                  </div>
+                  <div className="rounded-lg border bg-card/50 p-3">
+                    <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                      2015–2024 Recent
+                    </div>
+                    <div className="mt-1 font-mono text-sm">
+                      Tmax {recent.tmaxMean.toFixed(2)} °C · Tmin {recent.tminMean.toFixed(2)} °C
+                    </div>
+                  </div>
+                  <div className="rounded-lg border bg-card/50 p-3">
+                    <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                      Anomaly
+                    </div>
+                    <div className="mt-1 font-mono text-sm">
+                      <span className="text-orange-300">+{anomaly.tmax.toFixed(2)} °C</span>
+                      {' '}(Tmax) · +{anomaly.tmin.toFixed(2)} °C (Tmin)
+                    </div>
+                  </div>
+                </div>
+
+                {/* SVG chart */}
+                <svg
+                  viewBox="0 0 800 260"
+                  className="w-full h-auto"
+                  preserveAspectRatio="xMidYMid meet"
+                  role="img"
+                  aria-label="Annual mean Tmax and Tmin for Bangalore, 1951 to 2024"
+                >
+                  {/* Y-axis ticks */}
+                  {yTicks.map((v) => (
+                    <g key={v}>
+                      <line
+                        x1={44}
+                        y1={yScale(v)}
+                        x2={786}
+                        y2={yScale(v)}
+                        stroke="currentColor"
+                        strokeOpacity={0.08}
+                        strokeWidth={1}
+                      />
+                      <text
+                        x={40}
+                        y={yScale(v)}
+                        textAnchor="end"
+                        dominantBaseline="middle"
+                        fontSize={10}
+                        fill="currentColor"
+                        opacity={0.45}
+                      >
+                        {v}
+                      </text>
+                    </g>
+                  ))}
+
+                  {/* 1951–1980 Tmax baseline dashed line */}
+                  <line
+                    x1={44}
+                    y1={baselineTmaxY}
+                    x2={786}
+                    y2={baselineTmaxY}
+                    stroke="#fb923c"
+                    strokeOpacity={0.35}
+                    strokeWidth={1}
+                    strokeDasharray="4 4"
+                  />
+
+                  {/* X-axis ticks */}
+                  {xTicks.map((yr) => (
+                    <g key={yr}>
+                      <line
+                        x1={xScale(yr)}
+                        y1={232}
+                        x2={xScale(yr)}
+                        y2={236}
+                        stroke="currentColor"
+                        strokeOpacity={0.3}
+                        strokeWidth={1}
+                      />
+                      <text
+                        x={xScale(yr)}
+                        y={246}
+                        textAnchor="middle"
+                        fontSize={10}
+                        fill="currentColor"
+                        opacity={0.45}
+                      >
+                        {yr}
+                      </text>
+                    </g>
+                  ))}
+
+                  {/* Tmax polyline */}
+                  <polyline
+                    points={tmaxPath}
+                    fill="none"
+                    stroke="#fb923c"
+                    strokeWidth={1.5}
+                    strokeLinejoin="round"
+                  />
+
+                  {/* Tmin polyline */}
+                  <polyline
+                    points={tminPath}
+                    fill="none"
+                    stroke="#5eead4"
+                    strokeWidth={1.5}
+                    strokeLinejoin="round"
+                  />
+
+                  {/* Legend top-right */}
+                  <circle cx={700} cy={22} r={4} fill="#fb923c" />
+                  <text x={708} y={22} dominantBaseline="middle" fontSize={11} fill="currentColor" opacity={0.7}>
+                    Tmax
+                  </text>
+                  <circle cx={740} cy={22} r={4} fill="#5eead4" />
+                  <text x={748} y={22} dominantBaseline="middle" fontSize={11} fill="currentColor" opacity={0.7}>
+                    Tmin
+                  </text>
+                </svg>
+
+                {/* Caption */}
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Source: Open-Meteo ERA5 Archive (free reanalysis, 1940-present). Daily Tmax/Tmin averaged to annual means. Shown alongside 1951–1980 WMO baseline and 2015–2024 recent decade. Note: this is the 2 m air temperature reanalysis, not the Landsat LST series that drives the +8 °C stat on the homepage — they measure different things.
+                </p>
+              </CardContent>
+            </Card>
+          </section>
+        )
+      })()}
 
       <Separator className="mb-14" />
 

@@ -1,0 +1,59 @@
+{
+  "generatedAt": "2026-04-18T11:23:57.426Z",
+  "rasters": [
+    {
+      "year": 2000,
+      "band": "ndvi",
+      "layer": "MODIS_Terra_L3_NDVI_Monthly",
+      "time": "2000-04-01",
+      "source": "NASA GIBS",
+      "sizeBytes": 29499,
+      "note": ""
+    },
+    {
+      "year": 2000,
+      "band": "lst",
+      "layer": "MODIS_Terra_L3_Land_Surface_Temp_Monthly_Day",
+      "time": "2000-04-01",
+      "source": "NASA GIBS",
+      "sizeBytes": 21181,
+      "note": ""
+    },
+    {
+      "year": 2024,
+      "band": "ndvi",
+      "layer": "MODIS_Terra_L3_NDVI_Monthly",
+      "time": "2024-04-01",
+      "source": "NASA GIBS",
+      "sizeBytes": 28288,
+      "note": ""
+    },
+    {
+      "year": 2024,
+      "band": "lst",
+      "layer": "MODIS_Terra_L3_Land_Surface_Temp_Monthly_Day",
+      "time": "2024-04-01",
+      "source": "NASA GIBS",
+      "sizeBytes": 22014,
+      "note": ""
+    },
+    {
+      "year": 2026,
+      "band": "ndvi",
+      "layer": "MODIS_Terra_L3_NDVI_Monthly",
+      "time": "2026-03-01",
+      "source": "NASA GIBS",
+      "sizeBytes": 28324,
+      "note": ""
+    },
+    {
+      "year": 2026,
+      "band": "lst",
+      "layer": "MODIS_Terra_L3_Land_Surface_Temp_Monthly_Day",
+      "time": "2026-03-01",
+      "source": "NASA GIBS",
+      "sizeBytes": 17982,
+      "note": ""
+    }
+  ]
+}

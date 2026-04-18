@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
+import historyData from '@/data/bangalore/temperature-history.json'
 
 export function Hero() {
   return (
@@ -54,6 +55,12 @@ export function Hero() {
           <strong className="text-foreground">91% of tree cover</strong>,{' '}
           <strong className="text-foreground">79% of wetlands</strong>, and a{' '}
           <strong className="text-foreground">1,055% expansion</strong> of concrete.
+        </p>
+
+        <p className="mx-auto mb-8 max-w-xl text-sm text-muted-foreground/80" style={{ fontFamily: 'var(--font-mono)' }}>
+          ERA5: annual Tmax <span className="text-foreground">+{historyData.anomalyDegC.tmax.toFixed(2)}°C</span>,
+          Tmin <span className="text-foreground">+{historyData.anomalyDegC.tmin.toFixed(2)}°C</span>
+          {' '}vs 1951–1980 mean · <span className="text-muted-foreground">2015–2024 recent decade</span>
         </p>
 
         <p className="mx-auto mb-10 max-w-xl text-base text-muted-foreground">

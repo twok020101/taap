@@ -87,6 +87,16 @@ export interface CityConfig {
   zoneCentroids: Record<string, [number, number]>
   /** MapLibre style URL for the basemap (prefer free / no-key providers) */
   mapStyleUrl: string
+  /** Optional structured basemap definitions for toggle UI */
+  mapBasemaps?: {
+    dark: string
+    satellite: {
+      type: 'raster-xyz'
+      tileUrl: string
+      attribution: string
+      maxZoom: number
+    }
+  }
 }
 
 export type WindDir = 'N' | 'E' | 'S' | 'W'

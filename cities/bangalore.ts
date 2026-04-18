@@ -17,4 +17,13 @@ export const bangalore: CityConfig = {
     outskirts: [77.4500, 13.1050],
   },
   mapStyleUrl: 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json',
+  mapBasemaps: {
+    dark: 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json',
+    satellite: {
+      type: 'raster-xyz' as const,
+      tileUrl: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2024_3857/default/g/{z}/{y}/{x}.jpg',
+      attribution: 'Sentinel-2 cloudless 2024 · EOX IT Services — modified Copernicus Sentinel data',
+      maxZoom: 15,
+    },
+  },
 }

@@ -1,6 +1,6 @@
 # Taap — Project Status
 
-_Last updated: 2026-04-18_
+_Last updated: 2026-04-18 (v0.3 in progress)_
 
 This document tracks what has been shipped vs. what remains per the original plan in `docs/feat-bangalore-heat-simulator.md` (gitignored branch spec).
 
@@ -74,12 +74,12 @@ Clamping: Δ°C ∈ [−8, +12], PM2.5 ∈ [0, 500]. Model returns a `breakdown`
 ## Pending
 
 ### v0.3 — Map & data
-- [ ] **MapLibre GL heatmap overlay** on the simulator — currently stubbed with `<MapPlaceholder>`. Downsampled to 100 m cell resolution for web. Redraws on slider change (target < 200 ms).
+- [x] **MapLibre GL heatmap overlay** on the simulator (`feat/map-heatmap`). Client-side ~400 m regular grid (~15k cells) over the city bbox, built from the 5-zone config + a curated `data/bangalore/features.json` (15 lakes, 10 green patches, 10 built-up clusters). Per-cell coefficient compute in `model/simulate-grid.ts` mirrors `simulate.ts` but drops the spatially-uniform monsoon + aerosol components (they'd wash the baseline red). Static `reliefC` per cell surfaces lakes and parks as cooler patches even at sliders=baseline. CartoDB Dark Matter no-labels basemap, no API key. Hover popup shows cell Δ°C and land-cover composition.
 - [ ] **Live OpenAQ integration** — PM2.5 from CPCB/KSPCB stations (currently using modeled PM2.5 against a static baseline). Needs `OPENAQ_API_KEY`.
 - [ ] **Live GFW tree-cover-loss feed** — annual Hansen data, ISR 24 h. Needs `GFW_API_KEY`.
 - [ ] **GEE precompute pipeline** — one-off script to generate 1973/2000/2024/2026 Bangalore NDVI/LST rasters as committed PNGs for the intro split-screen.
 - [ ] **data.opencity.in** — historical Bangalore daily max/min 1951–2024 CSV ingested as a committed JSON; reference in hero and about page.
-- [ ] **Sentinel-2 Q1 2026 composite** — high-res recent imagery for the map base layer.
+- [ ] **Sentinel-2 Q1 2026 composite** — high-res recent imagery for the map base layer (upgrades `feat/map-heatmap`).
 
 ### v0.4 — Validation & honesty
 - [ ] **Backwards model validation**: re-run the 1973 preset and verify the output matches IISc's observed 1973 LST within ±1 °C. Surface the validation result in `/about`.

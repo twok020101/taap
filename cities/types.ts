@@ -55,9 +55,15 @@ export interface CityConfig {
   baselineFile: string
   presetsFile: string
   historyFile: string
+  /** [lng, lat] of the city's visual centre */
   mapCenter: [number, number]
   mapZoom: number
+  /** [west, south, east, north] in lng/lat */
   bbox: [number, number, number, number]
+  /** Approximate centroids of each zone, used for nearest-centroid grid-cell assignment */
+  zoneCentroids: Record<string, [number, number]>
+  /** MapLibre style URL for the basemap (prefer free / no-key providers) */
+  mapStyleUrl: string
 }
 
 export type WindDir = 'N' | 'E' | 'S' | 'W'

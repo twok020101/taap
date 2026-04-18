@@ -1,0 +1,42 @@
+{
+  "$comment": "Curated real-world Bangalore features used to texture the land-cover grid. Each feature is a point + radius with a smooth falloff. Coordinates are approximate (OpenStreetMap / Wikimapia). Enrich later with OSM/WorldCover import — schema must stay backwards compatible.",
+  "features": [
+    { "type": "water", "name": "Bellandur Lake",       "center": [77.6724, 12.9342], "radius_m": 1400, "strength": 0.95 },
+    { "type": "water", "name": "Varthur Lake",         "center": [77.7365, 12.9411], "radius_m": 1000, "strength": 0.90 },
+    { "type": "water", "name": "Ulsoor Lake",          "center": [77.6184, 12.9826], "radius_m": 450,  "strength": 0.90 },
+    { "type": "water", "name": "Hebbal Lake",          "center": [77.5916, 13.0466], "radius_m": 700,  "strength": 0.90 },
+    { "type": "water", "name": "Agara Lake",           "center": [77.6371, 12.9234], "radius_m": 450,  "strength": 0.85 },
+    { "type": "water", "name": "Sankey Tank",          "center": [77.5738, 12.9987], "radius_m": 400,  "strength": 0.85 },
+    { "type": "water", "name": "Madiwala Lake",        "center": [77.6211, 12.9150], "radius_m": 550,  "strength": 0.85 },
+    { "type": "water", "name": "Yediyur Lake",         "center": [77.5650, 12.9246], "radius_m": 300,  "strength": 0.80 },
+    { "type": "water", "name": "Lalbagh Lake",         "center": [77.5851, 12.9475], "radius_m": 300,  "strength": 0.75 },
+    { "type": "water", "name": "Puttenahalli Lake",    "center": [77.5810, 12.8890], "radius_m": 350,  "strength": 0.80 },
+    { "type": "water", "name": "Yelahanka Lake",       "center": [77.5876, 13.1040], "radius_m": 700,  "strength": 0.85 },
+    { "type": "water", "name": "Nagawara Lake",        "center": [77.6236, 13.0427], "radius_m": 500,  "strength": 0.80 },
+    { "type": "water", "name": "Hesaraghatta Lake",    "center": [77.4828, 13.1396], "radius_m": 1100, "strength": 0.85 },
+    { "type": "water", "name": "Thippagondanahalli",   "center": [77.3828, 13.0010], "radius_m": 900,  "strength": 0.80 },
+    { "type": "water", "name": "Kaikondrahalli Lake",  "center": [77.6848, 12.9080], "radius_m": 400,  "strength": 0.80 },
+
+    { "type": "green", "name": "Cubbon Park",          "center": [77.5929, 12.9762], "radius_m": 800,  "strength": 0.85 },
+    { "type": "green", "name": "Lalbagh Gardens",      "center": [77.5848, 12.9507], "radius_m": 700,  "strength": 0.90 },
+    { "type": "green", "name": "Turahalli Forest",     "center": [77.5465, 12.8752], "radius_m": 1500, "strength": 0.85 },
+    { "type": "green", "name": "Bannerghatta edge",    "center": [77.5750, 12.8000], "radius_m": 3500, "strength": 0.80 },
+    { "type": "green", "name": "GKVK campus",          "center": [77.5718, 13.0751], "radius_m": 1400, "strength": 0.70 },
+    { "type": "green", "name": "Hesaraghatta Grassland","center": [77.4800, 13.1400],"radius_m": 2500, "strength": 0.70 },
+    { "type": "green", "name": "Nandi Hills foothill", "center": [77.6900, 13.1200], "radius_m": 2500, "strength": 0.55 },
+    { "type": "green", "name": "Nelamangala reserve",  "center": [77.4050, 13.1000], "radius_m": 3500, "strength": 0.60 },
+    { "type": "green", "name": "Jnana Bharati campus", "center": [77.5140, 12.9445], "radius_m": 1200, "strength": 0.55 },
+    { "type": "green", "name": "Indian Institute of Science","center": [77.5660, 13.0219],"radius_m": 700,"strength": 0.55 },
+
+    { "type": "builtup", "name": "CBD / Majestic core","center": [77.5800, 12.9768], "radius_m": 2600, "strength": 0.90 },
+    { "type": "builtup", "name": "Whitefield corridor","center": [77.7499, 12.9698], "radius_m": 2800, "strength": 0.85 },
+    { "type": "builtup", "name": "Electronic City",    "center": [77.6600, 12.8450], "radius_m": 2200, "strength": 0.80 },
+    { "type": "builtup", "name": "HSR / Bellandur",    "center": [77.6500, 12.9100], "radius_m": 2500, "strength": 0.80 },
+    { "type": "builtup", "name": "Koramangala",        "center": [77.6245, 12.9352], "radius_m": 1500, "strength": 0.75 },
+    { "type": "builtup", "name": "Indiranagar",        "center": [77.6412, 12.9719], "radius_m": 1700, "strength": 0.75 },
+    { "type": "builtup", "name": "Jayanagar",          "center": [77.5831, 12.9308], "radius_m": 1900, "strength": 0.70 },
+    { "type": "builtup", "name": "Marathahalli",       "center": [77.7020, 12.9569], "radius_m": 1900, "strength": 0.78 },
+    { "type": "builtup", "name": "Peenya industrial",  "center": [77.5195, 13.0301], "radius_m": 2400, "strength": 0.82 },
+    { "type": "builtup", "name": "Yelahanka town",     "center": [77.5946, 13.1007], "radius_m": 1600, "strength": 0.70 }
+  ]
+}

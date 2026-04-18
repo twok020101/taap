@@ -176,9 +176,59 @@ function buildPaths(annual: AnnualRow[]) {
   return { tmaxPath, tminPath, yTicks, xTicks, xScale, yScale, yMin, yMax }
 }
 
-/** Per-city validation target — April 1951–1970 IMD observed mean. Add when citable. */
-const VALIDATION_OBSERVED: Record<string, number> = {
-  bangalore: 22.0,
+/**
+ * Per-city validation target — April 1951–1970 IMD observed mean temperature.
+ *
+ * confidence:
+ *   'high'   = published IMD observed normal or equivalent
+ *   'medium' = IMD station observations for a partial window, or back-projected
+ *              from a later normal via a peer-reviewed warming trend
+ *   'low'    = no citable source — render the "pending" placeholder instead
+ */
+interface ValidationTarget {
+  value: number
+  source: string
+  confidence: 'high' | 'medium'
+}
+
+const VALIDATION_TARGETS: Record<string, ValidationTarget> = {
+  bangalore: {
+    value: 22.0,
+    source: 'IMD Bangalore 1951–1970 April Tmax',
+    confidence: 'high',
+  },
+  delhi: {
+    // Derived from IMD Safdarjung 1957–1962 April Tmax observations via
+    // tutiempo WMO 42182 (6-year sample within the 1951–1970 window),
+    // cross-checked against IMD Safdarjung 1991–2020 normal (36.5°C) and
+    // the published ~0.2°C/decade Indian max-temperature warming trend.
+    value: 35.5,
+    source: 'IMD Safdarjung (WMO 42182) April observations 1957–1962 via tutiempo; cross-checked against IMD 1991–2020 normal 36.5°C + 0.2°C/decade trend',
+    confidence: 'medium',
+  },
+  chennai: {
+    // Back-projected: IMD Nungambakkam 1991–2020 April Tmax normal is 34.5°C
+    // (Climate of Chennai, Wikipedia → IMD); Kothawale et al. 2012 (DOI
+    // 10.1007/s00704-012-0646-6) found +1.6°C total warming 1951–2010 with
+    // ~25% in phase 1 (1951–1980), ~75% in phase 2 (1981–2010). Applying the
+    // ~0.5°C phase-1 delta gives 34.5 − 0.5 = 34.0°C for 1951–1970.
+    value: 34.0,
+    source: 'Back-projected: IMD Nungambakkam 1991–2020 normal (34.5°C) minus Kothawale et al. 2012 phase-1 warming (~0.5°C)',
+    confidence: 'medium',
+  },
+  mumbai: {
+    // Derived from NOAA GHCN-M v4 Tavg for IN012070800 (Bombay/Santacruz,
+    // WMO 43003) 1951–1970 April mean = 28.9°C (19-of-20 years, QC-flagged),
+    // plus a Tmax−Tavg offset of 3.71°C observed in GHCN-Daily 1973–1982
+    // April readings at the same station. 28.9 + 3.71 = 32.6°C. Cross-check:
+    // sparse pre-1973 GHCN-Daily readings cluster 33.2–33.5°C (biased high
+    // by observation-time sampling); IMD 1991–2020 normal is 33.3°C, giving
+    // ~0.7°C of documented warming since 1951–1970 — consistent with the
+    // GHCN-M decade trend at Santacruz.
+    value: 32.6,
+    source: 'NOAA GHCN-M v4 Tavg (IN012070800 Santacruz, 19-year window) + GHCN-Daily Tmax−Tavg offset; cross-checked against IMD 1991–2020 normal 33.3°C',
+    confidence: 'medium',
+  },
 }
 const VALIDATION_GATE_C = 1.0
 
@@ -205,7 +255,7 @@ export default async function AboutPage({
   const presets = presetsModule.default as Record<PresetYear, Baseline>
   const historyData = historyModule.default as TempHistory
 
-  const validationTarget = VALIDATION_OBSERVED[cityId]
+  const validationTarget = VALIDATION_TARGETS[cityId]
   const defaultZone = Object.keys(city.zones)[0] ?? 'central'
   const p1973 = presets['1973']
   const modelOut = simulate(
@@ -220,14 +270,16 @@ export default async function AboutPage({
     },
     { month: 4, windDir: 'N', aod: 0.4, zone: defaultZone, timeOfDay: 'day' },
   )
-  const validation = validationTarget !== undefined ? {
+  const validation = validationTarget ? {
     modelled: modelOut.tempC,
     modelledLow: baseline.tempC + modelOut.bands.tempDelta.low,
     modelledHigh: baseline.tempC + modelOut.bands.tempDelta.high,
-    observed: validationTarget,
-    error: modelOut.tempC - validationTarget,
-    absError: Math.abs(modelOut.tempC - validationTarget),
-    passed: Math.abs(modelOut.tempC - validationTarget) <= VALIDATION_GATE_C,
+    observed: validationTarget.value,
+    source: validationTarget.source,
+    confidence: validationTarget.confidence,
+    error: modelOut.tempC - validationTarget.value,
+    absError: Math.abs(modelOut.tempC - validationTarget.value),
+    passed: Math.abs(modelOut.tempC - validationTarget.value) <= VALIDATION_GATE_C,
   } : null
 
   const annual = historyData.annual
@@ -301,14 +353,22 @@ export default async function AboutPage({
                   </div>
                 </div>
                 <div className="rounded-lg border bg-card/50 p-3">
-                  <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                  <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-muted-foreground">
                     Observed (IMD 1951–1970)
+                    {validation.confidence === 'medium' && (
+                      <Badge
+                        variant="outline"
+                        className="border-amber-700/50 px-1 py-0 font-mono text-[9px] uppercase text-amber-300"
+                      >
+                        est.
+                      </Badge>
+                    )}
                   </div>
                   <div className="mt-1 font-mono text-lg">
                     {validation.observed.toFixed(1)}°C
                   </div>
                   <div className="text-[11px] text-muted-foreground/70">
-                    April mean, {city.name} WMO
+                    {validation.source}
                   </div>
                 </div>
                 <div className="rounded-lg border bg-card/50 p-3">

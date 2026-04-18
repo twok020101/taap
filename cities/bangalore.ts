@@ -20,7 +20,7 @@ export const bangalore: CityConfig = {
   },
   zones,
   features: featuresData.features as LandFeature[],
-  gadm: { iso: 'IND', adm1: 17, adm2: 5 },
+  gadm: { iso: 'IND', adm1: 16, adm2: 3 },
   mapStyleUrl: 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json',
   mapBasemaps: {
     dark: 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json',

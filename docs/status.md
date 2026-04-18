@@ -1,6 +1,6 @@
 # Taap — Project Status
 
-_Last updated: 2026-04-18 (v1 multi-city landed — Bangalore, Delhi, Mumbai, Chennai)_
+_Last updated: 2026-04-18 (v1.1 polish — factual fixes, Chennai T3 overrides, per-city validation cards, dev-skip cobe, shareable scenarios, OG images, analytics)_
 
 This document tracks what has been shipped vs. what remains per the original plan in `docs/feat-bangalore-heat-simulator.md` (gitignored branch spec).
 
@@ -110,17 +110,17 @@ Clamping: Δ°C ∈ [−8, +12], PM2.5 ∈ [0, 500]. Model returns a `breakdown`
 - [x] **`pnpm build` clean**: 12 city-route combinations + splash + 3 API routes prerendered with Next.js 16 + Turbopack.
 
 ### v1.1 — Polish & deploy
-- [ ] **Chennai T3 coefficient re-run** — first pass blanket-inherited Bangalore; second pass with WebFetch-enabled agent should pull Devadas & Rose / Devi & Rose / Care Earth Trust verbatim quotes.
-- [ ] **Dev-mode canvas stability** — `cobe` + React StrictMode dev double-invoke produces intermittent `removeChild` crashes on `/bangalore` (production build unaffected). Fix: lift `GlobeIntro` to `app/layout.tsx` as a pathname-keyed singleton that never remounts across `[city]` navigations, or replace `cobe` with a stricter-mode-safe alternative.
-- [ ] **Per-city validation target** — only Bangalore currently has a citable April 1951–1970 IMD observed (22.0 °C). Source similar gates for Delhi (IMD Safdarjung), Mumbai (IMD Santacruz), Chennai (IMD Nungambakkam) to light up the validation card on their `/about` pages.
-- [ ] **Chennai pm25 quote year**: baseline cites "Lancet Planetary Health via Citizen Matters" without a pinned year — tighten.
-- [ ] **Bangalore GADM codes** — Mumbai T1 research flagged that our Bangalore query (adm1=17 adm2=5) may actually resolve to Kasaragod, Kerala per GFW dashboard; correct codes per GADM v4.1 JSON = adm1=16 adm2=3. Verify and fix `cities/bangalore.ts`.
-- [ ] Lighthouse perf ≥ 85 on homepage
-- [ ] Mobile QA down to 375 px
-- [ ] `share your scenario` URLs — slider state serialized into the URL hash, regeneratable on load
-- [ ] OG images per page
-- [ ] Vercel production deploy (repo not yet linked; no remote)
-- [ ] Analytics (Vercel Web Analytics)
+- [x] **Chennai T3 coefficient re-run** — v1.1 research audit confirmed Chennai-specific verbatim quotes only exist for `aod.referenceAod` (0.43 — Amanollahi et al. 2021, DOI 10.1007/s12517-021-07455-y) and `monsoonOffsets` (IMD Nungambakkam 1991–2020 via Climate of Chennai, Wikipedia). Wired in `cities/chennai.ts.coefficientOverrides`. Remaining 8 coefficients inherit from Bangalore with documented reasons (no per-pp canopy/built-up source, Care Earth Trust wetland-loss extent is not a cooling coefficient, emission inventories are in Gg/yr not marginal µg/m³, sea-breeze wind advection is qualitatively documented but no peer-reviewed °C multiplier) — inheritance is surfaced in the honesty panel.
+- [x] **Dev-mode canvas stability** — applied `process.env.NODE_ENV !== 'production'` skip in `GlobeIntroHost`; cobe's internal WebGL teardown throws inside React 19 StrictMode's dev-only effect double-invoke ("removeChild on canvas"). Production build verified clean (curl /bangalore → 200 + expected content). `GlobeIntroHost` lifted to `app/layout.tsx` regardless for the root singleton architecture. Honest trade: dev is intro-less, prod ships the intro.
+- [x] **Per-city validation target** — Delhi 35.5 °C (IMD Safdarjung WMO 42182 via tutiempo, 1957–1962 sample + 1991–2020 normal trend cross-check, medium confidence), Mumbai 32.6 °C (NOAA GHCN-M v4 Tavg IN012070800 1951–1970 + GHCN-Daily Tmax−Tavg offset from 1973–1982, medium confidence), Chennai 34.0 °C (back-projected: IMD Nungambakkam 1991–2020 normal 34.5 °C minus Kothawale 2012 phase-1 warming ~0.5 °C, medium confidence). All three render on `/<city>/about` with an `est.` badge and the source citation shown inline. Bangalore 22.0 °C stays the only high-confidence card.
+- [x] **Chennai pm25 quote year** — baseline `_source_pm25` now pins to "Ambient air pollution and daily mortality in ten cities of India (The Lancet Planetary Health, 2024)", DOI 10.1016/S2542-5196(24)00114-1, with the exact Citizen Matters quote ("The city, with an annual PM-2.5… of 33.7 micrograms per cubic meter, is estimated to have 2,870 deaths linked to air pollution each year.").
+- [x] **Bangalore GADM codes** — corrected `cities/bangalore.ts` from `adm1: 17, adm2: 5` (Kasaragod, Kerala) to `adm1: 16, adm2: 3` (Bengaluru Urban). Verified against Global Forest Watch dashboard title tags. GFW tree-cover-loss queries now target the intended district.
+- [x] **`share your scenario` URLs** — full slider + climate-context state serialised into `window.location.hash` via `components/simulator/use-scenario-hash.ts` (short-keyed URLSearchParams, RAF-debounced write, one-shot read-on-mount hydration with hydrated-gate to avoid write loops). "Copy scenario link" button in the simulator header surfaces the current URL with a transient "Link copied" confirm.
+- [x] **OG images per page** — Next 16 `app/opengraph-image.tsx` (root splash — "Why Indian cities get hot") + `app/[city]/opengraph-image.tsx` (per-city — "{City} · Why it gets hot"). Rendered via `ImageResponse`, ember/serif palette matching the product. `metadataBase` now derives from `NEXT_PUBLIC_SITE_URL ?? VERCEL_URL ?? localhost` so link-preview scrapers resolve the OG URLs correctly once the app is deployed.
+- [x] **Analytics** — `@vercel/analytics@2.0.1` installed, `<Analytics />` mounted in `app/layout.tsx`. Noops outside Vercel (the local-dev `/_vercel/insights/script.js` 404s are expected and stop once the project is linked to a Vercel deploy).
+- [ ] **Lighthouse perf ≥ 85** — not yet measured; deferred to post-deploy real-URL run.
+- [ ] **Mobile QA at 375 px** — preview-browser verification was flaky this session; deferred to a dedicated follow-up on the deployed URL.
+- [ ] **Vercel production deploy** — intentionally held for user-initiated action (repo not yet linked).
 
 ### Out of scope for this project
 - Auth / accounts / saved scenarios

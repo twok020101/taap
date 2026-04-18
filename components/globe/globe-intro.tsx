@@ -31,8 +31,7 @@ export function GlobeIntro({ cityName, target, storageKey }: GlobeIntroProps) {
   const TARGET_PHI = lngToPhi(targetLng)
   const TARGET_THETA = latToTheta(targetLat)
   const dedupKey = storageKey ?? `taap-intro-seen-${cityName.toLowerCase()}`
-  const didInitRef = useRef(false)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const canvasHostRef = useRef<HTMLDivElement>(null)
   const globeRef = useRef<Globe | null>(null)
   const rafRef = useRef<number>(0)
   const [visible, setVisible] = useState(false)
@@ -49,22 +48,28 @@ export function GlobeIntro({ cityName, target, storageKey }: GlobeIntroProps) {
     return () => clearTimeout(t)
   }, [dedupKey])
 
+  // Imperative canvas management — render the canvas outside React's
+  // reconciliation so cobe's WebGL teardown doesn't race with React's DOM
+  // diff during StrictMode's dev-mode double-invoke. React only owns the
+  // host <div>; the canvas is a pure child of that div that we create,
+  // cobe-manage, and remove ourselves.
   useEffect(() => {
     if (!mounted || !visible) return
-    const canvas = canvasRef.current
-    if (!canvas) return
-    // Guard against React StrictMode dev double-invoke — cobe mutates the
-    // canvas's WebGL context, and destroying/recreating races on removeChild.
-    // This ref persists across the strict-mode cleanup, so the second run skips.
-    if (didInitRef.current) return
-    didInitRef.current = true
+    const host = canvasHostRef.current
+    if (!host) return
 
+    const canvas = document.createElement('canvas')
     const devicePixelRatio = Math.min(window.devicePixelRatio, 2)
     const w = Math.min(window.innerWidth * 0.8, window.innerHeight * 0.8)
     canvas.width = w * devicePixelRatio
     canvas.height = w * devicePixelRatio
+    canvas.style.width = `${w}px`
+    canvas.style.height = `${w}px`
+    canvas.style.borderRadius = '50%'
+    canvas.setAttribute('aria-hidden', 'true')
+    host.appendChild(canvas)
 
-    const startPhi = Math.PI   // start pointing away — never mutated
+    const startPhi = Math.PI
     let currentPhi = startPhi
     let currentTheta = 0.3
     let tweenStartPhi: number | null = null
@@ -96,12 +101,10 @@ export function GlobeIntro({ cityName, target, storageKey }: GlobeIntroProps) {
       const elapsed = Date.now() - startTime
 
       if (elapsed < 1200) {
-        // Free rotation
         currentPhi -= 0.015
         globe.update({ phi: currentPhi, theta: currentTheta })
       } else if (elapsed < 2800) {
         if (tweenStartPhi === null) { tweenStartPhi = currentPhi; tweenStartTheta = currentTheta }
-        // Tween to city target
         const t = Math.min((elapsed - 1200) / 1600, 1)
         const ease = easeInOut(t)
         const phi = tweenStartPhi + (TARGET_PHI - tweenStartPhi) * ease
@@ -110,7 +113,6 @@ export function GlobeIntro({ cityName, target, storageKey }: GlobeIntroProps) {
         currentTheta = theta
         globe.update({ phi, theta })
       } else {
-        // Hold on target
         globe.update({ phi: TARGET_PHI, theta: TARGET_THETA })
         if (elapsed > 3000 && !hasDismissed) {
           hasDismissed = true
@@ -125,8 +127,11 @@ export function GlobeIntro({ cityName, target, storageKey }: GlobeIntroProps) {
 
     return () => {
       cancelAnimationFrame(rafRef.current)
-      try { globe.destroy() } catch { /* canvas already detached by React StrictMode double-invoke */ }
+      try { globe.destroy() } catch { /* ignore WebGL teardown race */ }
       globeRef.current = null
+      if (canvas.parentNode === host) {
+        try { host.removeChild(canvas) } catch { /* already detached */ }
+      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted, visible])
@@ -134,8 +139,6 @@ export function GlobeIntro({ cityName, target, storageKey }: GlobeIntroProps) {
   const dismiss = () => {
     sessionStorage.setItem(dedupKey, '1')
     setVisible(false)
-    // Intentionally don't unmount — cobe + React StrictMode races on canvas removeChild.
-    // The fade hides it; subsequent session navigations short-circuit via dedupKey.
   }
 
   if (!mounted) return null
@@ -162,18 +165,18 @@ export function GlobeIntro({ cityName, target, storageKey }: GlobeIntroProps) {
         pointerEvents: visible ? 'auto' : 'none',
       }}
     >
-      {/* Globe canvas */}
-      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <canvas
-          ref={canvasRef}
-          style={{
-            width: globeSize,
-            height: globeSize,
-            borderRadius: '50%',
-          }}
-          aria-hidden
-        />
-      </div>
+      {/* Globe host — canvas is imperatively managed inside this div */}
+      <div
+        ref={canvasHostRef}
+        style={{
+          position: 'relative',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: globeSize,
+          height: globeSize,
+        }}
+      />
 
       {/* Overlay text below globe */}
       <div

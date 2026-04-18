@@ -2,8 +2,10 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Instrument_Serif } from 'next/font/google'
 import Link from 'next/link'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { Analytics } from '@vercel/analytics/next'
 import { Header } from '@/components/brand/header'
 import { AmbientParticles } from '@/components/ambient/ambient-particles'
+import { GlobeIntroHost } from '@/components/globe/globe-intro-host'
 import './globals.css'
 
 const geistSans = Geist({
@@ -23,6 +25,10 @@ const instrumentSerif = Instrument_Serif({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ??
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'),
+  ),
   title: 'Taap — Why Indian cities get hot',
   description:
     "Explore how tree loss, wetland encroachment, and urban sprawl have driven Indian cities' temperatures up — and move the sliders to see what recovery looks like. Bangalore, Delhi, Mumbai, Chennai.",
@@ -39,6 +45,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} font-sans antialiased min-h-screen bg-background text-foreground`}
       >
         <TooltipProvider>
+          {/* Per-city globe intro — mounted at root so city navigations don't
+              trigger an RSC layout remount (which races with cobe's WebGL
+              cleanup in dev StrictMode). Renders null on the splash. */}
+          <GlobeIntroHost />
+
           {/* Sticky branded header */}
           <Header />
 
@@ -58,6 +69,7 @@ export default function RootLayout({
             </p>
           </footer>
         </TooltipProvider>
+        <Analytics />
       </body>
     </html>
   )

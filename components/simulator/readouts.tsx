@@ -1,4 +1,5 @@
 import type { ModelOutput } from '@/cities/types'
+import type { LiveAq } from '@/lib/sources/openAQ'
 import { coefficients } from '@/model/coefficients'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Info } from 'lucide-react'
@@ -6,6 +7,7 @@ import { Info } from 'lucide-react'
 interface ReadoutsProps {
   output: ModelOutput
   baseline: { tempC: number; pm25: number }
+  liveAq?: LiveAq | null
 }
 
 function DeltaTag({ delta, unit }: { delta: number; unit: string }) {
@@ -55,7 +57,7 @@ function BreakdownRow({ label, value }: BreakdownRowProps) {
   )
 }
 
-export function Readouts({ output, baseline }: ReadoutsProps) {
+export function Readouts({ output, baseline, liveAq }: ReadoutsProps) {
   const breakdownEntries = Object.entries(output.breakdown) as [
     keyof typeof output.breakdown,
     number,
@@ -157,11 +159,16 @@ export function Readouts({ output, baseline }: ReadoutsProps) {
             {output.pm25}
             <span className="text-2xl font-normal text-muted-foreground"> µg/m³</span>
           </span>
-          <div className="mb-1 flex flex-col">
+          <div className="mb-1 flex flex-col gap-0.5">
             <DeltaTag delta={output.pm25Delta} unit=" µg/m³" />
             <span className="text-xs text-muted-foreground">
               vs {baseline.pm25} µg/m³ baseline
             </span>
+            {liveAq && (
+              <span className="mt-0.5 inline-flex w-fit items-center rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+                live: {liveAq.valueUgm3} µg/m³
+              </span>
+            )}
           </div>
         </div>
         <p className="mt-2 text-xs text-muted-foreground">

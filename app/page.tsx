@@ -6,12 +6,14 @@ import historyData from '@/data/bangalore/history.json'
 import type { HistoryData } from '@/cities/types'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
+import { fetchBangaloreTreeLoss } from '@/lib/sources/gfw'
 
 const history = historyData as HistoryData
 
 const CARD_ACCENTS = ['red', 'orange', 'amber', 'orange'] as const
 
-export default function HomePage() {
+export default async function HomePage() {
+  const treeLoss = await fetchBangaloreTreeLoss()
   return (
     <div>
       <Hero />
@@ -35,7 +37,7 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
           {history.stats.map((stat, i) => (
             <StatCard
               key={stat.label}
@@ -46,6 +48,16 @@ export default function HomePage() {
               accent={CARD_ACCENTS[i] ?? 'default'}
             />
           ))}
+          {treeLoss && (
+            <StatCard
+              label={`Tree cover lost in ${treeLoss.latestYear}`}
+              value={treeLoss.latestLossHa}
+              suffix=" ha"
+              source="Hansen/GFW · 30 m"
+              accent="amber"
+              liveValue
+            />
+          )}
         </div>
       </section>
 

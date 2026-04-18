@@ -1,7 +1,9 @@
 import type { LiveWeather } from '@/lib/sources/openMeteo'
+import type { LiveAq } from '@/lib/sources/openAQ'
 
 interface LiveWeatherStripProps {
   weather: LiveWeather
+  liveAq?: LiveAq | null
 }
 
 function windDegToLabel(deg: number): string {
@@ -22,7 +24,21 @@ function formatIST(isoString: string): string {
   }
 }
 
-export function LiveWeatherStrip({ weather }: LiveWeatherStripProps) {
+// OpenAQ timestamps are UTC — convert to IST for display
+function formatUtcToIST(isoUtc: string): string {
+  try {
+    return new Date(isoUtc).toLocaleTimeString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    })
+  } catch {
+    return isoUtc
+  }
+}
+
+export function LiveWeatherStrip({ weather, liveAq }: LiveWeatherStripProps) {
   const windLabel = windDegToLabel(weather.windDirDeg)
   const timeLabel = formatIST(weather.observedAt)
 
@@ -39,6 +55,17 @@ export function LiveWeatherStrip({ weather }: LiveWeatherStripProps) {
       <span className="text-muted-foreground">
         Humidity {weather.humidityPct}%
       </span>
+      {liveAq && (
+        <>
+          <span className="h-3 w-px bg-sky-900/60" aria-hidden />
+          <span className="font-mono font-bold text-purple-300">
+            PM2.5 · {liveAq.valueUgm3} µg/m³
+          </span>
+          <span className="text-xs text-muted-foreground/70">
+            {liveAq.stationCount} CPCB stations · as of {formatUtcToIST(liveAq.observedAt)} IST
+          </span>
+        </>
+      )}
       <span className="ml-auto text-xs text-muted-foreground/70">
         as of {timeLabel} IST · Open-Meteo · 15 min cache
       </span>

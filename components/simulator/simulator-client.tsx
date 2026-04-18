@@ -12,6 +12,7 @@ import { simulate } from '@/model/simulate'
 import { zones } from '@/data/bangalore/zones'
 import type { SliderState, PresetYear, Baseline, SimContext, ZoneKey, WindDir } from '@/cities/types'
 import type { LiveWeather } from '@/lib/sources/openMeteo'
+import type { LiveAq } from '@/lib/sources/openAQ'
 import presetsData from '@/data/bangalore/presets.json'
 
 const presets = presetsData as Record<PresetYear, Baseline>
@@ -19,11 +20,12 @@ const presets = presetsData as Record<PresetYear, Baseline>
 interface SimulatorClientProps {
   baseline: Baseline
   liveWeather: LiveWeather | null
+  liveAq: LiveAq | null
 }
 
 const DEFAULT_ZONE: ZoneKey = 'central'
 
-export function SimulatorClient({ baseline, liveWeather }: SimulatorClientProps) {
+export function SimulatorClient({ baseline, liveWeather, liveAq }: SimulatorClientProps) {
   const [sliders, setSliders] = useState<SliderState>({
     canopyPct: baseline.canopyPct,
     builtUpPct: baseline.builtUpPct,
@@ -104,7 +106,7 @@ export function SimulatorClient({ baseline, liveWeather }: SimulatorClientProps)
       </div>
 
       {/* Live weather strip */}
-      {liveWeather && <LiveWeatherStrip weather={liveWeather} />}
+      {liveWeather && <LiveWeatherStrip weather={liveWeather} liveAq={liveAq} />}
 
       <div className="mt-6">
         <HonestyInline />
@@ -140,7 +142,7 @@ export function SimulatorClient({ baseline, liveWeather }: SimulatorClientProps)
 
         {/* Right: Readouts */}
         <div className="order-1 lg:order-2">
-          <Readouts output={output} baseline={{ tempC: baseline.tempC, pm25: baseline.pm25 }} />
+          <Readouts output={output} baseline={{ tempC: baseline.tempC, pm25: baseline.pm25 }} liveAq={liveAq} />
         </div>
       </div>
 

@@ -10,6 +10,8 @@ interface StatCardProps {
   source: string
   /** Accent color for the large number */
   accent?: 'orange' | 'red' | 'amber' | 'default'
+  /** When true, formats value with toLocaleString and no count-up animation (for fractional live values) */
+  liveValue?: boolean
 }
 
 function useCountUp(target: number, duration = 1800) {
@@ -45,9 +47,9 @@ function useCountUp(target: number, duration = 1800) {
   return { current, start }
 }
 
-export function StatCard({ label, value, suffix, source, accent = 'default' }: StatCardProps) {
+export function StatCard({ label, value, suffix, source, accent = 'default', liveValue = false }: StatCardProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const { current, start } = useCountUp(value)
+  const { current, start } = useCountUp(liveValue ? 0 : value)
 
   useEffect(() => {
     const el = containerRef.current
@@ -80,7 +82,7 @@ export function StatCard({ label, value, suffix, source, accent = 'default' }: S
       <Card className="flex h-full flex-col justify-between transition-all duration-300 hover:border-border">
         <CardContent className="p-6">
           <div className={`mb-2 text-5xl font-bold tabular-nums tracking-tight ${accentClass}`}>
-            {current.toLocaleString()}
+            {liveValue ? value.toLocaleString() : current.toLocaleString()}
             {suffix}
           </div>
           <p className="text-sm font-medium text-foreground">{label}</p>

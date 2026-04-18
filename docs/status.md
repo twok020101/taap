@@ -1,6 +1,6 @@
 # Taap — Project Status
 
-_Last updated: 2026-04-18 (v0.3 in progress)_
+_Last updated: 2026-04-18 (v0.3 — live data integrations landed)_
 
 This document tracks what has been shipped vs. what remains per the original plan in `docs/feat-bangalore-heat-simulator.md` (gitignored branch spec).
 
@@ -21,8 +21,8 @@ Build an interactive web app that explains Bangalore's urban heat gain — a scr
 - **Ambient particles**: canvas-based, temp-reactive — snow < 20 °C · leaves 20–28 °C · dust motes 28–35 °C · embers > 35 °C. Opacity 0.5, visibility-aware, reduced-motion respected. Driven live by modeled simulator temp.
 
 ### Pages
-- **`/` — Scrollytelling intro**: editorial hero "Why did Bangalore get hot?", 4 animated stat cards (tree cover lost 91%, wetlands lost 79%, built-up grew 1055%, surface temp +8 °C), CTA to simulator.
-- **`/simulator` — Interactive simulator**: Server Component fetches live weather and passes to a client wrapper. Live weather strip. Controls:
+- **`/` — Scrollytelling intro**: editorial hero "Why did Bangalore get hot?", 4 animated stat cards (tree cover lost 91%, wetlands lost 79%, built-up grew 1055%, surface temp +8 °C) plus a 5th live card (annual Bangalore Urban tree-cover-loss in ha from Hansen/GFW). CTA to simulator.
+- **`/simulator` — Interactive simulator**: Server Component fetches live weather + live PM2.5 in parallel and passes to a client wrapper. Live weather strip with AQ chip ("PM2.5 · N µg/m³ · N CPCB stations · HH:MM IST"). A muted "live: N µg/m³" pill sits next to the modeled PM2.5 Δ for comparison. Controls:
   - 5 main sliders: tree canopy %, built-up %, water km², vehicles index, population M
   - 4 historical presets: 1973 / 2000 / 2024 / 2026
   - **Climate context section** (new in v0.2):
@@ -61,7 +61,9 @@ Clamping: Δ°C ∈ [−8, +12], PM2.5 ∈ [0, 500]. Model returns a `breakdown`
 - `data/bangalore/history.json` — homepage stat cards
 - `data/bangalore/zones.json` — 5 spatial zones
 - `lib/sources/openMeteo.ts` — typed live-weather fetcher, ISR 900 s, no API key
-- `app/api/weather/route.ts` — cached weather API
+- `lib/sources/openAQ.ts` — typed live PM2.5 fetcher, nearest 5 CPCB/KSPCB stations via OpenAQ v3, median, ISR 900 s, needs `OPENAQ_API_KEY`
+- `lib/sources/gfw.ts` — typed annual tree-cover-loss fetcher, `gadm__tcl__adm2_change` for IND/17/5 at 10% threshold, ISR 86 400 s, needs `GFW_API_KEY`
+- `app/api/weather/route.ts` · `app/api/air/route.ts` · `app/api/tree-loss/route.ts` — ISR-cached proxies
 
 ### Infra
 - Next.js 16 App Router + React 19 + TypeScript strict
@@ -75,8 +77,8 @@ Clamping: Δ°C ∈ [−8, +12], PM2.5 ∈ [0, 500]. Model returns a `breakdown`
 
 ### v0.3 — Map & data
 - [x] **MapLibre GL heatmap overlay** on the simulator (`feat/map-heatmap`). Client-side ~400 m regular grid (~15k cells) over the city bbox, built from the 5-zone config + a curated `data/bangalore/features.json` (15 lakes, 10 green patches, 10 built-up clusters). Per-cell coefficient compute in `model/simulate-grid.ts` mirrors `simulate.ts` but drops the spatially-uniform monsoon + aerosol components (they'd wash the baseline red). Static `reliefC` per cell surfaces lakes and parks as cooler patches even at sliders=baseline. CartoDB Dark Matter no-labels basemap, no API key. Hover popup shows cell Δ°C and land-cover composition.
-- [ ] **Live OpenAQ integration** — PM2.5 from CPCB/KSPCB stations (currently using modeled PM2.5 against a static baseline). Needs `OPENAQ_API_KEY`.
-- [ ] **Live GFW tree-cover-loss feed** — annual Hansen data, ISR 24 h. Needs `GFW_API_KEY`.
+- [x] **Live OpenAQ integration** — PM2.5 from CPCB/KSPCB stations via OpenAQ v3. Nearest 5 live Bangalore stations, median, ISR 15 min. Shows in simulator strip + muted pill next to modeled PM2.5. Graceful fallback if unreachable.
+- [x] **Live GFW tree-cover-loss feed** — annual Hansen data via `gadm__tcl__adm2_change` dataset (pre-aggregated admin-level). Bengaluru Urban (IND/17/5) at 10% threshold. 5th stat card on homepage. ISR 24 h.
 - [ ] **GEE precompute pipeline** — one-off script to generate 1973/2000/2024/2026 Bangalore NDVI/LST rasters as committed PNGs for the intro split-screen.
 - [ ] **data.opencity.in** — historical Bangalore daily max/min 1951–2024 CSV ingested as a committed JSON; reference in hero and about page.
 - [ ] **Sentinel-2 Q1 2026 composite** — high-res recent imagery for the map base layer (upgrades `feat/map-heatmap`).
@@ -123,6 +125,8 @@ app/
   simulator/page.tsx         Server Component, fetches live weather
   about/page.tsx             honesty panel + coefficient citations
   api/weather/route.ts       ISR-cached Open-Meteo proxy
+  api/air/route.ts           ISR-cached OpenAQ PM2.5 proxy (15 min)
+  api/tree-loss/route.ts     ISR-cached GFW tree-cover-loss proxy (24 h)
 components/
   brand/     logo · wordmark · header
   globe/     globe-intro · globe-spinner
@@ -133,5 +137,5 @@ components/
 cities/      bangalore.ts · types.ts
 model/       coefficients.ts · simulate.ts
 data/bangalore/  baseline · presets · history · zones (all JSON)
-lib/         utils.ts · sources/openMeteo.ts
+lib/         utils.ts · sources/{openMeteo,openAQ,gfw}.ts
 ```

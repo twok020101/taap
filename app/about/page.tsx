@@ -30,6 +30,11 @@ const NOW_CAPTURED: CaveatItem[] = [
     explanation:
       'Bangalore is divided into five zones (Central CBD, South, East, North, Outskirts), each with its own canopy/built-up/water baseline and a residual zone temperature offset derived from IISc LST maps. Selecting a zone snaps the sliders to that zone\'s land-use baseline and adds the zone offset to the output. Source: Ramachandra & Bharath 2023; IISc LST maps.',
   },
+  {
+    title: 'Live PM2.5 from CPCB/KSPCB stations via OpenAQ',
+    explanation:
+      'Live PM2.5 from CPCB/KSPCB stations via OpenAQ, updated every 15 min (falls back silently if unreachable). The live reading is observational only — it does not rebase the model\'s PM2.5 calculation, which remains a function of the slider state against the April 2026 baseline.',
+  },
 ]
 
 const STILL_MISSING: CaveatItem[] = [

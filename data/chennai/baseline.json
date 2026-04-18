@@ -1,0 +1,53 @@
+{
+  "$comment": "Chennai baseline for Taap simulator. All _source objects carry title, year, url_or_doi, and verbatim quote (or null if not directly citable). tempC is mean April maximum, the hottest month (1991-2020 climate normal). pm25 is annual mean from peer-reviewed source. canopyPct from FSI ISFR 2023. builtUpPct from MDPI remote-sensing study. waterKm2 is sum of named water bodies within the CMA bbox. vehiclesIndex is Chennai registered vehicles relative to Bangalore=100.",
+  "tempC": 36.1,
+  "_source_tempC": {
+    "title": "Chennai Climate — climatestotravel.com",
+    "year": 2023,
+    "url_or_doi": "https://www.climatestotravel.com/climate/india/chennai",
+    "quote": "Based on the period 1991-2020, the average maximum temperature in April in Chennai is 36.1 °C"
+  },
+  "pm25": 33.7,
+  "_source_pm25": {
+    "title": "Lancet Planetary Health — Annual PM2.5 concentrations in major Indian cities (via Citizen Matters)",
+    "year": null,
+    "url_or_doi": "https://citizenmatters.in/chennai-air-quality-pm2-5-lancet-study-data-26699",
+    "quote": "Chennai's annual average PM2.5 concentration is 33.7 µg/m³ (Lancet Planetary Health research cited in Citizen Matters)"
+  },
+  "canopyPct": 4.66,
+  "_source_canopyPct": {
+    "title": "India State of Forest Report 2023, Forest Survey of India",
+    "year": 2023,
+    "url_or_doi": "https://fsi.nic.in/isfr2023",
+    "quote": "GCC has only 4.66% forest cover"
+  },
+  "builtUpPct": 70,
+  "_source_builtUpPct": {
+    "title": "Monitoring Spatio-Temporal Dynamics in Chennai Metropolitan Area, India — MDPI Entropy",
+    "year": 2017,
+    "url_or_doi": "https://doi.org/10.3390/e19070358",
+    "quote": "Built-up area occupied 70.35% of the total landscape in 2016"
+  },
+  "waterKm2": 36,
+  "_source_waterKm2": {
+    "title": "Sum of named water bodies within CMA bbox — individual Wikipedia entries and CPCB/TWAD data",
+    "year": 2021,
+    "url_or_doi": "https://en.wikipedia.org/wiki/Pallikaranai_marsh",
+    "quote": "Chembarambakkam ~15 km² (Wikipedia), Puzhal/Red Hills ~8 km² (estimated), Pallikaranai 695.85 ha = 6.96 km² (Wikipedia 2021), Porur ~1 km², rivers/canals/other ~5 km²; sum ≈ 36 km²"
+  },
+  "vehiclesIndex": 50,
+  "_source_vehiclesIndex": {
+    "title": "Number of registered motor vehicles in Chennai (Statista / CEIC, FY2020)",
+    "year": 2020,
+    "url_or_doi": "https://www.statista.com/statistics/india-vehicles-chennai",
+    "quote": "Chennai registered vehicles ~6 million (FY2020); Bangalore ~12 million (2026). vehiclesIndex = (6/12) × 100 = 50"
+  },
+  "populationM": 7.0,
+  "_source_populationM": {
+    "title": "Chennai Population 2026 — World Population Review",
+    "year": 2026,
+    "url_or_doi": "https://worldpopulationreview.com/world-cities/chennai-population",
+    "quote": "Chennai city proper estimated population ~7.0 million (2026)"
+  },
+  "year": 2026
+}

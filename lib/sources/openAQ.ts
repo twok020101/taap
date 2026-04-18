@@ -1,9 +1,12 @@
 /**
- * OpenAQ v3 fetcher — live PM2.5 from CPCB/KSPCB stations near Bangalore.
+ * OpenAQ v3 fetcher — live PM2.5 from CPCB/state-board stations near a city.
  *
  * Returns null on any unrecoverable failure so callers never need to catch.
  * ISR-cached per fetch call at revalidate: 900 (15 min).
  */
+
+import type { CityConfig } from '@/cities/types'
+import { bangalore } from '@/cities/bangalore'
 
 export interface LiveAqStation {
   name: string
@@ -118,10 +121,6 @@ function haversineM(lat1: number, lon1: number, lat2: number, lon2: number): num
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
-// Bangalore city centre
-const BLR_LAT = 12.9716
-const BLR_LON = 77.5946
-
 function median(values: number[]): number {
   const sorted = [...values].sort((a, b) => a - b)
   const mid = Math.floor(sorted.length / 2)
@@ -132,14 +131,20 @@ function median(values: number[]): number {
 
 // ── Fetcher ──────────────────────────────────────────────────────────────────
 
-const LOCATIONS_URL =
-  `https://api.openaq.org/v3/locations` +
-  `?coordinates=${BLR_LAT},${BLR_LON}&radius=25000&parameters_id=2&limit=50`
+function buildLocationsUrl(lat: number, lon: number): string {
+  return (
+    `https://api.openaq.org/v3/locations` +
+    `?coordinates=${lat},${lon}&radius=25000&parameters_id=2&limit=50`
+  )
+}
 
-export async function fetchBangaloreLivePm25(): Promise<LiveAq | null> {
+export async function fetchLivePm25(city: CityConfig): Promise<LiveAq | null> {
+  const [lon, lat] = city.mapCenter
+  const locationsUrl = buildLocationsUrl(lat, lon)
+
   try {
     // Step 1: fetch nearby PM2.5 locations
-    const locRes = await fetch(LOCATIONS_URL, {
+    const locRes = await fetch(locationsUrl, {
       headers: HEADERS,
       next: { revalidate: 900 },
       signal: AbortSignal.timeout(5000),
@@ -166,7 +171,7 @@ export async function fetchBangaloreLivePm25(): Promise<LiveAq | null> {
         typeof loc.distance === 'number'
           ? loc.distance
           : loc.coordinates
-          ? haversineM(BLR_LAT, BLR_LON, loc.coordinates.latitude, loc.coordinates.longitude)
+          ? haversineM(lat, lon, loc.coordinates.latitude, loc.coordinates.longitude)
           : Infinity
       return { loc, distanceM }
     })
@@ -244,3 +249,6 @@ export async function fetchBangaloreLivePm25(): Promise<LiveAq | null> {
     return null
   }
 }
+
+/** Back-compat shim. */
+export const fetchBangaloreLivePm25 = () => fetchLivePm25(bangalore)

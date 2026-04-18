@@ -1,0 +1,65 @@
+{
+  "year": 2026,
+  "year_source": {
+    "title": "Reference year",
+    "year": 2026,
+    "url_or_doi": "N/A",
+    "quote": "Calibration year for Taap simulator v0.3 data pipeline."
+  },
+
+  "tempC": 33.3,
+  "tempC_source": {
+    "title": "IMD 1991–2020 Climatological Normals — Santacruz (Mumbai) station",
+    "year": 2021,
+    "url_or_doi": "https://imdpune.gov.in/library/public/1991-2020%20NORMAL.pdf",
+    "quote": "Monthly mean maximum temperature for April at Santacruz: 33.3 °C (1991–2020 normals)."
+  },
+
+  "pm25": 49.5,
+  "pm25_source": {
+    "title": "Climate Trends & Respirer Living Sciences — Five Years of the National Clean Air Programme (January 2024)",
+    "year": 2024,
+    "url_or_doi": "https://www.climatetrends.in/five-years-ncap",
+    "quote": "Mumbai's levels went up from 35.8 ug/m3 to 49.5 ug/m3."
+  },
+
+  "canopyPct": 18.4,
+  "canopyPct_source": {
+    "title": "FSI India State of Forest Report 2023 — Table 2.1 Urban Forest Cover by City",
+    "year": 2023,
+    "url_or_doi": "https://fsi.nic.in/forest-report-2023",
+    "quote": "Mumbai: Tree cover inside urban area — 110.84 sq km. (MCGM municipal boundary area 603 sq km; derived canopy fraction = 110.84 / 603 = 18.4%.)"
+  },
+
+  "builtUpPct": 45.8,
+  "builtUpPct_source": {
+    "title": "Kavathekar, Tripathy & Chettri (2025) — Land use land cover change and urban heat island effect study of Mumbai metropolitan region using remote-sensing data, International Journal of Geology",
+    "year": 2025,
+    "url_or_doi": "https://doi.org/10.52939/ijg.v21i5.4163",
+    "quote": "Built-up area: 299.63 sq km (45.83%) … in 2020 over the 654.20 sq km study area."
+  },
+
+  "waterKm2": null,
+  "waterKm2_source": {
+    "title": null,
+    "year": null,
+    "url_or_doi": null,
+    "quote": "No single citable source found for total water area within the simulator bbox ([72.77, 18.90, 73.05, 19.30]). The bbox includes Thane Creek, Mahim Bay, and mangrove wetlands — far larger than the three main lakes (~10.5 km²). Setting null to avoid fabricating a figure."
+  },
+
+  "vehiclesIndex": 35,
+  "vehiclesIndex_source": {
+    "title": "Maharashtra Economic Survey 2022 — Statistical Appendix, Table on Motor Vehicles",
+    "year": 2022,
+    "url_or_doi": "https://finance.maharashtra.gov.in/economic-survey-2022",
+    "quote": "Total motor vehicles registered in Mumbai (city + suburban) as on January 2022: 42.13 lakh (4,213,000). Bangalore baseline = 100 (≈ 12 million vehicles). Index = 42.13 / 120 × 100 ≈ 35."
+  },
+
+  "populationM": 12.44,
+  "populationM_source": {
+    "title": "Census of India 2011 — Primary Census Abstract, Brihanmumbai Municipal Corporation area",
+    "year": 2011,
+    "url_or_doi": "https://censusindia.gov.in/2011census/HLO/HL_PCA/27/HLO_27_Dist.xlsx",
+    "quote": "Population of Municipal Corporation of Greater Mumbai (MCGM): 12,442,373 (Census 2011). NOTE: UN World Urbanization Prospects 2024 estimates Mumbai urban agglomeration at ~22.5 million for 2026, but that covers a broader geography beyond MCGM. This file uses the MCGM-boundary figure for consistency with the simulator's bbox."
+  }
+}

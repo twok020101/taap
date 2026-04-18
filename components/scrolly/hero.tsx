@@ -1,12 +1,21 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
-import historyData from '@/data/bangalore/temperature-history.json'
+import type { CityConfig, HistoryData } from '@/cities/types'
 
-export function Hero() {
+interface HeroProps {
+  city: CityConfig
+  /** Optional ERA5-derived anomaly (°C vs 1951–1980 mean), for the mono sub-line. */
+  eraAnomaly?: { tmax: number; tmin: number } | null
+  /** Optional full history data — hero shows the first 3 stats inline. */
+  history?: HistoryData | null
+}
+
+export function Hero({ city, eraAnomaly, history }: HeroProps) {
+  const topStats = history?.stats.slice(0, 3) ?? []
+
   return (
     <section className="relative overflow-hidden bg-background py-24 md:py-40">
-      {/* Ambient heat shimmer — layered radial gradients, CSS-only */}
       <div
         className="pointer-events-none absolute inset-0"
         aria-hidden
@@ -20,61 +29,76 @@ export function Hero() {
       />
 
       <div className="relative mx-auto max-w-4xl px-4 text-center">
-        {/* Editorial kicker */}
         <p
           className="mb-6 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground"
           style={{ fontFamily: 'var(--font-sans)' }}
         >
-          April 2026 · Illustrative model · Bangalore
+          April 2026 · Illustrative model · {city.name}
         </p>
 
-        {/* Big editorial headline in Instrument Serif */}
         <h1
           className="mb-6 text-5xl md:text-7xl lg:text-8xl leading-[1.05] tracking-tight"
           style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic' }}
         >
           Why did{' '}
-          <span style={{ color: 'oklch(0.72 0.18 52)' }}>Bangalore</span>
+          <span style={{ color: 'oklch(0.72 0.18 52)' }}>{city.name}</span>
           <br />
           get hot?
         </h1>
 
-        {/* Dramatic stat subtitle */}
-        <p
-          className="mx-auto mb-4 max-w-2xl text-lg md:text-2xl text-muted-foreground leading-relaxed"
-          style={{ fontFamily: 'var(--font-sans)' }}
-        >
-          Surface temperature climbed{' '}
-          <strong
-            className="font-semibold"
-            style={{ color: 'oklch(0.72 0.18 52)', fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '1.4em' }}
+        {topStats.length > 0 && (
+          <p
+            className="mx-auto mb-4 max-w-2xl text-lg md:text-2xl text-muted-foreground leading-relaxed"
+            style={{ fontFamily: 'var(--font-sans)' }}
           >
-            +8°C
-          </strong>{' '}
-          in 50 years — driven by losing{' '}
-          <strong className="text-foreground">91% of tree cover</strong>,{' '}
-          <strong className="text-foreground">79% of wetlands</strong>, and a{' '}
-          <strong className="text-foreground">1,055% expansion</strong> of concrete.
-        </p>
+            {topStats.map((stat, i) => (
+              <span key={stat.label}>
+                {i > 0 && (i === topStats.length - 1 ? ', and ' : ', ')}
+                <strong className="text-foreground">
+                  {stat.value}
+                  {stat.suffix}
+                </strong>{' '}
+                <span className="text-muted-foreground/80">
+                  {stat.label.toLowerCase()}
+                </span>
+              </span>
+            ))}
+            .
+          </p>
+        )}
 
-        <p className="mx-auto mb-8 max-w-xl text-sm text-muted-foreground/80" style={{ fontFamily: 'var(--font-mono)' }}>
-          ERA5: annual Tmax <span className="text-foreground">+{historyData.anomalyDegC.tmax.toFixed(2)}°C</span>,
-          Tmin <span className="text-foreground">+{historyData.anomalyDegC.tmin.toFixed(2)}°C</span>
-          {' '}vs 1951–1980 mean · <span className="text-muted-foreground">2015–2024 recent decade</span>
-        </p>
+        {eraAnomaly && (
+          <p
+            className="mx-auto mb-8 max-w-xl text-sm text-muted-foreground/80"
+            style={{ fontFamily: 'var(--font-mono)' }}
+          >
+            ERA5: annual Tmax{' '}
+            <span className="text-foreground">
+              {eraAnomaly.tmax >= 0 ? '+' : ''}
+              {eraAnomaly.tmax.toFixed(2)}°C
+            </span>
+            , Tmin{' '}
+            <span className="text-foreground">
+              {eraAnomaly.tmin >= 0 ? '+' : ''}
+              {eraAnomaly.tmin.toFixed(2)}°C
+            </span>{' '}
+            vs 1951–1980 mean
+          </p>
+        )}
 
         <p className="mx-auto mb-10 max-w-xl text-base text-muted-foreground">
-          Move the sliders to see how each driver contributed — and what partial recovery looks like.
+          Move the sliders to see how each driver contributed — and what partial
+          recovery looks like.
         </p>
 
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <Button asChild size="lg" className="gap-2">
-            <Link href="/simulator">
+            <Link href={`/${city.id}/simulator`}>
               Open the simulator <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
           <Button asChild variant="outline" size="lg">
-            <Link href="/about">Read the caveats</Link>
+            <Link href={`/${city.id}/about`}>Read the caveats</Link>
           </Button>
         </div>
       </div>

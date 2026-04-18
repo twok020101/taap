@@ -1,0 +1,43 @@
+{
+  "$comment": "Chennai preset years. 2026 = baseline.json. 1973 populationM cited (Census 1971 metro ~3.17M). 1970/2016 built-up% cited (MDPI Entropy 2017: 7.67% \u2192 70.35%). Pallikaranai wetland history cited (Care Earth Trust / Wikipedia: ~5,500 ha 1965 \u2192 ~696 ha 2021). Temperature and PM2.5 historical values are engineering estimates \u2014 flagged in UI.",
+  "1973": {
+    "year": 1973,
+    "tempC": 33.0,
+    "pm25": 10,
+    "canopyPct": 18,
+    "builtUpPct": 9,
+    "waterKm2": 68,
+    "vehiclesIndex": 2,
+    "populationM": 3.17
+  },
+  "2000": {
+    "year": 2000,
+    "tempC": 34.5,
+    "pm25": 22,
+    "canopyPct": 10,
+    "builtUpPct": 42,
+    "waterKm2": 52,
+    "vehiclesIndex": 15,
+    "populationM": 6.56
+  },
+  "2024": {
+    "year": 2024,
+    "tempC": 35.9,
+    "pm25": 33,
+    "canopyPct": 4.8,
+    "builtUpPct": 69,
+    "waterKm2": 37,
+    "vehiclesIndex": 48,
+    "populationM": 6.9
+  },
+  "2026": {
+    "year": 2026,
+    "tempC": 36.1,
+    "pm25": 33.7,
+    "canopyPct": 4.66,
+    "builtUpPct": 70,
+    "waterKm2": 36,
+    "vehiclesIndex": 50,
+    "populationM": 7.0
+  }
+}

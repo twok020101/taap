@@ -3,14 +3,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import maplibregl, { type Map as MapLibreMap, type GeoJSONSource, type StyleSpecification } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { bangalore } from '@/cities/bangalore'
-import { zones } from '@/data/bangalore/zones'
 import { buildGrid, cellPolygon } from '@/model/grid'
 import { simulateGrid } from '@/model/simulate-grid'
-import type { Baseline, SliderState, SimContext } from '@/cities/types'
+import type { Baseline, CityConfig, SliderState, SimContext } from '@/cities/types'
 import type { FeatureCollection, Polygon } from 'geojson'
 
 interface HeatmapMapProps {
+  city: CityConfig
   baseline: Baseline
   sliders: SliderState
   ctx: SimContext
@@ -60,8 +59,8 @@ const prefersReducedMotion = () =>
   window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
 /** Build an inline MapLibre style object for the EOX satellite raster basemap */
-function buildSatelliteStyle(): StyleSpecification {
-  const sat = bangalore.mapBasemaps!.satellite
+function buildSatelliteStyle(city: CityConfig): StyleSpecification {
+  const sat = city.mapBasemaps!.satellite
   return {
     version: 8,
     sources: {
@@ -85,12 +84,12 @@ function buildSatelliteStyle(): StyleSpecification {
   }
 }
 
-function getStyleForBasemap(bm: 'dark' | 'satellite'): string | StyleSpecification {
-  if (bm === 'satellite') return buildSatelliteStyle()
-  return bangalore.mapBasemaps?.dark ?? bangalore.mapStyleUrl
+function getStyleForBasemap(city: CityConfig, bm: 'dark' | 'satellite'): string | StyleSpecification {
+  if (bm === 'satellite') return buildSatelliteStyle(city)
+  return city.mapBasemaps?.dark ?? city.mapStyleUrl
 }
 
-export function HeatmapMap({ baseline, sliders, ctx, basemap = 'dark' }: HeatmapMapProps) {
+export function HeatmapMap({ city, baseline, sliders, ctx, basemap = 'dark' }: HeatmapMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const mapRef = useRef<MapLibreMap | null>(null)
   const loadedRef = useRef(false)
@@ -100,11 +99,11 @@ export function HeatmapMap({ baseline, sliders, ctx, basemap = 'dark' }: Heatmap
   const basemapRef = useRef<'dark' | 'satellite'>('dark')
   const [mapError, setMapError] = useState<string | null>(null)
 
-  const grid = useMemo(() => buildGrid(bangalore), [])
+  const grid = useMemo(() => buildGrid(city), [city])
 
   const sim = useMemo(
-    () => simulateGrid(baseline, sliders, ctx, grid),
-    [baseline, sliders, ctx, grid],
+    () => simulateGrid(city, baseline, sliders, ctx, grid),
+    [city, baseline, sliders, ctx, grid],
   )
 
   // ── Build the static GeoJSON once (cells never move) ──────────────────────
@@ -165,12 +164,12 @@ export function HeatmapMap({ baseline, sliders, ctx, basemap = 'dark' }: Heatmap
     if (bm === 'dark') {
       const zoneLabels: FeatureCollection = {
         type: 'FeatureCollection',
-        features: (Object.keys(zones) as Array<keyof typeof zones>).map(zk => ({
+        features: Object.keys(city.zones).map(zk => ({
           type: 'Feature',
-          properties: { label: zones[zk].label.split(' ')[0].toUpperCase() },
+          properties: { label: city.zones[zk].label.split(' ')[0].toUpperCase() },
           geometry: {
             type: 'Point',
-            coordinates: bangalore.zoneCentroids[zk],
+            coordinates: city.zoneCentroids[zk],
           },
         })),
       }
@@ -209,14 +208,14 @@ export function HeatmapMap({ baseline, sliders, ctx, basemap = 'dark' }: Heatmap
     try {
       map = new maplibregl.Map({
         container: containerRef.current,
-        style: getStyleForBasemap(basemap),
-        center: bangalore.mapCenter,
-        zoom: bangalore.mapZoom,
+        style: getStyleForBasemap(city, basemap),
+        center: city.mapCenter,
+        zoom: city.mapZoom,
         minZoom: 9,
         maxZoom: 13,
         maxBounds: [
-          [bangalore.bbox[0] - 0.15, bangalore.bbox[1] - 0.15],
-          [bangalore.bbox[2] + 0.15, bangalore.bbox[3] + 0.15],
+          [city.bbox[0] - 0.15, city.bbox[1] - 0.15],
+          [city.bbox[2] + 0.15, city.bbox[3] + 0.15],
         ],
         attributionControl: { compact: true },
         dragRotate: false,
@@ -314,7 +313,7 @@ export function HeatmapMap({ baseline, sliders, ctx, basemap = 'dark' }: Heatmap
     basemapRef.current = basemap
     loadedRef.current = false
 
-    map.setStyle(getStyleForBasemap(basemap), { diff: false })
+    map.setStyle(getStyleForBasemap(city, basemap), { diff: false })
 
     map.once('style.load', () => {
       addHeatLayers(map, basemap)

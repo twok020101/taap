@@ -28,7 +28,7 @@ const SLIDERS: SliderConfig[] = [
     step: 1,
     unit: '%',
     source: 'canopy',
-    description: 'Percentage of Bangalore covered by tree canopy. 1973: 68%, 2026: 6%.',
+    description: 'Percentage of the city covered by tree canopy.',
   },
   {
     key: 'builtUpPct',
@@ -38,7 +38,7 @@ const SLIDERS: SliderConfig[] = [
     step: 1,
     unit: '%',
     source: 'builtUp',
-    description: 'Percentage of Bangalore covered by impervious surfaces. 1973: 8%, 2026: 93%.',
+    description: 'Percentage of the city covered by impervious surfaces.',
   },
   {
     key: 'waterKm2',
@@ -48,7 +48,7 @@ const SLIDERS: SliderConfig[] = [
     step: 0.5,
     unit: ' km²',
     source: 'water',
-    description: 'Total area of lakes, tanks, and wetlands. 1973: 21 km², 2026: 4.5 km².',
+    description: 'Total area of lakes, tanks, and wetlands within city bounds.',
   },
   {
     key: 'vehiclesIndex',
@@ -89,7 +89,7 @@ interface SliderPanelProps {
 }
 
 const LINK_EXPLANATION =
-  'When linked, moving built-up pulls canopy down by 0.6× the delta (and vice versa), mirroring how impervious surface has historically replaced vegetation in Bangalore (IISc LULC 1973–2023). Unlinked lets you explore counterfactuals — e.g. canopy gain without built-up loss.'
+  'When linked, moving built-up pulls canopy down by 0.6× the delta (and vice versa), mirroring how impervious surface historically replaces vegetation (IISc LULC 1973–2023, calibrated on Bangalore). Unlinked lets you explore counterfactuals — e.g. canopy gain without built-up loss.'
 
 export function SliderPanel({
   sliders,

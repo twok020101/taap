@@ -1,0 +1,28 @@
+{
+  "stats": [
+    {
+      "label": "Mangrove loss 1990–2001",
+      "value": 39,
+      "suffix": "%",
+      "source": "Vijay et al., IJMS 2005"
+    },
+    {
+      "label": "Urban tree cover lost 2016–2021",
+      "value": 2028,
+      "suffix": " ha",
+      "source": "MCAP 2022"
+    },
+    {
+      "label": "Peak land surface temp rose 2003–2023",
+      "value": 6.4,
+      "suffix": "°C",
+      "source": "Balasundaram et al. 2025"
+    },
+    {
+      "label": "Sea level rise rate — Apollo Bandar",
+      "value": 1.2,
+      "suffix": " mm/yr",
+      "source": "NIO / PSMSL (113-yr record)"
+    }
+  ]
+}

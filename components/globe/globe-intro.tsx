@@ -4,9 +4,14 @@ import { useEffect, useRef, useState } from 'react'
 import createGlobe, { type Globe } from 'cobe'
 import { Logo } from '@/components/brand/logo'
 
-// Bangalore coordinates
-const BANGALORE_LAT = 12.9716
-const BANGALORE_LNG = 77.5946
+interface GlobeIntroProps {
+  /** City name shown under the globe. */
+  cityName: string
+  /** Target marker / camera — [lat, lng]. */
+  target: [number, number]
+  /** Dedup key — shown only once per session per key. */
+  storageKey?: string
+}
 
 // Convert lat/long to cobe phi (longitude radians offset so front = 0)
 function lngToPhi(lng: number): number {
@@ -16,15 +21,17 @@ function latToTheta(lat: number): number {
   return ((90 - lat) * Math.PI) / 180
 }
 
-const BANGALORE_PHI = lngToPhi(BANGALORE_LNG)
-const BANGALORE_THETA = latToTheta(BANGALORE_LAT)
-
 // Ease in-out cubic
 function easeInOut(t: number): number {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
 }
 
-export function GlobeIntro() {
+export function GlobeIntro({ cityName, target, storageKey }: GlobeIntroProps) {
+  const [targetLat, targetLng] = target
+  const TARGET_PHI = lngToPhi(targetLng)
+  const TARGET_THETA = latToTheta(targetLat)
+  const dedupKey = storageKey ?? `taap-intro-seen-${cityName.toLowerCase()}`
+  const didInitRef = useRef(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const globeRef = useRef<Globe | null>(null)
   const rafRef = useRef<number>(0)
@@ -34,18 +41,23 @@ export function GlobeIntro() {
   useEffect(() => {
     // Respect prefers-reduced-motion
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    // Only first visit each session
-    if (sessionStorage.getItem('taap-intro-seen')) return
+    // Only first visit each session per city
+    if (sessionStorage.getItem(dedupKey)) return
 
     setMounted(true)
     const t = setTimeout(() => setVisible(true), 50)
     return () => clearTimeout(t)
-  }, [])
+  }, [dedupKey])
 
   useEffect(() => {
     if (!mounted || !visible) return
     const canvas = canvasRef.current
     if (!canvas) return
+    // Guard against React StrictMode dev double-invoke — cobe mutates the
+    // canvas's WebGL context, and destroying/recreating races on removeChild.
+    // This ref persists across the strict-mode cleanup, so the second run skips.
+    if (didInitRef.current) return
+    didInitRef.current = true
 
     const devicePixelRatio = Math.min(window.devicePixelRatio, 2)
     const w = Math.min(window.innerWidth * 0.8, window.innerHeight * 0.8)
@@ -74,7 +86,7 @@ export function GlobeIntro() {
       markerColor: [1.0, 0.6, 0.1],
       glowColor: [0.7, 0.4, 0.15],
       markers: [
-        { location: [BANGALORE_LAT, BANGALORE_LNG], size: 0.08 },
+        { location: [targetLat, targetLng], size: 0.08 },
       ],
     })
     globeRef.current = globe
@@ -88,19 +100,18 @@ export function GlobeIntro() {
         currentPhi -= 0.015
         globe.update({ phi: currentPhi, theta: currentTheta })
       } else if (elapsed < 2800) {
-        // Snapshot tween origin once on first entry
         if (tweenStartPhi === null) { tweenStartPhi = currentPhi; tweenStartTheta = currentTheta }
-        // Tween to Bangalore
+        // Tween to city target
         const t = Math.min((elapsed - 1200) / 1600, 1)
         const ease = easeInOut(t)
-        const phi = tweenStartPhi + (BANGALORE_PHI - tweenStartPhi) * ease
-        const theta = (tweenStartTheta ?? 0.3) + (BANGALORE_THETA - (tweenStartTheta ?? 0.3)) * ease
+        const phi = tweenStartPhi + (TARGET_PHI - tweenStartPhi) * ease
+        const theta = (tweenStartTheta ?? 0.3) + (TARGET_THETA - (tweenStartTheta ?? 0.3)) * ease
         currentPhi = phi
         currentTheta = theta
         globe.update({ phi, theta })
       } else {
-        // Hold on Bangalore
-        globe.update({ phi: BANGALORE_PHI, theta: BANGALORE_THETA })
+        // Hold on target
+        globe.update({ phi: TARGET_PHI, theta: TARGET_THETA })
         if (elapsed > 3000 && !hasDismissed) {
           hasDismissed = true
           dismiss()
@@ -114,16 +125,17 @@ export function GlobeIntro() {
 
     return () => {
       cancelAnimationFrame(rafRef.current)
-      globe.destroy()
+      try { globe.destroy() } catch { /* canvas already detached by React StrictMode double-invoke */ }
       globeRef.current = null
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted, visible])
 
   const dismiss = () => {
-    sessionStorage.setItem('taap-intro-seen', '1')
+    sessionStorage.setItem(dedupKey, '1')
     setVisible(false)
-    setTimeout(() => setMounted(false), 700)
+    // Intentionally don't unmount — cobe + React StrictMode races on canvas removeChild.
+    // The fade hides it; subsequent session navigations short-circuit via dedupKey.
   }
 
   if (!mounted) return null
@@ -196,7 +208,7 @@ export function GlobeIntro() {
             marginBottom: '0.2rem',
           }}
         >
-          Bangalore
+          {cityName}
         </p>
         <p
           style={{

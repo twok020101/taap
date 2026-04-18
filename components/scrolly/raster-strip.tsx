@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import Image from 'next/image'
+import type { CityConfig } from '@/cities/types'
 
 const YEARS = ['1973', '2000', '2024', '2026'] as const
 
@@ -44,7 +45,7 @@ function PreSatelliteTile() {
   )
 }
 
-export function RasterStrip() {
+export function RasterStrip({ city }: { city: CityConfig }) {
   return (
     <section className="mx-auto max-w-6xl px-4 py-20">
       {/* Section heading */}
@@ -100,7 +101,7 @@ export function RasterStrip() {
                     <PreSatelliteTile />
                   ) : (
                     <Image
-                      src={`/rasters/bangalore/${yr}-${row.key}.png`}
+                      src={`/rasters/${city.id}/${yr}-${row.key}.png`}
                       alt={row.captions[yr]}
                       width={1024}
                       height={820}

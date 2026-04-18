@@ -1,18 +1,26 @@
 /**
- * GET /api/air
+ * GET /api/air?city=<id>
  *
- * Returns live Bangalore PM2.5 from OpenAQ v3 (CPCB/KSPCB stations).
+ * Returns live PM2.5 for the given city from OpenAQ v3.
+ * Defaults to Bangalore when city param is missing.
  * ISR-cached for 15 minutes (revalidate: 900).
  */
 
-import { fetchBangaloreLivePm25 } from '@/lib/sources/openAQ'
-import { NextResponse } from 'next/server'
+import { fetchLivePm25 } from '@/lib/sources/openAQ'
+import { getCity } from '@/cities'
+import { NextResponse, type NextRequest } from 'next/server'
 
 export const revalidate = 900
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const cityId = request.nextUrl.searchParams.get('city') ?? 'bangalore'
+  const city = getCity(cityId)
+  if (!city) {
+    return NextResponse.json({ error: `Unknown city: ${cityId}` }, { status: 404 })
+  }
+
   try {
-    const aq = await fetchBangaloreLivePm25()
+    const aq = await fetchLivePm25(city)
     if (!aq) {
       return NextResponse.json({ error: 'No live AQ data available' }, { status: 503 })
     }

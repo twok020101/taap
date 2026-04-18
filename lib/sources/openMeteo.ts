@@ -1,9 +1,12 @@
 /**
- * Open-Meteo fetcher for Bangalore current weather.
+ * Open-Meteo fetcher for city current weather.
  *
  * No API key required. Uses Next.js fetch cache with revalidate: 900 (15 min).
- * Coordinates: 12.9716°N, 77.5946°E (Bangalore city centre).
+ * Call with any CityConfig — lat/lng are derived from city.mapCenter.
  */
+
+import type { CityConfig } from '@/cities/types'
+import { bangalore } from '@/cities/bangalore'
 
 export interface LiveWeather {
   tempC: number
@@ -76,16 +79,20 @@ function isOpenMeteoResponse(data: unknown): data is OpenMeteoResponse {
   )
 }
 
-const OPEN_METEO_URL =
-  'https://api.open-meteo.com/v1/forecast' +
-  '?latitude=12.9716&longitude=77.5946' +
-  '&current=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m,weather_code' +
-  '&timezone=Asia%2FKolkata'
+function buildUrl(lat: number, lng: number): string {
+  return (
+    'https://api.open-meteo.com/v1/forecast' +
+    `?latitude=${lat}&longitude=${lng}` +
+    '&current=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m,weather_code' +
+    '&timezone=Asia%2FKolkata'
+  )
+}
 
-export async function fetchBangaloreWeather(): Promise<LiveWeather> {
-  const res = await fetch(OPEN_METEO_URL, {
-    next: { revalidate: 900 },
-  })
+export async function fetchLiveWeather(city: CityConfig): Promise<LiveWeather> {
+  const [lng, lat] = city.mapCenter
+  const url = buildUrl(lat, lng)
+
+  const res = await fetch(url, { next: { revalidate: 900 } })
 
   if (!res.ok) {
     throw new Error(`Open-Meteo returned ${res.status}: ${res.statusText}`)
@@ -109,3 +116,6 @@ export async function fetchBangaloreWeather(): Promise<LiveWeather> {
     summary: wmoSummary(c.weather_code),
   }
 }
+
+/** Back-compat shim — header WeatherPill still uses Bangalore directly. */
+export const fetchBangaloreWeather = () => fetchLiveWeather(bangalore)

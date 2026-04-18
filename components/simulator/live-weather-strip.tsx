@@ -2,6 +2,7 @@ import type { LiveWeather } from '@/lib/sources/openMeteo'
 import type { LiveAq } from '@/lib/sources/openAQ'
 
 interface LiveWeatherStripProps {
+  cityName: string
   weather: LiveWeather
   liveAq?: LiveAq | null
 }
@@ -38,13 +39,13 @@ function formatUtcToIST(isoUtc: string): string {
   }
 }
 
-export function LiveWeatherStrip({ weather, liveAq }: LiveWeatherStripProps) {
+export function LiveWeatherStrip({ cityName, weather, liveAq }: LiveWeatherStripProps) {
   const windLabel = windDegToLabel(weather.windDirDeg)
   const timeLabel = formatIST(weather.observedAt)
 
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-lg border border-sky-900/50 bg-sky-950/30 px-4 py-3 text-sm">
-      <span className="font-semibold text-sky-300">Live in Bangalore</span>
+      <span className="font-semibold text-sky-300">Live in {cityName}</span>
       <span className="text-foreground">
         <span className="font-mono text-lg font-bold text-sky-200">{weather.tempC}°C</span>
       </span>
@@ -62,7 +63,7 @@ export function LiveWeatherStrip({ weather, liveAq }: LiveWeatherStripProps) {
             PM2.5 · {liveAq.valueUgm3} µg/m³
           </span>
           <span className="text-xs text-muted-foreground/70">
-            {liveAq.stationCount} CPCB stations · as of {formatUtcToIST(liveAq.observedAt)} IST
+            {liveAq.stationCount} CPCB/state-board stations · as of {formatUtcToIST(liveAq.observedAt)} IST
           </span>
         </>
       )}

@@ -3,7 +3,6 @@ import { Geist, Geist_Mono, Instrument_Serif } from 'next/font/google'
 import Link from 'next/link'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Header } from '@/components/brand/header'
-import { GlobeIntro } from '@/components/globe/globe-intro'
 import { AmbientParticles } from '@/components/ambient/ambient-particles'
 import './globals.css'
 
@@ -26,7 +25,7 @@ const instrumentSerif = Instrument_Serif({
 export const metadata: Metadata = {
   title: 'Taap — Why Indian cities get hot',
   description:
-    "Explore how Bangalore's tree loss, lake encroachment, and urban sprawl have driven its temperature up by 8°C since 1973 — and move the sliders to see what recovery looks like.",
+    "Explore how tree loss, wetland encroachment, and urban sprawl have driven Indian cities' temperatures up — and move the sliders to see what recovery looks like. Bangalore, Delhi, Mumbai, Chennai.",
 }
 
 export default function RootLayout({
@@ -40,9 +39,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} font-sans antialiased min-h-screen bg-background text-foreground`}
       >
         <TooltipProvider>
-          {/* First-load globe intro — client component, mounts only on first session visit */}
-          <GlobeIntro />
-
           {/* Sticky branded header */}
           <Header />
 
@@ -55,10 +51,10 @@ export default function RootLayout({
             <p>
               Illustrative model only — not a forecast. All coefficients are
               correlation-based, not causal. See{' '}
-              <Link href="/about" className="underline underline-offset-2 hover:text-foreground">
-                About
+              <Link href="/" className="underline underline-offset-2 hover:text-foreground">
+                city picker
               </Link>{' '}
-              for limitations and citations.
+              for per-city caveats and citations.
             </p>
           </footer>
         </TooltipProvider>

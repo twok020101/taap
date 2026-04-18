@@ -1,0 +1,29 @@
+{
+  "$comment": "Delhi historical stats for the 'Why did Delhi get hotter?' narrative panel. Sources cited per entry.",
+  "stats": [
+    {
+      "label": "Built-up area grew since 2000",
+      "value": 70,
+      "suffix": "%",
+      "source": "DU / HCL Tech / Terna — Research in Ecology 2025"
+    },
+    {
+      "label": "Wetland area lost since 2000",
+      "value": 9,
+      "suffix": "%",
+      "source": "DU / HCL Tech / Terna — Research in Ecology 2025"
+    },
+    {
+      "label": "Vegetation cover lost 1991\u20132021",
+      "value": 30,
+      "suffix": "%",
+      "source": "Shahfahad et al. \u2014 Habitat International 2024 (DOI:10.1016/j.habitatint.2024.103129)"
+    },
+    {
+      "label": "Surface temperature up 1991\u20132021",
+      "value": 7,
+      "suffix": "\u00b0C",
+      "source": "Impact of urban growth in Delhi \u2014 Urban Climate 2024 (DOI:10.1016/j.uclim.2024.102010)"
+    }
+  ]
+}

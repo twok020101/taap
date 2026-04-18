@@ -1,4 +1,6 @@
-import type { CityConfig } from './types'
+import type { CityConfig, LandFeature } from './types'
+import { zones } from '@/data/bangalore/zones'
+import featuresData from '@/data/bangalore/features.json'
 
 export const bangalore: CityConfig = {
   id: 'bangalore',
@@ -16,6 +18,9 @@ export const bangalore: CityConfig = {
     north: [77.5920, 13.0850],
     outskirts: [77.4500, 13.1050],
   },
+  zones,
+  features: featuresData.features as LandFeature[],
+  gadm: { iso: 'IND', adm1: 17, adm2: 5 },
   mapStyleUrl: 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json',
   mapBasemaps: {
     dark: 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json',

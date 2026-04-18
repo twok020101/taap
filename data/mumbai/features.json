@@ -1,0 +1,42 @@
+{
+  "$comment": "Mumbai curated land-cover features for heatmap grid. Coastal sea segments (high cooling) + SGNP (dominant green) + BKC/MIDC (dominant heat). Sources: OpenStreetMap via Nominatim, verified 2026-04-18. Bbox: [72.77, 18.90, 73.05, 19.30] covering MCGM + Thane.",
+  "features": [
+    { "type": "water", "name": "Worli Sea Face",              "center": [72.8154, 19.0098], "radius_m": 1800, "strength": 0.93 },
+    { "type": "water", "name": "Bandra-Worli Sea Link axis",  "center": [72.8160, 19.0316], "radius_m": 2000, "strength": 0.93 },
+    { "type": "water", "name": "Juhu Beach coastal segment",  "center": [72.8247, 19.1027], "radius_m": 2200, "strength": 0.92 },
+    { "type": "water", "name": "Versova coastal segment",     "center": [72.8133, 19.1300], "radius_m": 1600, "strength": 0.91 },
+    { "type": "water", "name": "Mahim Bay",                   "center": [72.8370, 19.0400], "radius_m": 1400, "strength": 0.90 },
+    { "type": "water", "name": "Mahim Creek",                 "center": [72.8400, 19.0480], "radius_m": 900,  "strength": 0.88 },
+    { "type": "water", "name": "Thane Creek",                 "center": [72.9627, 19.1131], "radius_m": 2500, "strength": 0.90 },
+    { "type": "water", "name": "Vasai Creek",                 "center": [72.9050, 19.2896], "radius_m": 1800, "strength": 0.90 },
+    { "type": "water", "name": "Mumbai Harbour South",        "center": [72.9456, 18.9906], "radius_m": 2200, "strength": 0.92 },
+    { "type": "water", "name": "Powai Lake",                  "center": [72.9062, 19.1277], "radius_m": 820,  "strength": 0.90 },
+    { "type": "water", "name": "Vihar Lake",                  "center": [72.9131, 19.1547], "radius_m": 1500, "strength": 0.91 },
+    { "type": "water", "name": "Tulsi Lake",                  "center": [72.9178, 19.1911], "radius_m": 1200, "strength": 0.92 },
+    { "type": "water", "name": "Thane Creek Mangrove belt",   "center": [72.9800, 19.1800], "radius_m": 2800, "strength": 0.90 },
+    { "type": "water", "name": "Mahim mangroves",             "center": [72.8350, 19.0500], "radius_m": 700,  "strength": 0.88 },
+    { "type": "water", "name": "Bhandup / Vihar-Tulsi wetlands", "center": [72.9200, 19.1700], "radius_m": 1100, "strength": 0.87 },
+
+    { "type": "green", "name": "Sanjay Gandhi National Park", "center": [72.9163, 19.2093], "radius_m": 5700, "strength": 0.95 },
+    { "type": "green", "name": "Aarey Colony Forest",         "center": [72.8610, 19.1645], "radius_m": 1950, "strength": 0.88 },
+    { "type": "green", "name": "IIT Bombay campus + Powai greens", "center": [72.9150, 19.1326], "radius_m": 900, "strength": 0.80 },
+    { "type": "green", "name": "BNHS Flamingo Sanctuary (Sewri)", "center": [72.9500, 19.0200], "radius_m": 1100, "strength": 0.85 },
+    { "type": "green", "name": "Mahim Nature Park",           "center": [72.8450, 19.0450], "radius_m": 450,  "strength": 0.78 },
+    { "type": "green", "name": "Five Gardens Matunga",        "center": [72.8538, 19.0195], "radius_m": 350,  "strength": 0.72 },
+    { "type": "green", "name": "Oval Maidan + Azad Maidan",   "center": [72.8313, 18.9396], "radius_m": 500,  "strength": 0.70 },
+    { "type": "green", "name": "Priyadarshini Park",          "center": [72.7991, 18.9579], "radius_m": 350,  "strength": 0.72 },
+    { "type": "green", "name": "Hanging Gardens + Kamala Nehru Park", "center": [72.8049, 18.9567], "radius_m": 300, "strength": 0.72 },
+    { "type": "green", "name": "Bhandup Pumping Station wetlands", "center": [72.9100, 19.1650], "radius_m": 800, "strength": 0.83 },
+
+    { "type": "builtup", "name": "Nariman Point / Fort CBD",  "center": [72.8180, 18.9253], "radius_m": 1400, "strength": 0.92 },
+    { "type": "builtup", "name": "Bandra-Kurla Complex",      "center": [72.8613, 19.0593], "radius_m": 1080, "strength": 0.90 },
+    { "type": "builtup", "name": "Andheri East MIDC",         "center": [72.8676, 19.1277], "radius_m": 1600, "strength": 0.88 },
+    { "type": "builtup", "name": "Worli / Lower Parel corridor", "center": [72.8408, 19.0257], "radius_m": 1200, "strength": 0.87 },
+    { "type": "builtup", "name": "Dadar dense residential",   "center": [72.8428, 19.0192], "radius_m": 800,  "strength": 0.83 },
+    { "type": "builtup", "name": "Chembur industrial",        "center": [72.8980, 19.0548], "radius_m": 1500, "strength": 0.87 },
+    { "type": "builtup", "name": "Mulund-Bhandup East corridor", "center": [72.9567, 19.1721], "radius_m": 1800, "strength": 0.82 },
+    { "type": "builtup", "name": "Thane City core",           "center": [72.9702, 19.1943], "radius_m": 2200, "strength": 0.85 },
+    { "type": "builtup", "name": "Borivali dense residential","center": [72.8574, 19.2291], "radius_m": 1600, "strength": 0.80 },
+    { "type": "builtup", "name": "Vashi / Navi Mumbai fringe","center": [72.9988, 19.0632], "radius_m": 1800, "strength": 0.82 }
+  ]
+}

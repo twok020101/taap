@@ -1,0 +1,6 @@
+{
+  "1973": { "year": 1973, "tempC": 22.0, "pm25": 12, "canopyPct": 68, "builtUpPct": 8, "waterKm2": 21.0, "vehiclesIndex": 2, "populationM": 1.7 },
+  "2000": { "year": 2000, "tempC": 25.2, "pm25": 28, "canopyPct": 34, "builtUpPct": 42, "waterKm2": 12.0, "vehiclesIndex": 18, "populationM": 5.1 },
+  "2024": { "year": 2024, "tempC": 29.5, "pm25": 46, "canopyPct": 7,  "builtUpPct": 91, "waterKm2": 5.1,  "vehiclesIndex": 96, "populationM": 14.1 },
+  "2026": { "year": 2026, "tempC": 29.8, "pm25": 48, "canopyPct": 6,  "builtUpPct": 93, "waterKm2": 4.5,  "vehiclesIndex": 100, "populationM": 14.5 }
+}

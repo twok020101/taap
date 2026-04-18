@@ -17,12 +17,6 @@ import { GlobeIntro } from './globe-intro'
  */
 export function GlobeIntroHost() {
   const segment = useSelectedLayoutSegment()
-  // Dev-mode skip: cobe's internal WebGL teardown throws inside React 19
-  // StrictMode's dev-only effect double-invoke ("removeChild on canvas").
-  // Production builds (which don't run StrictMode's simulate-unmount) are
-  // unaffected — the intro renders correctly there. Honest trade: dev is
-  // intro-less, prod is the shipping path.
-  if (process.env.NODE_ENV !== 'production') return null
   if (!segment) return null
   const city = getCity(segment)
   if (!city) return null

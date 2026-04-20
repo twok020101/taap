@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useCallback } from 'react'
-import { Moon, Satellite } from 'lucide-react'
+import { useState, useCallback, useEffect } from 'react'
+import { Moon, Satellite, Link2, Check } from 'lucide-react'
 import { useAmbientTemp } from '@/components/ambient/ambient-particles'
 import { SliderPanel } from '@/components/simulator/slider-panel'
 import { Readouts } from '@/components/simulator/readouts'
@@ -10,6 +10,7 @@ import { HonestyInline } from '@/components/simulator/honesty-inline'
 import { ClimateContext } from '@/components/simulator/climate-context'
 import { LiveWeatherStrip } from '@/components/simulator/live-weather-strip'
 import { simulate } from '@/model/simulate'
+import { decodeScenario, useWriteScenarioHash } from '@/components/simulator/use-scenario-hash'
 import type { CityConfig, SliderState, PresetYear, Baseline, SimContext, ZoneKey, WindDir } from '@/cities/types'
 import type { LiveWeather } from '@/lib/sources/openMeteo'
 import type { LiveAq } from '@/lib/sources/openAQ'
@@ -57,6 +58,39 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
     zone: DEFAULT_ZONE,
     timeOfDay: 'day',
   })
+  // Hash-state hydration: read once on mount, seed state, then enable writer.
+  // `hydrated` guards against writing the default scenario before hydration
+  // and against the write-read-write loop.
+  const [hydrated, setHydrated] = useState(false)
+  const [copyState, setCopyState] = useState<'idle' | 'copied'>('idle')
+
+  useEffect(() => {
+    const parsed = decodeScenario(window.location.hash, Object.keys(city.zones))
+    if (parsed) {
+      if (parsed.sliders) setSliders(prev => ({ ...prev, ...parsed.sliders }))
+      if (parsed.linkedMode !== undefined) setLinkedMode(parsed.linkedMode)
+      if (parsed.activePreset !== undefined) setActivePreset(parsed.activePreset)
+      if (parsed.basemap) setBasemap(parsed.basemap)
+      if (parsed.ctx) setCtx(prev => ({ ...prev, ...parsed.ctx }))
+    }
+    setHydrated(true)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useWriteScenarioHash(
+    { sliders, linkedMode, activePreset, basemap, ctx },
+    hydrated,
+  )
+
+  const handleCopyLink = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      setCopyState('copied')
+      setTimeout(() => setCopyState('idle'), 1800)
+    } catch {
+      // Clipboard API unavailable — user can copy the URL manually.
+    }
+  }, [])
 
   const handleSliderChange = useCallback((key: keyof SliderState, value: number) => {
     setSliders(prev => {
@@ -126,15 +160,35 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">
-          {city.name} Heat Simulator
-        </h1>
-        <p className="mt-2 text-muted-foreground">
-          Adjust the sliders to explore how land-use changes affect {city.name}&apos;s
-          temperature and air quality. The model applies published coefficients
-          against the April 2026 baseline.
-        </p>
+      <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+        <div className="flex-1 min-w-[260px]">
+          <h1 className="text-3xl font-bold tracking-tight">
+            {city.name} Heat Simulator
+          </h1>
+          <p className="mt-2 text-muted-foreground">
+            Adjust the sliders to explore how land-use changes affect {city.name}&apos;s
+            temperature and air quality. The model applies published coefficients
+            against the April 2026 baseline.
+          </p>
+        </div>
+        <button
+          onClick={handleCopyLink}
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:bg-accent/50 hover:text-foreground"
+          aria-label="Copy a shareable link to this exact simulator scenario"
+          title="Copy a shareable link to this exact simulator scenario"
+        >
+          {copyState === 'copied' ? (
+            <>
+              <Check className="h-3.5 w-3.5 text-emerald-400" />
+              <span className="text-emerald-300">Link copied</span>
+            </>
+          ) : (
+            <>
+              <Link2 className="h-3.5 w-3.5" />
+              Copy scenario link
+            </>
+          )}
+        </button>
       </div>
 
       {/* Live weather strip */}

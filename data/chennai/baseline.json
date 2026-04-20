@@ -9,10 +9,11 @@
   },
   "pm25": 33.7,
   "_source_pm25": {
-    "title": "Lancet Planetary Health — Annual PM2.5 concentrations in major Indian cities (via Citizen Matters)",
-    "year": null,
-    "url_or_doi": "https://citizenmatters.in/chennai-air-quality-pm2-5-lancet-study-data-26699",
-    "quote": "Chennai's annual average PM2.5 concentration is 33.7 µg/m³ (Lancet Planetary Health research cited in Citizen Matters)"
+    "title": "Ambient air pollution and daily mortality in ten cities of India: a causal modelling study (The Lancet Planetary Health, 2024) — as reported by Citizen Matters",
+    "year": 2024,
+    "url_or_doi": "10.1016/S2542-5196(24)00114-1",
+    "secondary_url": "https://citizenmatters.in/air-quality-pollution-chennai-tnpcb-monitoring-stations-industries-transport-aqi-gcc/",
+    "quote": "The city, with an annual PM-2.5 (fine particulate matter) level of 33.7 micrograms per cubic meter, is estimated to have 2,870 deaths linked to air pollution each year."
   },
   "canopyPct": 4.66,
   "_source_canopyPct": {

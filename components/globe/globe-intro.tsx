@@ -1,151 +1,65 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import createGlobe, { type Globe } from 'cobe'
+import { useEffect, useState } from 'react'
 import { Logo } from '@/components/brand/logo'
 
 interface GlobeIntroProps {
-  /** City name shown under the globe. */
+  /** City name shown under the logo. */
   cityName: string
-  /** Target marker / camera — [lat, lng]. */
+  /** Kept for API compatibility with the old cobe-based intro. Unused now. */
   target: [number, number]
   /** Dedup key — shown only once per session per key. */
   storageKey?: string
 }
 
-// Convert lat/long to cobe phi (longitude radians offset so front = 0)
-function lngToPhi(lng: number): number {
-  return ((lng - 180) * Math.PI) / 180
-}
-function latToTheta(lat: number): number {
-  return ((90 - lat) * Math.PI) / 180
-}
-
-// Ease in-out cubic
-function easeInOut(t: number): number {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
-}
-
-export function GlobeIntro({ cityName, target, storageKey }: GlobeIntroProps) {
-  const [targetLat, targetLng] = target
-  const TARGET_PHI = lngToPhi(targetLng)
-  const TARGET_THETA = latToTheta(targetLat)
+/**
+ * WebGL-free intro splash. The previous `cobe`-driven 3D globe collided
+ * with React 19's reconciler during `[city]` navigation: cobe mutates the
+ * canvas WebGL context, and the follow-up reconciliation commit could not
+ * reliably remove the canvas child, throwing `NotFoundError: Failed to
+ * execute 'removeChild'` in both dev StrictMode and prod. Multiple
+ * mitigations (didInitRef, try/catch, imperative canvas, root-layout
+ * singleton, NODE_ENV dev-skip) each reduced the frequency without
+ * eliminating the race — the throw originates inside cobe on a queued
+ * microtask that outlives React's synchronous try/catch window.
+ *
+ * This version keeps the brand beat (logo + city name + tagline, fades
+ * over ~2.6 s, click-to-skip, sessionStorage dedup, prefers-reduced-motion
+ * respected) but drops the canvas entirely. The DOM is plain React JSX,
+ * so the reconciler owns every node and nothing fights it.
+ */
+export function GlobeIntro({ cityName, storageKey }: GlobeIntroProps) {
   const dedupKey = storageKey ?? `taap-intro-seen-${cityName.toLowerCase()}`
-  const didInitRef = useRef(false)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const globeRef = useRef<Globe | null>(null)
-  const rafRef = useRef<number>(0)
-  const [visible, setVisible] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    // Respect prefers-reduced-motion
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    // Only first visit each session per city
     if (sessionStorage.getItem(dedupKey)) return
 
     setMounted(true)
-    const t = setTimeout(() => setVisible(true), 50)
-    return () => clearTimeout(t)
-  }, [dedupKey])
-
-  useEffect(() => {
-    if (!mounted || !visible) return
-    const canvas = canvasRef.current
-    if (!canvas) return
-    // Guard against React StrictMode dev double-invoke — cobe mutates the
-    // canvas's WebGL context, and destroying/recreating races on removeChild.
-    // This ref persists across the strict-mode cleanup, so the second run skips.
-    if (didInitRef.current) return
-    didInitRef.current = true
-
-    const devicePixelRatio = Math.min(window.devicePixelRatio, 2)
-    const w = Math.min(window.innerWidth * 0.8, window.innerHeight * 0.8)
-    canvas.width = w * devicePixelRatio
-    canvas.height = w * devicePixelRatio
-
-    const startPhi = Math.PI   // start pointing away — never mutated
-    let currentPhi = startPhi
-    let currentTheta = 0.3
-    let tweenStartPhi: number | null = null
-    let tweenStartTheta: number | null = null
-    const startTime = Date.now()
-    let hasDismissed = false
-
-    const globe = createGlobe(canvas, {
-      devicePixelRatio,
-      width: w * devicePixelRatio,
-      height: w * devicePixelRatio,
-      phi: startPhi,
-      theta: 0.3,
-      dark: 1,
-      diffuse: 1.1,
-      mapSamples: 16000,
-      mapBrightness: 6,
-      baseColor: [0.18, 0.12, 0.08],
-      markerColor: [1.0, 0.6, 0.1],
-      glowColor: [0.7, 0.4, 0.15],
-      markers: [
-        { location: [targetLat, targetLng], size: 0.08 },
-      ],
-    })
-    globeRef.current = globe
-
-    function tick() {
-      if (hasDismissed) return
-      const elapsed = Date.now() - startTime
-
-      if (elapsed < 1200) {
-        // Free rotation
-        currentPhi -= 0.015
-        globe.update({ phi: currentPhi, theta: currentTheta })
-      } else if (elapsed < 2800) {
-        if (tweenStartPhi === null) { tweenStartPhi = currentPhi; tweenStartTheta = currentTheta }
-        // Tween to city target
-        const t = Math.min((elapsed - 1200) / 1600, 1)
-        const ease = easeInOut(t)
-        const phi = tweenStartPhi + (TARGET_PHI - tweenStartPhi) * ease
-        const theta = (tweenStartTheta ?? 0.3) + (TARGET_THETA - (tweenStartTheta ?? 0.3)) * ease
-        currentPhi = phi
-        currentTheta = theta
-        globe.update({ phi, theta })
-      } else {
-        // Hold on target
-        globe.update({ phi: TARGET_PHI, theta: TARGET_THETA })
-        if (elapsed > 3000 && !hasDismissed) {
-          hasDismissed = true
-          dismiss()
-          return
-        }
-      }
-
-      rafRef.current = requestAnimationFrame(tick)
-    }
-    rafRef.current = requestAnimationFrame(tick)
-
+    const fadeIn = setTimeout(() => setVisible(true), 50)
+    const autoDismiss = setTimeout(() => {
+      sessionStorage.setItem(dedupKey, '1')
+      setVisible(false)
+    }, 2400)
     return () => {
-      cancelAnimationFrame(rafRef.current)
-      try { globe.destroy() } catch { /* canvas already detached by React StrictMode double-invoke */ }
-      globeRef.current = null
+      clearTimeout(fadeIn)
+      clearTimeout(autoDismiss)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mounted, visible])
+  }, [dedupKey])
 
   const dismiss = () => {
     sessionStorage.setItem(dedupKey, '1')
     setVisible(false)
-    // Intentionally don't unmount — cobe + React StrictMode races on canvas removeChild.
-    // The fade hides it; subsequent session navigations short-circuit via dedupKey.
   }
 
   if (!mounted) return null
 
-  const globeSize = 'min(80vw, 80vh)'
-
   return (
     <div
       role="dialog"
-      aria-label="Taap globe intro"
+      aria-label="Taap intro"
       onClick={dismiss}
       style={{
         position: 'fixed',
@@ -162,20 +76,39 @@ export function GlobeIntro({ cityName, target, storageKey }: GlobeIntroProps) {
         pointerEvents: visible ? 'auto' : 'none',
       }}
     >
-      {/* Globe canvas */}
-      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <canvas
-          ref={canvasRef}
-          style={{
-            width: globeSize,
-            height: globeSize,
-            borderRadius: '50%',
-          }}
+      {/* Logo pulse — replaces the former globe */}
+      <div
+        style={{
+          position: 'relative',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 'min(38vw, 38vh)',
+          height: 'min(38vw, 38vh)',
+        }}
+      >
+        <div
           aria-hidden
+          style={{
+            position: 'absolute',
+            inset: 0,
+            borderRadius: '50%',
+            background:
+              'radial-gradient(circle at 50% 50%, oklch(0.32 0.12 55 / 0.55) 0%, oklch(0.18 0.06 40 / 0) 70%)',
+            animation: 'taap-intro-pulse 2400ms ease-out both',
+          }}
         />
+        <Logo size={120} className="text-amber-400" />
+        <style>{`
+          @keyframes taap-intro-pulse {
+            0% { transform: scale(0.78); opacity: 0.0; }
+            30% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1.32); opacity: 0; }
+          }
+        `}</style>
       </div>
 
-      {/* Overlay text below globe */}
+      {/* Caption */}
       <div
         style={{
           textAlign: 'center',
@@ -184,8 +117,15 @@ export function GlobeIntro({ cityName, target, storageKey }: GlobeIntroProps) {
           userSelect: 'none',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
-          <Logo size={40} className="text-amber-400" />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.6rem',
+            marginBottom: '0.5rem',
+          }}
+        >
           <span
             style={{
               fontFamily: 'var(--font-display)',
@@ -222,7 +162,6 @@ export function GlobeIntro({ cityName, target, storageKey }: GlobeIntroProps) {
         </p>
       </div>
 
-      {/* Skip hint */}
       <p
         style={{
           position: 'absolute',

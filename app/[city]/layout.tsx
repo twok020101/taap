@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation'
-import { GlobeIntro } from '@/components/globe/globe-intro'
 import { getCity } from '@/cities'
 
 export default async function CityLayout({
@@ -13,12 +12,5 @@ export default async function CityLayout({
   const city = getCity(cityId)
   if (!city) notFound()
 
-  const [lng, lat] = city.mapCenter
-
-  return (
-    <>
-      <GlobeIntro cityName={city.name} target={[lat, lng]} />
-      {children}
-    </>
-  )
+  return <>{children}</>
 }

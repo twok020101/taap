@@ -18,7 +18,7 @@ const registry: Record<string, CityConfig> = {
 export const cityIds = Object.keys(registry)
 
 export function getCity(id: string): CityConfig | null {
-  return registry[id] ?? null
+  return Object.hasOwn(registry, id) ? registry[id] : null
 }
 
 export function getAllCities(): CityConfig[] {

@@ -14,10 +14,7 @@ function WeatherPill({ cityId }: { cityId: string | null }) {
 
   useEffect(() => {
     let cancelled = false
-    setLoading(true)
     if (!cityId) {
-      setData(null)
-      setLoading(false)
       return
     }
     fetch(`/api/weather?city=${cityId}`)
@@ -109,7 +106,7 @@ export function Header() {
           </div>
         )}
 
-        <WeatherPill cityId={validCity} />
+        <WeatherPill key={validCity} cityId={validCity} />
       </nav>
     </header>
   )

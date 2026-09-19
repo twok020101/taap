@@ -24,7 +24,7 @@ const SLIDERS: SliderConfig[] = [
     key: 'canopyPct',
     label: 'Tree Canopy',
     min: 0,
-    max: 80,
+    max: 100,
     step: 1,
     unit: '%',
     source: 'canopy',
@@ -44,7 +44,7 @@ const SLIDERS: SliderConfig[] = [
     key: 'waterKm2',
     label: 'Water Bodies',
     min: 0,
-    max: 30,
+    max: 100,
     step: 0.5,
     unit: ' km²',
     source: 'water',
@@ -58,17 +58,7 @@ const SLIDERS: SliderConfig[] = [
     step: 1,
     unit: '',
     source: 'vehicles',
-    description: 'Fleet size index relative to 2026 (100 = current). Drives PM2.5.',
-  },
-  {
-    key: 'populationM',
-    label: 'Population',
-    min: 0.5,
-    max: 20,
-    step: 0.1,
-    unit: ' M',
-    source: null,
-    description: 'Population in millions. Informational — does not enter the temperature formula directly.',
+    description: 'Fleet size index on the shared Bangalore reference scale (Bangalore 2026 = 100). Other cities have different baselines. Drives PM2.5 only.',
   },
 ]
 
@@ -190,31 +180,36 @@ export function SliderPanel({
                   </Tooltip>
                 </div>
                 <Badge variant="secondary" className="font-mono text-xs">
-                  {typeof value === 'number' && !Number.isInteger(value)
+                  {value === null ? 'Unavailable' : typeof value === 'number' && !Number.isInteger(value)
                     ? value.toFixed(1)
                     : value}
-                  {unit}
+                  {value !== null && unit}
                 </Badge>
               </div>
-              <div className="flex items-center gap-2">
+              {value === null ? <p className="text-xs text-muted-foreground">No water-area baseline is available. Water-change effects are omitted.</p> : <div className="flex items-center gap-2">
                 <span className="w-8 text-right text-xs text-muted-foreground">
                   {min}{unit}
                 </span>
                 <Slider
                   min={min}
-                  max={max}
+                  max={Math.max(max, value)}
                   step={step}
                   value={[value as number]}
+                  aria-label={label}
                   onValueChange={([v]) => onSliderChange(key, v)}
                   className="flex-1"
                 />
                 <span className="w-10 text-xs text-muted-foreground">
-                  {max}{unit}
+                  {Math.max(max, value)}{unit}
                 </span>
-              </div>
+              </div>}
             </div>
           )
         })}
+      </div>
+      <div className="rounded-lg border bg-card/50 p-3 text-sm">
+        <span className="font-medium">Population · {sliders.populationM} million</span>
+        <p className="mt-1 text-xs text-muted-foreground">Context from the selected preset. Population is read-only because it has no independent temperature or PM2.5 effect in this model.</p>
       </div>
     </div>
   )

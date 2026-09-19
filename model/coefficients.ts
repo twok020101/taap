@@ -1,13 +1,14 @@
 /**
  * Coefficients for the Bangalore Urban Heat Model.
  *
- * Each driver has central / low / high estimates derived from peer-reviewed
- * literature. All values are per-unit change in the driver relative to the
+ * Each driver has central / low / high estimates and literature attributions.
+ * Source applicability and numeric derivations are tracked by the evidence audit.
+ * Values are per-unit change in the driver relative to the
  * April 2026 baseline.
  *
  * IMPORTANT: This is an illustrative model, not a forecast. Linear additive
- * deltas cannot capture non-linear feedbacks, spatial heterogeneity, monsoon
- * dynamics, or advection. See /about for the full honesty panel.
+ * deltas cannot capture non-linear feedbacks or street-scale physics. The
+ * simulator adds simplified seasonal, wind, aerosol and zone terms. See /about for the full honesty panel.
  */
 
 export interface Coefficient {

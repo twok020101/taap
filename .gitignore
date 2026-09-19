@@ -42,3 +42,6 @@ build/
 data/precomputed/*.tif
 data/precomputed/*.png
 !data/precomputed/.gitkeep
+
+# Local source passages and evaluation output
+.cache/

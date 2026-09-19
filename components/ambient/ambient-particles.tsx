@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react'
+import { createContext, useContext, useEffect, useRef, useState, useCallback, useSyncExternalStore } from 'react'
 
 // ── Context for sharing tempC across the tree without double-canvas ──────────
 
@@ -119,14 +119,14 @@ function CanvasParticles({ tempC, density = 0.5 }: CanvasParticlesProps) {
   const animFrameRef = useRef<number>(0)
   const currentTypeRef = useRef<ParticleType>(getParticleType(tempC))
 
-  const animate = useCallback(() => {
+  const animate = useCallback(function animateFrame() {
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
     if (document.visibilityState !== 'visible') {
-      animFrameRef.current = requestAnimationFrame(animate)
+      animFrameRef.current = requestAnimationFrame(animateFrame)
       return
     }
 
@@ -160,7 +160,7 @@ function CanvasParticles({ tempC, density = 0.5 }: CanvasParticlesProps) {
       drawParticle(ctx, p)
     }
 
-    animFrameRef.current = requestAnimationFrame(animate)
+    animFrameRef.current = requestAnimationFrame(animateFrame)
   }, [])
 
   useEffect(() => {
@@ -196,9 +196,7 @@ function CanvasParticles({ tempC, density = 0.5 }: CanvasParticlesProps) {
     if (newType !== currentTypeRef.current) {
       currentTypeRef.current = newType
       // Mark all particles to fade and refresh to new type
-      for (const p of particlesRef.current) {
-        p.targetOpacity = 0
-      }
+      particlesRef.current = particlesRef.current.map(p => ({ ...p, targetOpacity: 0 }))
     }
   }, [tempC])
 
@@ -231,14 +229,18 @@ interface AmbientParticlesProps {
  * Usage in a page that knows the real temp:
  *   useAmbientTemp(output.tempC)  // exported hook
  */
+function subscribeReducedMotion(onChange: () => void) {
+  const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+  media.addEventListener('change', onChange)
+  return () => media.removeEventListener('change', onChange)
+}
+function getReducedMotion() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches }
+
 export function AmbientParticles({ tempC: initialTemp, density, children }: AmbientParticlesProps) {
   // Respect prefers-reduced-motion
-  const [reduced, setReduced] = useState(false)
+  const reduced = useSyncExternalStore(subscribeReducedMotion, getReducedMotion, () => true)
   const [tempC, setTempC] = useState(initialTemp)
 
-  useEffect(() => {
-    setReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
-  }, [])
 
   const handleSetTempC = useCallback((t: number) => {
     setTempC(t)

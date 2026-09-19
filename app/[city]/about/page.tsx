@@ -3,6 +3,8 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { coefficients } from '@/model/coefficients'
 import { simulate } from '@/model/simulate'
+import audit from '@/data/evidence/audit.json'
+import { evidenceClaims } from '@/lib/ai/evidence'
 import { getCity } from '@/cities'
 import { notFound } from 'next/navigation'
 import type { Baseline, PresetYear } from '@/cities/types'
@@ -68,9 +70,9 @@ const STILL_MISSING: CaveatItem[] = [
       'Urban heat island intensity is modulated by boundary-layer height, synoptic cloud cover, and antecedent soil moisture. These require a mesoscale numerical weather model and cannot be reduced to a slider coefficient.',
   },
   {
-    title: 'Anthropogenic heat release (ACs, industrial discharge) beyond aggregate vehicle proxy',
+    title: 'Anthropogenic heat release and population effects',
     explanation:
-      'Air conditioning units, data centres, and industrial heat discharge represent a meaningful UHI contribution but have no peer-reviewed city-wide emission inventory at the needed resolution. The vehicle slider proxies road transport only.',
+      'Population is contextual information with no independent temperature or PM2.5 term. Air conditioning, industrial heat and vehicle heat release are not calculated. The vehicle slider changes PM2.5 only and does not change the AOD slider.',
   },
 ]
 
@@ -597,10 +599,11 @@ export default async function AboutPage({
           <h2 className="text-xl font-semibold">Coefficient table</h2>
         </div>
         <p className="mb-6 text-sm text-muted-foreground">
-          Central estimates from regression studies. Low/high give the reported uncertainty
-          range — propagated as low–high bands next to every central number in the simulator
-          readouts. Currently calibrated to Bangalore; per-city overrides (monsoon, wind,
-          AOD, built-up) land with the validated citations for each city.
+          The implementation uses the central estimates and selected low/high ranges below.
+          Those ranges are propagated into the readouts; they are not a complete measure of
+          scientific uncertainty. Defaults are inherited from Bangalore unless a city has
+          seasonal, wind or AOD overrides. Source applicability and numeric derivations
+          still need the review described below.
         </p>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -633,7 +636,18 @@ export default async function AboutPage({
       <section>
         <div className="mb-4 flex items-center gap-2">
           <BookOpen className="h-5 w-5 text-emerald-400" />
-          <h2 className="text-xl font-semibold">Citations</h2>
+          <h2 className="text-xl font-semibold">Citations and evidence checks</h2>
+        </div>
+        <div className="mb-6 rounded-lg border bg-card/50 p-4 text-sm">
+          <p className="font-medium">Source audit · {audit.checkedAt.slice(0, 10)}</p>
+          <p className="mt-2 text-muted-foreground">Jev checks supplied source passages against coefficient claims. These checks do not validate the full simulator. “Needs review” and “Source text missing” are unresolved evidence gaps.</p>
+          <ul className="mt-3 space-y-2">
+            {evidenceClaims().map(claim => {
+              const row = audit.rows.find(row => row.id === claim.id && row.claim === claim.claim)
+              const labels: Record<string, string> = { review: 'Needs review', unverified: 'Source text missing', insufficient: 'Passage does not establish the full coefficient', contradicts: 'Potential conflict — needs review', supports: 'Passage supports claim — maintainer review required', quote_missing: 'Quote not found' }
+              return <li key={claim.id}><strong className="capitalize">{claim.id}</strong>: {row ? labels[row.status] ?? 'Needs review' : 'Changed since audit — rerun required'}{row?.sourceUrl && <> · <a className="underline" href={row.sourceUrl} target="_blank" rel="noreferrer">Inspected source</a></>}</li>
+            })}
+          </ul>
         </div>
         <ol className="flex flex-col gap-3 text-sm text-muted-foreground">
           <li>

@@ -1,7 +1,8 @@
 export interface SliderState {
   canopyPct: number
   builtUpPct: number
-  waterKm2: number
+  /** null when the city's water-area evidence is unavailable. */
+  waterKm2: number | null
   vehiclesIndex: number
   populationM: number
 }

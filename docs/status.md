@@ -4,6 +4,18 @@ _Last updated: 2026-04-18 (v1.1 polish — factual fixes, Chennai T3 overrides, 
 
 This document tracks what has been shipped vs. what remains per the original plan in `docs/feat-bangalore-heat-simulator.md` (gitignored branch spec).
 
+
+## September 2026 — Jev scenario tools
+
+- Implemented guided and Jev-interpreted scenario comparisons across all four cities, with explicit quantities, held constraints, uncertainty bands, atomic application and share/reload support.
+- Added a conclusion checker against recomputed model evidence, with clarification for uncertain cases.
+- Added a repeatable coefficient source audit and visible status on each methodology page. Canopy needs review; three other intervention coefficients lack inspected source text. These remain scientific-evidence gaps.
+- Made population read-only, corrected model caveats and city-specific links, and preserved missing Mumbai water data as unavailable in the UI, scalar model and map.
+- Added server-only credentials, bounded requests/cache, service-failure fallback and outcome analytics. Existing canvas/header/intro lint issues were also resolved.
+- Validation: 23 tests, lint, TypeScript and production build passed; 14 live Jev fixtures met their expected outcomes. Browser checks covered comparison generation, application, conclusion checking, precise sharing/reload and missing-water behavior. No deployment was performed.
+
+Details and evaluation limits: [Jev integration](jev-integration.md).
+
 ## Original plan summary
 
 Build an interactive web app that explains Bangalore's urban heat gain — a scrollytelling 1973→2026 intro followed by a live simulator where sliders modify tree canopy, built-up area, water bodies, vehicles, and population, and show modelled temperature and AQI deltas against an April 2026 baseline. Branded as "Taap" (Hindi तप, heat). Multi-city ready via `cities/<name>.ts` config.

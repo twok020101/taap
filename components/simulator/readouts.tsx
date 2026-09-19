@@ -5,6 +5,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { Info } from 'lucide-react'
 
 interface ReadoutsProps {
+  cityId: string
   output: ModelOutput
   baseline: { tempC: number; pm25: number }
   liveAq?: LiveAq | null
@@ -151,7 +152,7 @@ function BreakdownRow({ breakdownKey, value, band }: BreakdownRowProps) {
   )
 }
 
-export function Readouts({ output, baseline, liveAq }: ReadoutsProps) {
+export function Readouts({ output, baseline, liveAq, cityId }: ReadoutsProps) {
   const breakdownEntries = Object.entries(output.breakdown) as [
     keyof typeof output.breakdown,
     number,
@@ -288,14 +289,14 @@ export function Readouts({ output, baseline, liveAq }: ReadoutsProps) {
           </div>
         </div>
         <p className="mt-2 text-xs text-muted-foreground">
-          WHO guideline: 15 µg/m³ (annual mean)
+          PM2.5 reference: modelled scenario, not a live measurement
         </p>
       </div>
 
       {/* Uncertainty note */}
       <p className="text-xs text-muted-foreground">
         Brackets show the low–high band from the coefficient ranges in{' '}
-        <a href="/about" className="underline underline-offset-2 hover:text-foreground">peer-reviewed sources</a>:
+        <a href={`/${cityId}/about`} className="underline underline-offset-2 hover:text-foreground">the model and source notes</a>:
         canopy {coefficients.canopy.low}–{coefficients.canopy.high}°C/pp ·
         built-up {coefficients.builtUp.low}–{coefficients.builtUp.high}°C/pp ·
         water {coefficients.water.low}–{coefficients.water.high}°C/km² ·

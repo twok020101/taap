@@ -9,6 +9,9 @@ import { HeatmapMap } from '@/components/simulator/heatmap-map'
 import { HonestyInline } from '@/components/simulator/honesty-inline'
 import { ClimateContext } from '@/components/simulator/climate-context'
 import { LiveWeatherStrip } from '@/components/simulator/live-weather-strip'
+import { ScenarioExplorer } from '@/components/simulator/scenario-explorer'
+import type { Comparison } from '@/lib/scenarios'
+import { track } from '@vercel/analytics'
 import { simulate } from '@/model/simulate'
 import { decodeScenario, useWriteScenarioHash } from '@/components/simulator/use-scenario-hash'
 import type { CityConfig, SliderState, PresetYear, Baseline, SimContext, ZoneKey, WindDir } from '@/cities/types'
@@ -35,7 +38,7 @@ const COUPLING_RATIO = 0.6
 
 /** Slider bounds kept in sync with SliderPanel's SLIDERS config. */
 const SLIDER_BOUNDS = {
-  canopyPct: { min: 0, max: 80 },
+  canopyPct: { min: 0, max: 100 },
   builtUpPct: { min: 0, max: 100 },
 } as const
 
@@ -50,11 +53,12 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
   })
   const [linkedMode, setLinkedMode] = useState(true)
   const [activePreset, setActivePreset] = useState<PresetYear | null>('2026')
+  const [comparison, setComparison] = useState<Comparison | null>(null)
   const [basemap, setBasemap] = useState<'dark' | 'satellite'>('dark')
   const [ctx, setCtx] = useState<SimContext>({
     month: 4,  // April — matches the baseline snapshot
     windDir: 'N',
-    aod: 0.4,
+    aod: city.coefficientOverrides?.aod?.referenceAod ?? 0.4,
     zone: DEFAULT_ZONE,
     timeOfDay: 'day',
   })
@@ -65,32 +69,36 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
   const [copyState, setCopyState] = useState<'idle' | 'copied'>('idle')
 
   useEffect(() => {
-    const parsed = decodeScenario(window.location.hash, Object.keys(city.zones))
+    const parsed = decodeScenario(window.location.hash, Object.keys(city.zones), baseline.waterKm2 !== null)
     if (parsed) {
+      // One-time hydration from the browser URL, an external source unavailable on the server.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (parsed.sliders) setSliders(prev => ({ ...prev, ...parsed.sliders }))
       if (parsed.linkedMode !== undefined) setLinkedMode(parsed.linkedMode)
       if (parsed.activePreset !== undefined) setActivePreset(parsed.activePreset)
       if (parsed.basemap) setBasemap(parsed.basemap)
       if (parsed.ctx) setCtx(prev => ({ ...prev, ...parsed.ctx }))
+      if (parsed.comparison) setComparison(parsed.comparison)
     }
     setHydrated(true)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useWriteScenarioHash(
-    { sliders, linkedMode, activePreset, basemap, ctx },
+    { sliders, linkedMode, activePreset, basemap, ctx, comparison },
     hydrated,
   )
 
   const handleCopyLink = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(window.location.href)
+      track('scenario_shared', { city: city.id, comparison: comparison !== null })
       setCopyState('copied')
       setTimeout(() => setCopyState('idle'), 1800)
     } catch {
       // Clipboard API unavailable — user can copy the URL manually.
     }
-  }, [])
+  }, [city.id, comparison])
 
   const handleSliderChange = useCallback((key: keyof SliderState, value: number) => {
     setSliders(prev => {
@@ -117,12 +125,12 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
     setSliders({
       canopyPct: preset.canopyPct,
       builtUpPct: preset.builtUpPct,
-      waterKm2: preset.waterKm2,
+      waterKm2: baseline.waterKm2 === null ? null : preset.waterKm2,
       vehiclesIndex: preset.vehiclesIndex,
       populationM: preset.populationM,
     })
     setActivePreset(year)
-  }, [])
+  }, [presets, baseline.waterKm2])
 
   const handleZoneChange = useCallback((zone: ZoneKey) => {
     const z = city.zones[zone]
@@ -131,11 +139,18 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
       ...prev,
       canopyPct: z.canopyPct,
       builtUpPct: z.builtUpPct,
-      waterKm2: z.waterKm2,
+      waterKm2: baseline.waterKm2 === null ? null : z.waterKm2,
     }))
     setCtx(prev => ({ ...prev, zone }))
     setActivePreset(null)
-  }, [city])
+  }, [city, baseline.waterKm2])
+
+  const handleApplyScenario = useCallback((next: SliderState, context: SimContext) => {
+    setSliders(next)
+    setCtx(context)
+    setLinkedMode(false)
+    setActivePreset(null)
+  }, [])
 
   const handleMonthChange = useCallback((month: number) => {
     setCtx(prev => ({ ...prev, month }))
@@ -195,7 +210,7 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
       {liveWeather && <LiveWeatherStrip cityName={city.name} weather={liveWeather} liveAq={liveAq} />}
 
       <div className="mt-6">
-        <HonestyInline />
+        <HonestyInline cityId={city.id} waterAvailable={baseline.waterKm2 !== null} />
       </div>
 
       {/* Climate context controls */}
@@ -210,6 +225,9 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
           onTimeOfDayChange={handleTimeOfDayChange}
         />
       </div>
+
+      <ScenarioExplorer city={city} baseline={baseline} sliders={sliders} ctx={ctx}
+        comparison={comparison} onComparison={setComparison} onApply={handleApplyScenario} />
 
       {/* Hero: spatial heatmap — the main visual */}
       <div className="mt-8">
@@ -265,7 +283,7 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
 
         {/* Right: Readouts */}
         <div className="order-1 lg:order-2">
-          <Readouts output={output} baseline={{ tempC: baseline.tempC, pm25: baseline.pm25 }} liveAq={liveAq} />
+          <Readouts cityId={city.id} output={output} baseline={{ tempC: baseline.tempC, pm25: baseline.pm25 }} liveAq={liveAq} />
         </div>
       </div>
 
@@ -273,7 +291,7 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
       <div className="mt-10 rounded-lg border bg-card/50 p-4 text-xs text-muted-foreground">
         <strong className="text-foreground">Baseline (April 2026):</strong>{' '}
         Canopy {baseline.canopyPct}% · Built-up {baseline.builtUpPct}% ·
-        Water {baseline.waterKm2} km² · Vehicles index {baseline.vehiclesIndex} ·
+        Water {baseline.waterKm2 === null ? 'unavailable' : `${baseline.waterKm2} km²`} · Vehicles index {baseline.vehiclesIndex} ·
         Pop {baseline.populationM} M · Temp {baseline.tempC}°C · PM2.5 {baseline.pm25} µg/m³.
       </div>
     </div>

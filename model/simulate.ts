@@ -1,6 +1,8 @@
 import { coefficients } from './coefficients'
 import type { Baseline, CityConfig, ModelOutput, SliderState, SimContext } from '@/cities/types'
 
+export type CoefficientValues = Partial<Record<'canopy' | 'builtUp' | 'water' | 'vehicles', number>>
+
 /**
  * Propagate a coefficient's [low, high] interval through a signed linear term.
  *
@@ -49,10 +51,15 @@ export function simulate(
   baseline: Baseline,
   sliders: SliderState,
   ctx: SimContext = { month: 4, windDir: 'N', aod: 0.4, zone: 'central' },
+  coefficientValues: CoefficientValues = {},
 ): ModelOutput {
   const o = city.coefficientOverrides
   const c = {
     ...coefficients,
+    canopy: { ...coefficients.canopy, central: coefficientValues.canopy ?? coefficients.canopy.central },
+    builtUp: { ...coefficients.builtUp, central: coefficientValues.builtUp ?? coefficients.builtUp.central },
+    water: { ...coefficients.water, central: coefficientValues.water ?? coefficients.water.central },
+    vehicles: { ...coefficients.vehicles, central: coefficientValues.vehicles ?? coefficients.vehicles.central },
     monsoonOffsets: o?.monsoonOffsets ?? coefficients.monsoonOffsets,
     windAdvectionMultiplier: { ...coefficients.windAdvectionMultiplier, ...o?.windAdvectionMultiplier },
     windPm25Offset: { ...coefficients.windPm25Offset, ...o?.windPm25Offset },
@@ -74,7 +81,8 @@ export function simulate(
   const tempFromBuiltUp = builtUpBand.central
 
   // Water delta: positive means more water (cooling), negative = warming
-  const waterDeltaKm2 = sliders.waterKm2 - baseline.waterKm2
+  const waterDeltaKm2 = sliders.waterKm2 !== null && baseline.waterKm2 !== null
+    ? sliders.waterKm2 - baseline.waterKm2 : 0
   // Less water warms, more water cools — coefficient is per −1 km², so negate
   const waterBand = rangedContrib(-waterDeltaKm2, c.water.low, c.water.central, c.water.high)
   const tempFromWater = waterBand.central

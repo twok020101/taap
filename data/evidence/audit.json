@@ -1,0 +1,54 @@
+{
+  "checkedAt": "2026-09-19T18:52:33.819Z",
+  "scope": "Four intervention coefficients. This is a source-passage audit, not validation of the full simulator or all city data.",
+  "rows": [
+    {
+      "id": "canopy",
+      "source": "Ziter et al. 2019, PNAS; Manoli et al. 2024, Nature Communications",
+      "claim": "Daytime LST increase per 1 percentage-point loss of tree canopy cover. Central coefficient 0.09; range 0.06–0.12; units: °C per −1 pp canopy. Applied in Taap's Indian-city illustrative model, inherited from Bangalore where no override exists.",
+      "status": "review",
+      "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6462107/",
+      "locator": "Ziter et al. 2019, article abstract and main text. This checks one listed source only; Manoli and any coefficient derivation still require review.",
+      "sourceHash": "28ee6720389e275e7867530f6f05d78c6b65ee9ea25fe512756bed8ad3c25c79",
+      "model": "jev-1.13.0",
+      "inputTokens": 8131,
+      "note": "Automated passage check only. A maintainer must review source applicability and coefficient derivation before treating this as scientific validation."
+    },
+    {
+      "id": "builtUp",
+      "source": "IISc Ramachandra & Bharath 2023, Sustainable Cities and Society",
+      "claim": "LST increase per 1 percentage-point increase in impervious surface. Central coefficient 0.075; range 0.05–0.1; units: °C per +1 pp built-up. Applied in Taap's Indian-city illustrative model, inherited from Bangalore where no override exists.",
+      "status": "unverified",
+      "sourceUrl": null,
+      "locator": null,
+      "sourceHash": null,
+      "model": null,
+      "inputTokens": 0,
+      "note": "Source text missing. A citation label alone cannot verify a coefficient."
+    },
+    {
+      "id": "water",
+      "source": "Sustainable Cities and Society 2024 (meta-analysis of urban water cooling)",
+      "claim": "LST increase per 1 km² loss of water body within 500 m buffer. Central coefficient 0.55; range 0.3–0.8; units: °C per −1 km² water. Applied in Taap's Indian-city illustrative model, inherited from Bangalore where no override exists.",
+      "status": "unverified",
+      "sourceUrl": null,
+      "locator": null,
+      "sourceHash": null,
+      "model": null,
+      "inputTokens": 0,
+      "note": "Source text missing. A citation label alone cannot verify a coefficient."
+    },
+    {
+      "id": "vehicles",
+      "source": "KSPCB emission inventory; UrbanEmissions APnA 2018",
+      "claim": "PM2.5 increase per 10 percentage-point increase in vehicle fleet index. Central coefficient 4; range 3–5; units: µg/m³ PM2.5 per +10 pp vehicle index. Applied in Taap's Indian-city illustrative model, inherited from Bangalore where no override exists.",
+      "status": "unverified",
+      "sourceUrl": null,
+      "locator": null,
+      "sourceHash": null,
+      "model": null,
+      "inputTokens": 0,
+      "note": "Source text missing. A citation label alone cannot verify a coefficient."
+    }
+  ]
+}

@@ -55,7 +55,8 @@ export function simulateGrid(
   const builtUpDeltaPp = sliders.builtUpPct - baseline.builtUpPct
   const cityBuiltUp = builtUpDeltaPp * c.builtUp.central
 
-  const waterDeltaKm2 = sliders.waterKm2 - baseline.waterKm2
+  const waterDeltaKm2 = sliders.waterKm2 !== null && baseline.waterKm2 !== null
+    ? sliders.waterKm2 - baseline.waterKm2 : 0
   const cityWater = -waterDeltaKm2 * c.water.central
 
   // Note: monsoon and aerosol are deliberately omitted — see GridSimResult.

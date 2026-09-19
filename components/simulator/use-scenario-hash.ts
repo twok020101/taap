@@ -2,13 +2,14 @@
 
 import { useEffect, useRef } from 'react'
 import type { SliderState, SimContext, PresetYear, ZoneKey, WindDir } from '@/cities/types'
+import { readComparison, type Comparison } from '@/lib/scenarios'
 
 /**
  * Shareable simulator scenario serialised into `window.location.hash`.
  *
  * Encoded as a URL-encoded query string (`k=v&k=v...`) stored in the hash
- * fragment so the server never sees it. Numeric values are rounded to one
- * decimal to keep URLs short; integers (month, populationM) stay integer.
+ * fragment so the server never sees it. Numeric values preserve their precision so a shared comparison
+ * has exactly the same starting point after reload.
  *
  * Short keys (compact URLs, still readable):
  *   c  canopyPct    b  builtUpPct    w  waterKm2    v  vehiclesIndex
@@ -23,6 +24,7 @@ export interface Scenario {
   activePreset: PresetYear | null
   basemap: 'dark' | 'satellite'
   ctx: SimContext
+  comparison?: Comparison | null
 }
 
 const KEYS = {
@@ -46,27 +48,29 @@ const WIND_DIRS: WindDir[] = ['N', 'E', 'S', 'W']
 
 export function encodeScenario(s: Scenario): string {
   const params = new URLSearchParams()
-  params.set(KEYS.canopyPct, round1(s.sliders.canopyPct))
-  params.set(KEYS.builtUpPct, round1(s.sliders.builtUpPct))
-  params.set(KEYS.waterKm2, round1(s.sliders.waterKm2))
-  params.set(KEYS.vehiclesIndex, round1(s.sliders.vehiclesIndex))
-  params.set(KEYS.populationM, round1(s.sliders.populationM))
+  params.set(KEYS.canopyPct, String(s.sliders.canopyPct))
+  params.set(KEYS.builtUpPct, String(s.sliders.builtUpPct))
+  if (s.sliders.waterKm2 !== null) params.set(KEYS.waterKm2, String(s.sliders.waterKm2))
+  params.set(KEYS.vehiclesIndex, String(s.sliders.vehiclesIndex))
+  params.set(KEYS.populationM, String(s.sliders.populationM))
   params.set(KEYS.linkedMode, s.linkedMode ? '1' : '0')
-  if (s.activePreset) params.set(KEYS.activePreset, s.activePreset)
+  params.set(KEYS.activePreset, s.activePreset ?? 'custom')
   params.set(KEYS.basemap, s.basemap)
   params.set(KEYS.month, String(s.ctx.month))
   params.set(KEYS.windDir, s.ctx.windDir)
-  params.set(KEYS.aod, round2(s.ctx.aod))
+  params.set(KEYS.aod, String(s.ctx.aod))
   params.set(KEYS.zone, s.ctx.zone)
   params.set(KEYS.timeOfDay, s.ctx.timeOfDay ?? 'day')
+  if (s.comparison) params.set('compare', JSON.stringify(s.comparison))
   return params.toString()
 }
 
 export function decodeScenario(
   hash: string,
   validZones: ZoneKey[],
+  waterAvailable = true,
 ): Partial<Scenario> | null {
-  if (!hash) return null
+  if (!hash || hash.length > 16000) return null
   const stripped = hash.startsWith('#') ? hash.slice(1) : hash
   if (!stripped) return null
   const params = new URLSearchParams(stripped)
@@ -81,7 +85,8 @@ export function decodeScenario(
   const p = numOrNull(params.get(KEYS.populationM))
   if (c !== null) sliders.canopyPct = clamp(c, 0, 100)
   if (b !== null) sliders.builtUpPct = clamp(b, 0, 100)
-  if (w !== null) sliders.waterKm2 = clamp(w, 0, 1000)
+  if (!waterAvailable) sliders.waterKm2 = null
+  else if (w !== null) sliders.waterKm2 = clamp(w, 0, 1000)
   if (v !== null) sliders.vehiclesIndex = clamp(v, 0, 500)
   if (p !== null) sliders.populationM = clamp(p, 0, 100)
   if (Object.keys(sliders).length > 0) out.sliders = sliders as SliderState
@@ -92,7 +97,7 @@ export function decodeScenario(
   const pr = params.get(KEYS.activePreset)
   if (pr && PRESET_VALUES.includes(pr as PresetYear)) {
     out.activePreset = pr as PresetYear
-  }
+  } else if (pr === 'custom' || Object.keys(sliders).length > 0) out.activePreset = null
 
   const bm = params.get(KEYS.basemap)
   if (bm === 'dark' || bm === 'satellite') out.basemap = bm
@@ -109,6 +114,11 @@ export function decodeScenario(
   const t = params.get(KEYS.timeOfDay)
   if (t === 'day' || t === 'night') ctx.timeOfDay = t
   if (Object.keys(ctx).length > 0) out.ctx = ctx as SimContext
+
+  const comparison = params.get('compare')
+  if (comparison) {
+    try { out.comparison = readComparison(JSON.parse(comparison), validZones, waterAvailable) } catch { /* Ignore malformed shared data. */ }
+  }
 
   return Object.keys(out).length > 0 ? out : null
 }
@@ -134,12 +144,6 @@ export function useWriteScenarioHash(scenario: Scenario, enabled: boolean): void
   }, [scenario, enabled])
 }
 
-function round1(n: number): string {
-  return (Math.round(n * 10) / 10).toString()
-}
-function round2(n: number): string {
-  return (Math.round(n * 100) / 100).toString()
-}
 function numOrNull(v: string | null): number | null {
   if (v === null) return null
   const n = Number(v)

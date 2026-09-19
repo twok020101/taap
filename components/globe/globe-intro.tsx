@@ -37,8 +37,7 @@ export function GlobeIntro({ cityName, storageKey }: GlobeIntroProps) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     if (sessionStorage.getItem(dedupKey)) return
 
-    setMounted(true)
-    const fadeIn = setTimeout(() => setVisible(true), 50)
+    const fadeIn = setTimeout(() => { setMounted(true); setVisible(true) }, 50)
     const autoDismiss = setTimeout(() => {
       sessionStorage.setItem(dedupKey, '1')
       setVisible(false)

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { Moon, Satellite, Link2, Check } from 'lucide-react'
 import { useAmbientTemp } from '@/components/ambient/ambient-particles'
 import { SliderPanel } from '@/components/simulator/slider-panel'
@@ -54,6 +54,7 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
   const [linkedMode, setLinkedMode] = useState(true)
   const [activePreset, setActivePreset] = useState<PresetYear | null>('2026')
   const [comparison, setComparison] = useState<Comparison | null>(null)
+  const resultsHeading = useRef<HTMLHeadingElement>(null)
   const [basemap, setBasemap] = useState<'dark' | 'satellite'>('dark')
   const [ctx, setCtx] = useState<SimContext>({
     month: 4,  // April — matches the baseline snapshot
@@ -150,6 +151,10 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
     setCtx(context)
     setLinkedMode(false)
     setActivePreset(null)
+    requestAnimationFrame(() => {
+      resultsHeading.current?.focus({ preventScroll: true })
+      resultsHeading.current?.scrollIntoView({ block: 'start' })
+    })
   }, [])
 
   const handleMonthChange = useCallback((month: number) => {
@@ -231,6 +236,17 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
 
       {/* Hero: spatial heatmap — the main visual */}
       <div className="mt-8">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 ref={resultsHeading} tabIndex={-1} className="scroll-mt-24 text-xl font-semibold">Current simulation</h2>
+            <p className="mt-1 text-sm">Modelled temperature: <strong>{output.tempC.toFixed(1)}°C</strong> · PM2.5: <strong>{output.pm25.toFixed(1)} µg/m³</strong></p>
+          </div>
+          {comparison && <button className="rounded-md border px-3 py-2 text-sm hover:bg-accent" onClick={() => {
+            const heading = document.getElementById('explorer-title')
+            heading?.focus({ preventScroll: true })
+            heading?.scrollIntoView({ block: 'start' })
+          }}>Back to comparison</button>}
+        </div>
         {/* Basemap toggle */}
         <div className="mb-2 flex items-center justify-end gap-3">
           <span className="text-[11px] text-muted-foreground">

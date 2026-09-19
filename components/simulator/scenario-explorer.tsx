@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { track } from '@vercel/analytics'
-import { ArrowRight, FlaskConical, Loader2 } from 'lucide-react'
+import { ArrowRight, Check, FlaskConical, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { Baseline, CityConfig, SimContext, SliderState } from '@/cities/types'
-import { DEFAULT_OPERATIONS, LEVER_LABELS, applyOperations, compareScenario, operationLabel, readComparison, signed, type Comparison, type Lever } from '@/lib/scenarios'
+import { DEFAULT_OPERATIONS, LEVER_LABELS, applyOperations, compareScenario, operationLabel, readComparison, sameScenarioInputs, signed, type Comparison, type Lever } from '@/lib/scenarios'
 import type { AssistantResponse } from '@/lib/ai/service'
 
 interface Props {
@@ -88,14 +88,15 @@ export function ScenarioExplorer({ city, baseline, sliders, ctx, comparison, onC
     const next = applyOperations(comparison.base, ops)
     return { ops, index, next, delta: compareScenario(city, baseline, comparison.base, next, comparison.ctx) }
   }) ?? []
-  const stale = comparison && JSON.stringify({ sliders, ctx }) !== JSON.stringify({ sliders: comparison.base, ctx: comparison.ctx })
+  const atStart = comparison && sameScenarioInputs(sliders, ctx, comparison.base, comparison.ctx)
+  const appliedIndex = comparison ? results.findIndex(result => sameScenarioInputs(sliders, ctx, result.next, comparison.ctx)) : -1
   const checked = check?.signature === signature ? check.result : null
 
   return (
     <section className="mt-8 rounded-xl border border-primary/30 bg-card/70 p-5 sm:p-6" aria-labelledby="explorer-title">
       <div className="mb-2 flex items-center gap-2">
         <FlaskConical className="h-5 w-5 text-primary" />
-        <h2 id="explorer-title" className="text-xl font-semibold">What would help {city.name}?</h2>
+        <h2 id="explorer-title" tabIndex={-1} className="scroll-mt-24 text-xl font-semibold">What would help {city.name}?</h2>
       </div>
       <p className="mb-4 max-w-3xl text-sm text-muted-foreground">Compare explicit changes to the same starting scenario. Ask a question, or try an example without waiting for an answer.</p>
       <div className="mb-5 flex flex-wrap gap-2">
@@ -118,12 +119,15 @@ export function ScenarioExplorer({ city, baseline, sliders, ctx, comparison, onC
           <Button size="sm" variant="ghost" onClick={() => { onComparison(null); setAssumptions([]) }}>Clear comparison</Button>
         </div>
         <p className="text-xs text-muted-foreground">Changes below are relative to the saved starting inputs, with month {comparison.ctx.month}, {comparison.ctx.windDir} wind, AOD {comparison.ctx.aod}, {city.zones[comparison.ctx.zone]?.label}, {comparison.ctx.timeOfDay ?? 'day'} held fixed. Negative values mean lower temperature or PM2.5.</p>
-        {stale && <div className="flex flex-wrap items-center gap-3 rounded-lg bg-muted/40 p-3 text-sm"><span>The sliders differ from this comparison’s starting point.</span><Button size="sm" variant="outline" onClick={() => onApply(comparison.base, comparison.ctx)}>Restore comparison start</Button></div>}
+        <div className="flex flex-wrap items-center gap-3 rounded-lg bg-muted/40 p-3 text-sm">
+          <p role="status">{appliedIndex >= 0 ? `Scenario ${appliedIndex + 1} is applied to the simulator. You can switch directly to another scenario.` : atStart ? 'The simulator is showing the comparison’s starting inputs.' : 'Your inputs have changed. Applying a scenario replaces them with that card’s saved inputs and climate context.'}</p>
+          {!atStart && <Button size="sm" variant="outline" onClick={() => onApply(comparison.base, comparison.ctx)}>Restore comparison start</Button>}
+        </div>
         <ul className="list-disc space-y-1 pl-5 text-xs text-muted-foreground">
           {(assumptions.length ? assumptions : ['Saved comparison: each card lists its exact assumptions. All other inputs stay fixed, without linked-slider coupling.']).map(text => <li key={text}>{text}</li>)}
         </ul>
         <div className="grid gap-3 md:grid-cols-2">
-          {results.map(({ ops, index, next, delta }) => <article key={index} className="rounded-lg border bg-background/60 p-4">
+          {results.map(({ ops, index, next, delta }) => <article key={index} className={`rounded-lg border bg-background/60 p-4 ${appliedIndex === index ? 'border-primary ring-1 ring-primary/30' : ''}`}>
             <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">Scenario {index + 1}</p>
             <h4 className="font-medium">{ops.map(operationLabel).join(' + ')}</h4>
             <p className="mt-2 text-xs text-muted-foreground">{ops.map(op => `${LEVER_LABELS[op.lever]}: ${comparison.base[op.lever]} → ${next[op.lever]}${op.lever.endsWith('Pct') ? '%' : op.lever === 'waterKm2' ? ' km²' : ''}`).join(' · ')}</p>
@@ -132,7 +136,7 @@ export function ScenarioExplorer({ city, baseline, sliders, ctx, comparison, onC
               <div><dt className="text-xs text-muted-foreground">PM2.5 change</dt><dd className="font-mono text-lg">{signed(delta.pm25.value)} µg/m³</dd><dd className="text-xs text-muted-foreground">{signed(delta.pm25.low)} to {signed(delta.pm25.high)} µg/m³</dd></div>
             </dl>
             {ops.every(op => op.lever === 'vehiclesIndex') && <p className="mb-3 text-xs text-muted-foreground">Vehicles affect PM2.5 only in this model; AOD and temperature stay unchanged.</p>}
-            <Button size="sm" variant="outline" disabled={!!stale} onClick={() => { onApply(next, comparison.ctx); track('comparison_applied', { city: city.id, scenario: index + 1, source }) }}>Apply scenario {index + 1}<ArrowRight className="ml-2 h-3 w-3" /></Button>
+            <Button size="sm" variant={appliedIndex === index ? 'default' : 'outline'} aria-pressed={appliedIndex === index} onClick={() => { onApply(next, comparison.ctx); track('comparison_applied', { city: city.id, scenario: index + 1, source }) }}>{appliedIndex === index ? <><Check className="mr-2 h-3 w-3" />Scenario {index + 1} applied · View results</> : <>Apply scenario {index + 1}<ArrowRight className="ml-2 h-3 w-3" /></>}</Button>
           </article>)}
         </div>
         <p className="text-xs text-muted-foreground">Bands vary the same coefficients in both scenarios; clipping can widen them conservatively. They do not include all uncertainty. These magnitudes are not equally costly or equally feasible. Use “Copy scenario link” above to share this comparison.</p>

@@ -49,6 +49,14 @@ export function applyOperations(base: SliderState, ops: Operation[]): SliderStat
   return next
 }
 
+/** Compare model inputs by value, including the default day context in older links. */
+export function sameScenarioInputs(sliders: SliderState, ctx: SimContext, other: SliderState, otherCtx: SimContext): boolean {
+  return (Object.keys(LIMITS) as (keyof SliderState)[]).every(key => sliders[key] === other[key])
+    && ctx.month === otherCtx.month && ctx.windDir === otherCtx.windDir
+    && ctx.aod === otherCtx.aod && ctx.zone === otherCtx.zone
+    && (ctx.timeOfDay ?? 'day') === (otherCtx.timeOfDay ?? 'day')
+}
+
 export function readSliders(value: unknown, waterAvailable: boolean): SliderState | null {
   if (!value || typeof value !== 'object') return null
   const raw = value as Record<string, unknown>

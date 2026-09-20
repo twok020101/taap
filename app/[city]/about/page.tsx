@@ -7,12 +7,21 @@ import audit from '@/data/evidence/audit.json'
 import { evidenceClaims } from '@/lib/ai/evidence'
 import { getCity } from '@/cities'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import { pageMetadata, breadcrumbs } from '@/lib/seo'
+import { StructuredData } from '@/components/structured-data'
 import type { Baseline, PresetYear } from '@/cities/types'
 import { AlertTriangle, BookOpen, CheckCircle2, Microscope, Ruler, TrendingUp, XCircle } from 'lucide-react'
 
 interface CaveatItem {
   title: string
   explanation: string
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ city: string }> }) {
+  const city = getCity((await params).city)
+  if (!city) notFound()
+  return pageMetadata(`${city.name} heat model methodology, sources & limitations | Taap`, `Inspect ${city.name}'s model coefficients, source audit, historical context and limitations. Understand what Taap calculates and what remains unverified.`, `/${city.id}/about`, `/${city.id}/opengraph-image`)
 }
 
 const NOW_CAPTURED: CaveatItem[] = [
@@ -47,7 +56,7 @@ const STILL_MISSING: CaveatItem[] = [
   {
     title: 'Street-scale microclimate (tree shade at your exact location)',
     explanation:
-      'Coefficients are calibrated to zone-mean LST from Landsat 30 m studies. Individual streets can differ by 3–5°C depending on tree shade, building geometry, surface albedo, and local traffic.',
+      'The model does not resolve individual streets, shade geometry or thermal comfort. Its source attributions mix temperature metrics and its coefficient derivations require review. A satellite surface-temperature contrast cannot be read as an equivalent change in air temperature.',
   },
   {
     title: 'Long-range aerosol transport (IGP intrusion, stubble-burn plumes)',
@@ -293,6 +302,7 @@ export default async function AboutPage({
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-16">
+      <StructuredData data={breadcrumbs([{ name: 'Taap', path: '/' }, { name: city.name, path: `/${city.id}` }, { name: 'Methodology', path: `/${city.id}/about` }])}/>
       <div className="mb-10">
         <Badge variant="outline" className="mb-4">
           Model Honesty Panel · {city.name}
@@ -301,16 +311,17 @@ export default async function AboutPage({
           What this model captures — and what it doesn&apos;t
         </h1>
         <p className="mt-3 text-lg text-muted-foreground">
-          An illustrative simulator, not a forecast. Ranges come from peer-reviewed
-          literature — see citations below. Read these caveats before citing the outputs.
+          An illustrative simulator, not a forecast. Selected coefficient ranges are sensitivity bounds;
+          their source derivations still need review. Read these caveats before citing the outputs.
         </p>
+        <p className="mt-4 text-sm text-muted-foreground">For study methods, environmental mechanisms and local applicability, visit the <Link href="/research" className="text-emerald-200 underline underline-offset-4">research library</Link>. The library does not certify the model coefficients.</p>
       </div>
 
       {validation && (
         <section className="mb-14">
           <div className="mb-4 flex items-center gap-2">
             <Ruler className="h-5 w-5 text-blue-400" />
-            <h2 className="text-xl font-semibold">Backwards validation</h2>
+            <h2 className="text-xl font-semibold">Historical consistency check</h2>
           </div>
           <Card
             className={
@@ -337,10 +348,10 @@ export default async function AboutPage({
             </CardHeader>
             <CardContent className="text-sm text-muted-foreground">
               <p className="mb-3">
-                Rewinding the sliders to their 1973 values (canopy {p1973.canopyPct}%,
+                Comparing the sliders at their 1973 values (canopy {p1973.canopyPct}%,
                 built-up {p1973.builtUpPct}%, water {p1973.waterKm2} km², vehicles index{' '}
                 {p1973.vehiclesIndex}) against the April 2026 baseline should reproduce the
-                IMD-recorded April mean.
+                historical reference. Agreement at one point does not independently validate the model, its individual coefficients or its transfer to another city.
               </p>
               <div className="grid gap-3 sm:grid-cols-3">
                 <div className="rounded-lg border bg-card/50 p-3">

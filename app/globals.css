@@ -2,6 +2,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
+html { scroll-behavior: smooth; }
+.eyebrow { font-family: var(--font-geist-mono), monospace; font-size: 10px; letter-spacing: .17em; text-transform: uppercase; color: var(--muted-foreground); }
+.section-title { font-family: var(--font-instrument-serif), serif; font-style: italic; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.15; letter-spacing: -.02em; }
+.scene-transition { transition: opacity 600ms ease; }
+:focus-visible { outline: 2px solid #e9c893; outline-offset: 5px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .scene-transition { transition: none; } }
+
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);

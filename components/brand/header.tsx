@@ -70,6 +70,8 @@ export function Header() {
 
         <div className="flex-1" />
 
+        <Link href="/research" className="text-xs text-amber-200 hover:text-amber-100">Research</Link>
+
         {/* City switcher */}
         <div className="hidden md:flex items-center gap-1 text-xs">
           {cities.map((c) => (
@@ -101,12 +103,16 @@ export function Header() {
               href={`/${validCity}/about`}
               className="hover:text-foreground transition-colors"
             >
-              About
+              Methodology
             </Link>
           </div>
         )}
 
         <WeatherPill key={validCity} cityId={validCity} />
+      </nav>
+      <nav aria-label="City navigation" className="flex gap-4 overflow-x-auto border-t border-border/40 px-4 py-2 text-xs text-muted-foreground lg:hidden">
+        <Link href="/" className="shrink-0">All cities</Link>
+        {validCity ? <><Link href={`/${validCity}`} className="shrink-0">City story</Link><Link href={`/${validCity}/simulator`} className="shrink-0">Simulator</Link><Link href={`/${validCity}/about`} className="shrink-0">Methodology</Link></> : cities.map(city => <Link key={city.id} href={`/${city.id}`} className="shrink-0">{city.name}</Link>)}
       </nav>
     </header>
   )

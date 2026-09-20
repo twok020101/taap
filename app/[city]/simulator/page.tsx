@@ -5,8 +5,16 @@ import { getCity } from '@/cities'
 import { notFound } from 'next/navigation'
 import type { Baseline, PresetYear } from '@/cities/types'
 import type { LiveWeather } from '@/lib/sources/openMeteo'
+import { pageMetadata, breadcrumbs } from '@/lib/seo'
+import { StructuredData } from '@/components/structured-data'
 
 export const revalidate = 900
+
+export async function generateMetadata({ params }: { params: Promise<{ city: string }> }) {
+  const city = getCity((await params).city)
+  if (!city) notFound()
+  return pageMetadata(`${city.name} urban heat & air quality simulator | Taap`, `Change tree canopy, built-up area, water and vehicles in ${city.name}. Compare illustrative environmental effects, coefficient ranges and research limitations.`, `/${city.id}/simulator`, `/${city.id}/opengraph-image`)
+}
 
 export async function generateStaticParams() {
   const { cityIds } = await import('@/cities')
@@ -35,6 +43,8 @@ export default async function SimulatorPage({
   ])
 
   return (
+    <>
+    <StructuredData data={breadcrumbs([{ name: 'Taap', path: '/' }, { name: city.name, path: `/${city.id}` }, { name: 'Simulator', path: `/${city.id}/simulator` }])}/>
     <SimulatorClient
       city={city}
       baseline={baseline}
@@ -42,5 +52,6 @@ export default async function SimulatorPage({
       liveWeather={liveWeather}
       liveAq={liveAq}
     />
+    </>
   )
 }

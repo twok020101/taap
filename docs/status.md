@@ -7,6 +7,15 @@ This document tracks what has been shipped vs. what remains per the original pla
 
 ## September 2026 — Jev scenario tools
 
+### 20 September — Environmental story, research and SEO
+
+- Rebuilt the homepage around a responsive, keyboard-operable streetscape with three conceptual land-cover states and explanations of shade, heat storage and water movement.
+- Added six research approaches, individual server-rendered article pages, primary-paper links, study settings/methods/metrics, applicability limits and explicit model coverage. No new numerical coefficients were inferred from these papers.
+- Connected city stories to relevant research and added a simulator impact panel using paired baseline/scenario runs with identical climate context. Qualitative effects remain separate from calculated outputs; missing Mumbai water evidence stays unavailable.
+- Added per-page metadata, stable canonical URLs for the verified `taap.thetwok.in` alias, social previews, JSON-LD, robots, a 20-page sitemap, research JSON and an optional `llms.txt` reading guide. No DNS changes or deployment performed.
+- Validation: 28 tests, lint, TypeScript and production build passed. All 20 prerendered content pages were checked for unique titles, one H1, descriptions, correct canonicals and parseable JSON-LD. Desktop/mobile browser checks covered streetscape controls, article layout, and a vehicle-only simulator change with zero heat change and preserved missing-water state. An SVG title hydration mismatch discovered during checks was corrected.
+- Existing coefficient-calibration gaps remain. Research context for cool roofs and exposure equity is educational, not newly implemented roof-energy or health modelling.
+
 - Implemented guided and Jev-interpreted scenario comparisons across all four cities, with explicit quantities, held constraints, uncertainty bands, atomic application and share/reload support.
 - Added a conclusion checker against recomputed model evidence, with clarification for uncertain cases.
 - Added a repeatable coefficient source audit and visible status on each methodology page. Canopy needs review; three other intervention coefficients lack inspected source text. These remain scientific-evidence gaps.

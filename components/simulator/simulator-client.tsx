@@ -10,6 +10,7 @@ import { HonestyInline } from '@/components/simulator/honesty-inline'
 import { ClimateContext } from '@/components/simulator/climate-context'
 import { LiveWeatherStrip } from '@/components/simulator/live-weather-strip'
 import { ScenarioExplorer } from '@/components/simulator/scenario-explorer'
+import { EnvironmentalImpact } from '@/components/simulator/environmental-impact'
 import type { Comparison } from '@/lib/scenarios'
 import { track } from '@vercel/analytics'
 import { simulate } from '@/model/simulate'
@@ -187,8 +188,8 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
           </h1>
           <p className="mt-2 text-muted-foreground">
             Adjust the sliders to explore how land-use changes affect {city.name}&apos;s
-            temperature and air quality. The model applies published coefficients
-            against the April 2026 baseline.
+            illustrative heat and air-quality outputs against the April 2026 baseline.
+            Research informs the mechanisms; exact coefficient derivations still need review.
           </p>
         </div>
         <button
@@ -302,6 +303,8 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
           <Readouts cityId={city.id} output={output} baseline={{ tempC: baseline.tempC, pm25: baseline.pm25 }} liveAq={liveAq} />
         </div>
       </div>
+
+      <EnvironmentalImpact city={city} baseline={baseline} sliders={sliders} ctx={ctx}/>
 
       {/* Baseline info */}
       <div className="mt-10 rounded-lg border bg-card/50 p-4 text-xs text-muted-foreground">

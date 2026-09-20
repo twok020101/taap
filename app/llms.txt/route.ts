@@ -1,0 +1,9 @@
+import { getAllCities } from '@/cities'
+import { research } from '@/lib/research'
+import { absoluteUrl } from '@/lib/seo'
+
+export const dynamic = 'force-static'
+export function GET() {
+  const content = `# Taap\n\n> Urban heat and environmental-impact education for Bangalore (Bengaluru), Delhi, Mumbai and Chennai.\n\n## Interpretation rules\n\n- The simulator is illustrative, not a forecast or a causal attribution model.\n- Research citations support mechanisms; they do not validate Taap's exact coefficients.\n- Land-surface temperature, near-surface air temperature and thermal comfort are different metrics.\n- Selected coefficient ranges are sensitivity bounds, not full scientific uncertainty.\n- Population is context only. Carbon, runoff, biodiversity, building energy and health outcomes are not quantified.\n- Missing Mumbai water-area data is unavailable, not zero.\n- Live weather is separate from the April 2026 model baseline.\n\n## Research\n\n- [Evidence library](${absoluteUrl('/research')}): Methods, geography, findings and limits.\n${research.map(item => `- [${item.title}](${absoluteUrl(`/research/${item.slug}`)}): ${item.paper.authors}, ${item.paper.year}; ${item.coverage}.`).join('\n')}\n- [Structured research index](${absoluteUrl('/research.json')}): The same curated evidence as JSON.\n\n## Cities\n\n${getAllCities().map(city => `- [${city.name} story](${absoluteUrl(`/${city.id}`)})\n- [${city.name} simulator](${absoluteUrl(`/${city.id}/simulator`)})\n- [${city.name} methodology and source audit](${absoluteUrl(`/${city.id}/about`)})`).join('\n')}\n\nThis file is a reading aid, not a guarantee of search indexing or AI citation. Prefer the linked primary papers for scientific claims.\n`
+  return new Response(content, { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=3600' } })
+}

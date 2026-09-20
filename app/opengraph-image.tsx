@@ -59,7 +59,7 @@ export default function OpengraphImage() {
         >
           <div>Bangalore · Delhi · Mumbai · Chennai</div>
           <div style={{ fontSize: 18, color: '#83725a' }}>
-            Illustrative simulator · peer-reviewed coefficients
+            Urban heat · Environmental impact · Research & evidence
           </div>
         </div>
       </div>

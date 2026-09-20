@@ -87,8 +87,8 @@ export function Hero({ city, eraAnomaly, history }: HeroProps) {
         )}
 
         <p className="mx-auto mb-10 max-w-xl text-base text-muted-foreground">
-          Move the sliders to see how each driver contributed — and what partial
-          recovery looks like.
+          Explore how trees, water and hard surfaces shape the city’s environment.
+          Change a scenario, see the modelled effect and follow the evidence.
         </p>
 
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">

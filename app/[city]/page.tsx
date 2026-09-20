@@ -9,8 +9,19 @@ import { ArrowRight } from 'lucide-react'
 import { fetchTreeLoss } from '@/lib/sources/gfw'
 import { getCity } from '@/cities'
 import { notFound } from 'next/navigation'
+import { cityStories } from '@/lib/research'
+import { pageMetadata, breadcrumbs } from '@/lib/seo'
+import { StructuredData } from '@/components/structured-data'
+import { ApproachCards } from '@/components/research/approach-cards'
 
 const CARD_ACCENTS = ['red', 'orange', 'amber', 'orange'] as const
+
+export async function generateMetadata({ params }: { params: Promise<{ city: string }> }) {
+  const city = getCity((await params).city)
+  if (!city) notFound()
+  const name = city.id === 'bangalore' ? 'Bangalore (Bengaluru)' : city.name
+  return pageMetadata(`Why is ${name} getting hotter? Urban heat & environment | Taap`, `Explore ${name}'s trees, water and built-up surfaces, its urban heat story, and research-informed approaches to cooling. Try an illustrative simulator.`, `/${city.id}`, `/${city.id}/opengraph-image`)
+}
 
 export async function generateStaticParams() {
   const { cityIds } = await import('@/cities')
@@ -33,7 +44,16 @@ export default async function CityHomePage({
 
   return (
     <div>
+      <StructuredData data={breadcrumbs([{ name: 'Taap', path: '/' }, { name: city.name, path: `/${city.id}` }])}/>
       <Hero city={city} />
+
+      <section className="mx-auto max-w-6xl px-4 pb-16">
+        <p className="eyebrow">The environment around you</p>
+        <h2 className="section-title mt-3">{cityStories[city.id].setting}</h2>
+        <p className="mt-4 max-w-3xl leading-relaxed text-muted-foreground">{cityStories[city.id].question}</p>
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">Urban land cover changes shade, evaporation and heat storage. Regional climate and weather also matter. Taap explores simplified scenarios; it cannot attribute the city’s observed warming to individual causes.</p>
+        <div className="mt-8"><ApproachCards slugs={cityStories[city.id].approaches}/></div>
+      </section>
 
       <Separator />
 
@@ -52,10 +72,10 @@ export default async function CityHomePage({
             className="text-4xl md:text-5xl tracking-tight"
             style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic' }}
           >
-            50 years of urban transformation
+            A record of urban transformation
           </h2>
           <p className="mt-3 text-muted-foreground">
-            {city.name}, 1973 → 2026. Sources cited per card.
+            {city.name}. Periods and sources differ by card; these are not a single comparable time series.
           </p>
         </div>
 
@@ -94,9 +114,8 @@ export default async function CityHomePage({
           What if it played out differently?
         </h2>
         <p className="text-muted-foreground">
-          Move the sliders to explore how much of {city.name}&apos;s temperature rise comes
-          from tree loss, lake loss, built-up growth, and aerosols — and what a different
-          path might have looked like.
+          Explore how changes in canopy, water and built-up area move the illustrative heat model for {city.name}.
+          Compare scenarios with the same weather context, then inspect the assumptions behind each result.
         </p>
 
         <div className="mt-10">

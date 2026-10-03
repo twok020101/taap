@@ -58,7 +58,7 @@ const SLIDERS: SliderConfig[] = [
     step: 1,
     unit: '',
     source: 'vehicles',
-    description: 'Fleet size index on the shared Bangalore reference scale (Bangalore 2026 = 100). Other cities have different baselines. Drives PM2.5 only.',
+    description: 'Fleet size index on the shared Bangalore reference scale (Bangalore reference = 100). Other cities have different baselines. Drives PM2.5 only.',
   },
 ]
 
@@ -66,7 +66,7 @@ const PRESETS: { label: string; year: PresetYear }[] = [
   { label: '1973', year: '1973' },
   { label: '2000', year: '2000' },
   { label: '2024', year: '2024' },
-  { label: '2026 (now)', year: '2026' },
+  { label: 'Reference inputs', year: '2026' },
 ]
 
 interface SliderPanelProps {
@@ -79,7 +79,8 @@ interface SliderPanelProps {
 }
 
 const LINK_EXPLANATION =
-  'When linked, moving built-up pulls canopy down by 0.6× the delta (and vice versa), mirroring how impervious surface historically replaces vegetation (IISc LULC 1973–2023, calibrated on Bangalore). Unlinked lets you explore counterfactuals — e.g. canopy gain without built-up loss.'
+  'Linked mode changes the other land-cover slider by 0.6× the opposite delta. This is a demo interaction assumption, not a calibrated land-use relationship. Free mode keeps other inputs fixed.'
+
 
 export function SliderPanel({
   sliders,
@@ -95,7 +96,7 @@ export function SliderPanel({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="mb-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
-            Historical Presets
+            Illustrative year presets
           </p>
           <div className="flex flex-wrap gap-2">
             {PRESETS.map(({ label, year }) => (
@@ -104,6 +105,7 @@ export function SliderPanel({
                 variant={activePreset === year ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => onPresetSelect(year)}
+                aria-pressed={activePreset === year}
               >
                 {label}
               </Button>
@@ -173,7 +175,7 @@ export function SliderPanel({
                       <p>{description}</p>
                       {coeff && typeof coeff === 'object' && 'source' in coeff && (
                         <p className="mt-1 text-muted-foreground">
-                          Source: {(coeff as { source: string }).source}
+                          Mechanism context (numerical coefficient is a demo assumption): {(coeff as { source: string }).source}
                         </p>
                       )}
                     </TooltipContent>

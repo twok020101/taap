@@ -6,5 +6,6 @@
   "builtUpPct": 93,
   "waterKm2": 4.5,
   "vehiclesIndex": 100,
-  "populationM": 14.5
+  "populationM": 14.5,
+  "$comment": "Mixed-year demonstration reference inputs. year is a legacy scenario label, not a common observation year. All source attributions and quoted/derived text are unverified; see data/evidence/baseline-provenance.json for per-input classification, period, footprint and evidence gaps. Values are preserved without asserting calibration."
 }

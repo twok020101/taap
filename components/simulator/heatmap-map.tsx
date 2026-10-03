@@ -97,7 +97,7 @@ export function HeatmapMap({ city, baseline, sliders, ctx, basemap = 'dark' }: H
   const simRef = useRef<Float32Array | null>(null)
   const geojsonRef = useRef<FeatureCollection<Polygon> | null>(null)
   const basemapRef = useRef<'dark' | 'satellite'>('dark')
-  const [mapError, setMapError] = useState<string | null>(null)
+  const [mapError, setMapError] = useState(false)
 
   const grid = useMemo(() => buildGrid(city), [city])
 
@@ -161,7 +161,7 @@ export function HeatmapMap({ city, baseline, sliders, ctx, basemap = 'dark' }: H
     })
 
     // Zone labels only on dark (satellite basemap lacks Open Sans glyphs)
-    if (bm === 'dark') {
+    if (bm === 'dark' && map.getStyle().glyphs) {
       const zoneLabels: FeatureCollection = {
         type: 'FeatureCollection',
         features: Object.keys(city.zones).map(zk => ({
@@ -221,9 +221,8 @@ export function HeatmapMap({ city, baseline, sliders, ctx, basemap = 'dark' }: H
         dragRotate: false,
         pitchWithRotate: false,
       })
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Failed to initialise map'
-      queueMicrotask(() => setMapError(msg))
+    } catch {
+      queueMicrotask(() => setMapError(true))
       return
     }
 
@@ -231,14 +230,14 @@ export function HeatmapMap({ city, baseline, sliders, ctx, basemap = 'dark' }: H
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
 
     map.on('error', (e) => {
-      if (e.error?.message) setMapError(e.error.message)
+      if (e.error) setMapError(true)
     })
 
     map.on('load', () => {
       if (!mapRef.current) return
       addHeatLayers(map, basemapRef.current)
       loadedRef.current = true
-      setMapError(null)
+      setMapError(false)
     })
 
     const popup = new maplibregl.Popup({
@@ -274,8 +273,8 @@ export function HeatmapMap({ city, baseline, sliders, ctx, basemap = 'dark' }: H
         .setLngLat(e.lngLat)
         .setHTML(
           `<div class="tappop">
-             <div class="tappop-delta" style="color:${getHoverColor(delta)}">${sign}${delta.toFixed(1)}°C</div>
-             <div class="tappop-sub">${p.zone.charAt(0).toUpperCase() + p.zone.slice(1)} zone</div>
+             <div class="tappop-delta" style="color:${getHoverColor(delta)}">${sign}${delta.toFixed(1)} °C-equiv.</div>
+             <div class="tappop-sub">${p.zone.charAt(0).toUpperCase() + p.zone.slice(1)} · illustrative inputs</div>
              <div class="tappop-row"><span>Canopy</span><span>${p.canopy}%</span></div>
              <div class="tappop-row"><span>Built-up</span><span>${p.builtUp}%</span></div>
              <div class="tappop-row"><span>Water</span><span>${p.water}%</span></div>
@@ -343,8 +342,13 @@ export function HeatmapMap({ city, baseline, sliders, ctx, basemap = 'dark' }: H
       <div ref={containerRef} className="h-full w-full" />
       {mapError && (
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-card/85 p-6 text-center text-sm text-muted-foreground backdrop-blur-sm">
-          <strong className="text-foreground">Map failed to load</strong>
-          <span className="max-w-xs">{mapError}</span>
+          <strong className="text-foreground">The interactive map is unavailable</strong>
+          <span className="max-w-sm">Your browser may not support WebGL, or map tiles could not load. The comparison, controls and results still work.</span>
+          <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2 text-left" aria-label="Illustrative map summary">
+            <dt>Synthetic cell range</dt><dd>{sim.minDelta.toFixed(1)} to {sim.maxDelta.toFixed(1)} °C-equivalent</dd>
+            <dt>Synthetic cell mean</dt><dd>{sim.cityMeanTempDelta.toFixed(1)} °C-equivalent</dd>
+          </dl>
+          <span className="max-w-sm text-xs">Generated zone/feature patterns, not measured street temperatures. These spatial values use a different reference from the headline comparison.</span>
         </div>
       )}
       {!mapError && (
@@ -352,10 +356,10 @@ export function HeatmapMap({ city, baseline, sliders, ctx, basemap = 'dark' }: H
           <HeatmapLegend />
           <div className="pointer-events-none absolute left-3 top-3 z-10 flex max-w-[260px] flex-col gap-1.5">
             <div className="self-start rounded-md border border-white/10 bg-black/55 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-white/75 backdrop-blur-sm">
-              Spatial ΔT · {Math.round(grid.cells.length / 1000)}k cells · 400 m
+              Illustrative pattern · ~400 m cells
             </div>
             <div className="rounded-md border border-white/10 bg-black/55 px-2.5 py-1.5 text-[10px] leading-snug text-white/60 backdrop-blur-sm">
-              Land-use + zone only. City-wide monsoon &amp; aerosol stay in the readouts.
+              Generated zones/features, not observations. Relative to city land-cover inputs, with assumed local offsets; excludes uniform climate terms. Its mean is not the headline result. Satellite imagery is background only.
             </div>
           </div>
         </>
@@ -442,7 +446,7 @@ function HeatmapLegend() {
   return (
     <div className="pointer-events-none absolute bottom-3 left-3 z-10 rounded-md border border-white/10 bg-black/55 px-3 py-2 backdrop-blur-md">
       <div className="mb-1 font-mono text-[9px] uppercase tracking-[0.15em] text-white/60">
-        Δ°C · spatial
+        °C-equivalent · synthetic spatial response
       </div>
       <div className="h-2 w-44 rounded-sm" style={{ background: gradient }} aria-hidden />
       <div className="mt-1 flex w-44 justify-between font-mono text-[9px] tabular-nums text-white/70">

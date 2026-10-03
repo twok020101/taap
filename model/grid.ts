@@ -1,16 +1,17 @@
 /**
- * Land-cover grid for the spatial heatmap.
+ * Synthetic land-cover weights for the illustrative spatial overlay.
  *
  * Generates a ~400 m regular grid over the city bbox and populates each cell
  * with canopy / built-up / water fractions by combining two layers:
  *
  *   1. Zone baseline — nearest zone centroid sets the cell's starting
- *      canopy/built-up fractions from `zones.ts` (IISc LULC 2023).
+ *      assumed canopy/built-up fractions from `zones.ts`.
  *   2. Feature overlay — each curated feature in `features.json` (lakes,
  *      parks, CBD, forest edges) contributes via a smooth cosine-bell
  *      falloff, so a cell near a lake gets mostly water, a cell deep in
  *      Cubbon Park gets mostly canopy, etc.
  *
+ * These are generated weights, not satellite-measured cell land cover.
  * The output is deterministic and generated on first access. Water, canopy,
  * and built-up fractions sum to ≤ 1 per cell (the remainder is "other" —
  * bare ground, sparse vegetation, roads).
@@ -36,7 +37,7 @@ export interface Cell {
   waterFrac: number
   zone: ZoneKey
   /**
-   * Static baseline relief (°C) vs the cell's zone mean, derived from how
+   * Synthetic reference relief (°C-equivalent) vs the cell's zone mean, derived from how
    * much this cell's land cover deviates from its zone's average. Parks and
    * lakes read as cooler than their surroundings even when the sliders
    * haven't moved; dense micro-clusters read warmer. Added to the model's

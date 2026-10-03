@@ -48,6 +48,7 @@ const WIND_DIRS: WindDir[] = ['N', 'E', 'S', 'W']
 
 export function encodeScenario(s: Scenario): string {
   const params = new URLSearchParams()
+  params.set('sv', '1')
   params.set(KEYS.canopyPct, String(s.sliders.canopyPct))
   params.set(KEYS.builtUpPct, String(s.sliders.builtUpPct))
   if (s.sliders.waterKm2 !== null) params.set(KEYS.waterKm2, String(s.sliders.waterKm2))
@@ -74,6 +75,8 @@ export function decodeScenario(
   const stripped = hash.startsWith('#') ? hash.slice(1) : hash
   if (!stripped) return null
   const params = new URLSearchParams(stripped)
+  const version = params.get('sv')
+  if (version !== null && version !== '1') return null
 
   const out: Partial<Scenario> = {}
 
@@ -123,19 +126,52 @@ export function decodeScenario(
   return Object.keys(out).length > 0 ? out : null
 }
 
+/** Restore each URL against city defaults, never against the previous history entry. */
+export function resolveScenario(hash: string, defaults: Scenario, validZones: ZoneKey[], waterAvailable = true): Scenario {
+  const parsed = decodeScenario(hash, validZones, waterAvailable)
+  return {
+    ...defaults,
+    ...parsed,
+    sliders: { ...defaults.sliders, ...parsed?.sliders },
+    ctx: { ...defaults.ctx, ...parsed?.ctx },
+    comparison: parsed?.comparison ?? null,
+  }
+}
+
+/** Build a link from current state, without relying on a scheduled browser write. */
+export function scenarioUrl(scenario: Scenario, href: string): string {
+  const url = new URL(href)
+  url.hash = encodeScenario(scenario)
+  return url.href
+}
+
+export interface ScenarioCopyFeedback {
+  scenarioHash: string
+  status: 'copied' | 'manual'
+  url: string
+}
+
+/** Copy feedback belongs only to the exact scenario it was requested for. */
+export function currentCopyFeedback(scenario: Scenario, feedback: ScenarioCopyFeedback | null): ScenarioCopyFeedback | null {
+  return feedback?.scenarioHash === encodeScenario(scenario) ? feedback : null
+}
+
 export function useWriteScenarioHash(scenario: Scenario, enabled: boolean): void {
   const rafRef = useRef<number>(0)
   useEffect(() => {
     if (!enabled) return
     const encoded = encodeScenario(scenario)
+    const startingUrl = window.location.href
     if (rafRef.current) cancelAnimationFrame(rafRef.current)
     rafRef.current = requestAnimationFrame(() => {
+      // A navigation after scheduling must win over this stale state.
+      if (window.location.href !== startingUrl) return
       const current = window.location.hash.startsWith('#')
         ? window.location.hash.slice(1)
         : window.location.hash
       if (current !== encoded) {
         const newUrl = `${window.location.pathname}${window.location.search}#${encoded}`
-        window.history.replaceState(null, '', newUrl)
+        window.history.replaceState(window.history.state, '', newUrl)
       }
     })
     return () => {
@@ -145,7 +181,7 @@ export function useWriteScenarioHash(scenario: Scenario, enabled: boolean): void
 }
 
 function numOrNull(v: string | null): number | null {
-  if (v === null) return null
+  if (v === null || v.trim() === '') return null
   const n = Number(v)
   return Number.isFinite(n) ? n : null
 }

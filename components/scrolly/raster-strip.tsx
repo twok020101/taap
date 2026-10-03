@@ -16,7 +16,7 @@ const ROW_META = [
     rowLabel: 'NDVI (greenness)',
     key: 'ndvi',
     captions: {
-      '1973': '1973 · pre-satellite',
+      '1973': '1973 · no imagery supplied',
       '2000': 'Apr 2000 · MODIS NDVI',
       '2024': 'Apr 2024 · MODIS NDVI',
       '2026': 'Mar 2026 · MODIS NDVI',
@@ -26,7 +26,7 @@ const ROW_META = [
     rowLabel: 'LST (land surface temp)',
     key: 'lst',
     captions: {
-      '1973': '1973 · pre-satellite',
+      '1973': '1973 · no imagery supplied',
       '2000': 'Apr 2000 · MODIS LST',
       '2024': 'Apr 2024 · MODIS LST',
       '2026': 'Mar 2026 · MODIS LST',
@@ -37,9 +37,9 @@ const ROW_META = [
 function PreSatelliteTile() {
   return (
     <div className="flex h-full flex-col items-center justify-center bg-muted/30 px-2 py-2 text-center">
-      <p className="text-[11px] italic text-muted-foreground">Pre-satellite</p>
+      <p className="text-[11px] italic text-muted-foreground">No imagery supplied</p>
       <p className="mt-1 text-[9px] italic text-muted-foreground/70 leading-tight">
-        See IISc LULC<br />reconstruction below
+        No measured value is inferred.
       </p>
     </div>
   )
@@ -57,11 +57,10 @@ export function RasterStrip({ city }: { city: CityConfig }) {
           className="text-4xl md:text-5xl tracking-tight"
           style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic' }}
         >
-          Greenness lost, heat gained
+          Selected satellite composites
         </h2>
         <p className="mt-3 text-muted-foreground">
-          Monthly composites showing NDVI (vegetation) and LST (surface temperature) across five
-          decades.
+          Selected NDVI (vegetation) and LST (surface temperature) composites. Months differ; these images provide context, not a quantified trend or attribution.
         </p>
       </div>
 
@@ -93,7 +92,7 @@ export function RasterStrip({ city }: { city: CityConfig }) {
               </span>
             </div>
 
-            {/* Image or pre-satellite tiles */}
+            {/* Image or no imagery supplied tiles */}
             {YEARS.map((yr) => (
               <div key={`${row.key}-${yr}`} className="flex flex-col gap-1">
                 <div className="relative overflow-hidden rounded-lg border border-border aspect-[1024/820]">

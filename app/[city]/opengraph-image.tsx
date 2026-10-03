@@ -74,9 +74,9 @@ export default async function OpengraphImage({
             color: '#b49a77',
           }}
         >
-          <div>Interactive heat simulator · 1973 → 2026</div>
+          <div>Interactive educational model</div>
           <div style={{ fontSize: 18, color: '#83725a' }}>
-            Peer-reviewed coefficients · live IMD / CPCB / GFW data
+            Transparent assumptions · research and engineering
           </div>
         </div>
       </div>

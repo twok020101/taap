@@ -45,3 +45,6 @@ data/precomputed/*.png
 
 # Local source passages and evaluation output
 .cache/
+
+# Python browser-test bytecode
+__pycache__/

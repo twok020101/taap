@@ -8,8 +8,10 @@ export interface SliderState {
 }
 
 export interface Baseline extends SliderState {
+  /** Numerical reference anchor; metric and evidence vary by city. */
   tempC: number
   pm25: number
+  /** Scenario label only, not a shared measurement year. */
   year: number
 }
 
@@ -38,13 +40,41 @@ export interface ModelBand {
   high: number
 }
 
+export interface SaturationDiagnostics {
+  /** Central value exceeded a display/model bound. */
+  clipped: boolean
+  /** At least one selected sensitivity endpoint exceeded a bound. */
+  sensitivityClipped: boolean
+  /** Nonzero raw sensitivity range became zero-width solely through clipping. */
+  collapsedByClipping: boolean
+}
+
 export interface ModelOutput {
+  /** Illustrative temperature-equivalent value, not calibrated air temperature or LST. */
   tempC: number
   tempDelta: number
   pm25: number
   pm25Delta: number
   nightCoolLoss: number
   breakdown: BreakdownComponents
+  referenceContext: SimContext
+  diagnostics: {
+    temperature: SaturationDiagnostics & {
+      unclippedDelta: number
+      unclippedLow: number
+      unclippedHigh: number
+    }
+    pm25: SaturationDiagnostics & {
+      unclippedValue: number
+      unclippedLow: number
+      unclippedHigh: number
+    }
+    nightCoolLoss: SaturationDiagnostics & {
+      unclippedValue: number
+      unclippedLow: number
+      unclippedHigh: number
+    }
+  }
   /**
    * Low/high bounds on each ranged readout, propagated from the coefficient
    * `{low, high}` intervals. Fixed-value components (monsoon, aerosol, wind
@@ -103,7 +133,7 @@ export interface CityConfig {
   bbox: [number, number, number, number]
   /** Approximate centroids of each zone, used for nearest-centroid grid-cell assignment */
   zoneCentroids: Record<ZoneKey, [number, number]>
-  /** Zone definitions (label + land-use + LST offset) per city. */
+  /** Assumed zone definitions (label + land-use + temperature-equivalent offset) per city. */
   zones: Record<ZoneKey, ZoneInfo>
   /** Curated land-cover features (lakes, parks, dense corridors) driving the heatmap grid. */
   features: LandFeature[]
@@ -111,8 +141,8 @@ export interface CityConfig {
   gadm?: { iso: string; adm1: number; adm2: number }
   /**
    * Per-city coefficient overrides that take precedence over the default
-   * Bangalore-calibrated `coefficients` table. Only override fields where a
-   * city-specific peer-reviewed source exists; leave others unset to inherit.
+   * demonstration `coefficients` table. Existing source labels are unverified
+   * attributions, not evidence of city calibration or coefficient validity.
    * `monsoonOffsetsSource` is a human label for UI attribution (e.g.
    * "IMD Safdarjung 1991–2020 via Climate of Delhi, Wikipedia").
    */

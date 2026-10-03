@@ -1,4 +1,5 @@
 import { coefficients } from './coefficients'
+import { getReferenceContext } from '@/lib/baselines'
 import type { Baseline, CityConfig, ModelOutput, SliderState, SimContext } from '@/cities/types'
 
 export type CoefficientValues = Partial<Record<'canopy' | 'builtUp' | 'water' | 'vehicles', number>>
@@ -26,31 +27,18 @@ function rangedContrib(
 }
 
 /**
- * Pure simulation function.
- *
- * Applies linear additive deltas from the coefficient table to estimate the
- * change in temperature and PM2.5 relative to the provided baseline, now
- * including monsoon seasonality, wind-direction advection, aerosol optical
- * depth forcing, and per-zone spatial offsets.
- *
- * LIMITATIONS (see /about for full panel):
- * - Linear additive only — no non-linear feedbacks
- * - Monsoon captured as monthly offset, not day-by-day dynamics
- * - Advection is a 4-cardinal-direction approximation (not mesoscale model)
- * - AOD forcing is city-average, not vertically-resolved
- * - Zone offsets are zone-mean; street-scale microclimate not captured
- * - Results are illustrative, not predictive
- *
- * @param baseline - April 2026 observed values for the city
- * @param sliders - Current slider values
- * @param ctx - Climate context (month, wind, AOD, zone, time-of-day)
- * @returns ModelOutput with absolute values, deltas, and breakdown
+ * Deterministic demonstration, not a calibrated physical forecast.
+ * Outputs are illustrative temperature-equivalent and PM2.5-equivalent values.
+ * Land-use terms are relative to mixed-year reference inputs; month, zone, AOD
+ * and PM2.5 wind terms are relative to the explicit city reference context.
+ * Low/high intervals vary selected assumptions only, not all uncertainty.
+ * Raw values and clipping flags are retained so saturation cannot imply certainty.
  */
 export function simulate(
   city: CityConfig,
   baseline: Baseline,
   sliders: SliderState,
-  ctx: SimContext = { month: 4, windDir: 'N', aod: 0.4, zone: 'central' },
+  ctx: SimContext = getReferenceContext(city),
   coefficientValues: CoefficientValues = {},
 ): ModelOutput {
   const o = city.coefficientOverrides
@@ -66,6 +54,7 @@ export function simulate(
     aod: { ...coefficients.aod, referenceAod: o?.aod?.referenceAod ?? coefficients.aod.referenceAod },
   }
   const tod = ctx.timeOfDay ?? 'day'
+  const referenceContext = getReferenceContext(city)
 
   // ── 1. Land-use deltas ──────────────────────────────────────────────────
 
@@ -94,23 +83,22 @@ export function simulate(
 
   // ── 2. Advection (wind direction) ────────────────────────────────────────
   // Applies as a multiplier to the slider-driven subtotal only.
-  // Source: KSPCB wind-rose 2022 + derived from zone land-use.
+  // Demonstration assumption; no verified wind-transport calibration.
   const advectionMultiplier = c.windAdvectionMultiplier[ctx.windDir]
   const tempFromAdvection = sliderSubtotal * advectionMultiplier
-  // Advection with a negative multiplier flips which end of the band is low vs high.
-  const advA = sliderSubtotalLow * advectionMultiplier
-  const advB = sliderSubtotalHigh * advectionMultiplier
-  const tempFromAdvectionLow = Math.min(advA, advB)
-  const tempFromAdvectionHigh = Math.max(advA, advB)
+  // The subtotal and its advection contribution share the same coefficients.
+  // Propagate their combined multiplier; independent interval addition would
+  // wrongly widen the range when the advection multiplier is negative.
+  const windScaledA = sliderSubtotalLow * (1 + advectionMultiplier)
+  const windScaledB = sliderSubtotalHigh * (1 + advectionMultiplier)
 
   // ── 3. Monsoon / seasonal offset ────────────────────────────────────────
-  // Absolute monthly temperature modulation from IMD climatology 1991–2020.
-  // This shifts the baseline, not the delta.
-  const tempFromMonsoon = c.monsoonOffsets[ctx.month]
+  // Relative seasonal assumption: April at the reference inputs has zero delta.
+  // This avoids adding an annual-mean offset to an April-attributed anchor.
+  const tempFromMonsoon = c.monsoonOffsets[ctx.month] - c.monsoonOffsets[referenceContext.month]
 
   // ── 4. Aerosol optical depth (AOD) forcing ───────────────────────────────
-  // Reference is 0.4 (clean Bangalore). Steps of +0.3 AOD.
-  // Source: Babu et al., ARFI 2013.
+  // Assumed response relative to the city demo reference AOD, not a clean-air limit.
   const aodSteps = (ctx.aod - c.aod.referenceAod) / c.aod.stepAod
   const tempFromAerosolDay = aodSteps * c.aod.daytimeCoolingPerStep
   const tempFromAerosolNight = aodSteps * c.aod.nighttimeWarmingPerStep
@@ -118,10 +106,11 @@ export function simulate(
   const tempFromAerosol = tod === 'day' ? tempFromAerosolDay : tempFromAerosolNight
 
   // ── 5. Zone offset ───────────────────────────────────────────────────────
-  // Residual zone-specific LST not captured by the aggregate sliders.
-  // Per-city zone table carried on CityConfig.
-  const zoneConfig = city.zones[ctx.zone] ?? Object.values(city.zones)[0]
-  const tempFromZone = zoneConfig.tempOffsetC
+  // Synthetic zone contrast relative to the first configured zone.
+  // This is a modelling convention, not a measured geographic baseline.
+  const referenceZone = city.zones[referenceContext.zone]
+  const zoneConfig = city.zones[ctx.zone] ?? referenceZone
+  const tempFromZone = zoneConfig.tempOffsetC - referenceZone.tempOffsetC
 
   // ── 6. Total temperature delta ───────────────────────────────────────────
   const fixedTempTerms = tempFromMonsoon + tempFromAerosol + tempFromZone
@@ -129,10 +118,12 @@ export function simulate(
 
   const clampT = (v: number) => Math.max(-8, Math.min(12, v))
   const tempDelta = clampT(rawTempDelta)
-  const tempDeltaLow = clampT(sliderSubtotalLow + tempFromAdvectionLow + fixedTempTerms)
-  const tempDeltaHigh = clampT(sliderSubtotalHigh + tempFromAdvectionHigh + fixedTempTerms)
+  const rawTempLow = Math.min(windScaledA, windScaledB) + fixedTempTerms
+  const rawTempHigh = Math.max(windScaledA, windScaledB) + fixedTempTerms
+  const tempDeltaLow = clampT(rawTempLow)
+  const tempDeltaHigh = clampT(rawTempHigh)
 
-  // Absolute modelled temperature
+  // Reference anchor plus bounded illustrative response, not a physical forecast.
   const tempC = baseline.tempC + tempDelta
 
   // ── 7. PM2.5 ─────────────────────────────────────────────────────────────
@@ -148,7 +139,7 @@ export function simulate(
   const pm25FromVehicles = vehiclesBand.central
 
   // Advection PM2.5 offset
-  const pm25FromAdvection = c.windPm25Offset[ctx.windDir]
+  const pm25FromAdvection = c.windPm25Offset[ctx.windDir] - c.windPm25Offset[referenceContext.windDir]
 
   // AOD contribution to PM2.5
   const pm25FromAod = aodSteps * c.aod.pm25PerStep
@@ -159,12 +150,13 @@ export function simulate(
   const pm25 = clampPm(rawPm25)
   const pm25Delta = pm25 - baseline.pm25
   const fixedPm25 = baseline.pm25 + pm25FromAdvection + pm25FromAod
-  const pm25DeltaLow = clampPm(fixedPm25 + vehiclesBand.low) - baseline.pm25
-  const pm25DeltaHigh = clampPm(fixedPm25 + vehiclesBand.high) - baseline.pm25
+  const rawPm25Low = fixedPm25 + vehiclesBand.low
+  const rawPm25High = fixedPm25 + vehiclesBand.high
+  const pm25DeltaLow = clampPm(rawPm25Low) - baseline.pm25
+  const pm25DeltaHigh = clampPm(rawPm25High) - baseline.pm25
 
   // ── 8. Night cooling loss ─────────────────────────────────────────────────
-  // Fraction of canopy-driven daytime warming that shows up as reduced nighttime
-  // cooling (loss of evapotranspiration). Applies to canopy contribution only.
+  // Assumed canopy-only night-response proxy, not measured nocturnal cooling.
   const nightCoolLoss = clampT(tempFromCanopy) * c.nightCoolLossFraction
   const nightCoolLossLow = clampT(canopyBand.low) * c.nightCoolLossFraction
   const nightCoolLossHigh = clampT(canopyBand.high) * c.nightCoolLossFraction
@@ -174,15 +166,19 @@ export function simulate(
     canopy: Math.round(tempFromCanopy * 100) / 100,
     builtUp: Math.round(tempFromBuiltUp * 100) / 100,
     water: Math.round(tempFromWater * 100) / 100,
-    aerosolDay: Math.round(tempFromAerosolDay * 100) / 100,
-    aerosolNight: Math.round(tempFromAerosolNight * 100) / 100,
+    aerosolDay: tod === 'day' ? Math.round(tempFromAerosolDay * 100) / 100 : 0,
+    aerosolNight: tod === 'night' ? Math.round(tempFromAerosolNight * 100) / 100 : 0,
     monsoon: Math.round(tempFromMonsoon * 100) / 100,
     advection: Math.round(tempFromAdvection * 100) / 100,
     zoneOffset: Math.round(tempFromZone * 100) / 100,
   }
 
-  const r2 = (v: number) => Math.round(v * 100) / 100
-  const r1 = (v: number) => Math.round(v * 10) / 10
+  const rounded = (v: number, scale: number) => {
+    const value = Math.round(v * scale) / scale
+    return Object.is(value, -0) ? 0 : value
+  }
+  const r2 = (v: number) => rounded(v, 100)
+  const r1 = (v: number) => rounded(v, 10)
 
   return {
     tempC: r1(tempC),
@@ -191,6 +187,33 @@ export function simulate(
     pm25Delta: r1(pm25Delta),
     nightCoolLoss: r2(nightCoolLoss),
     breakdown,
+    referenceContext,
+    diagnostics: {
+      temperature: {
+        unclippedDelta: rawTempDelta,
+        unclippedLow: rawTempLow,
+        unclippedHigh: rawTempHigh,
+        clipped: rawTempDelta !== tempDelta,
+        sensitivityClipped: rawTempLow !== tempDeltaLow || rawTempHigh !== tempDeltaHigh,
+        collapsedByClipping: rawTempLow < rawTempHigh && tempDeltaLow === tempDeltaHigh,
+      },
+      pm25: {
+        unclippedValue: rawPm25,
+        unclippedLow: rawPm25Low,
+        unclippedHigh: rawPm25High,
+        clipped: rawPm25 !== pm25,
+        sensitivityClipped: rawPm25Low !== clampPm(rawPm25Low) || rawPm25High !== clampPm(rawPm25High),
+        collapsedByClipping: rawPm25Low < rawPm25High && clampPm(rawPm25Low) === clampPm(rawPm25High),
+      },
+      nightCoolLoss: {
+        unclippedValue: tempFromCanopy * c.nightCoolLossFraction,
+        unclippedLow: canopyBand.low * c.nightCoolLossFraction,
+        unclippedHigh: canopyBand.high * c.nightCoolLossFraction,
+        clipped: tempFromCanopy !== clampT(tempFromCanopy),
+        sensitivityClipped: canopyBand.low !== clampT(canopyBand.low) || canopyBand.high !== clampT(canopyBand.high),
+        collapsedByClipping: canopyBand.low < canopyBand.high && nightCoolLossLow === nightCoolLossHigh,
+      },
+    },
     bands: {
       tempDelta: { low: r2(tempDeltaLow), high: r2(tempDeltaHigh) },
       pm25Delta: { low: r1(pm25DeltaLow), high: r1(pm25DeltaHigh) },

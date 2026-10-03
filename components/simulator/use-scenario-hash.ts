@@ -145,6 +145,17 @@ export function scenarioUrl(scenario: Scenario, href: string): string {
   return url.href
 }
 
+export interface ScenarioCopyFeedback {
+  scenarioHash: string
+  status: 'copied' | 'manual'
+  url: string
+}
+
+/** Copy feedback belongs only to the exact scenario it was requested for. */
+export function currentCopyFeedback(scenario: Scenario, feedback: ScenarioCopyFeedback | null): ScenarioCopyFeedback | null {
+  return feedback?.scenarioHash === encodeScenario(scenario) ? feedback : null
+}
+
 export function useWriteScenarioHash(scenario: Scenario, enabled: boolean): void {
   const rafRef = useRef<number>(0)
   useEffect(() => {

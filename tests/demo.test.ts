@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs'
 import { getAllCities } from '../cities'
 import { getReferenceContext } from '../lib/baselines'
 import { DEFAULT_OPERATIONS, applyOperations, type Comparison } from '../lib/scenarios'
-import { decodeScenario, encodeScenario, resolveScenario, scenarioUrl, type Scenario } from '../components/simulator/use-scenario-hash'
+import { currentCopyFeedback, decodeScenario, encodeScenario, resolveScenario, scenarioUrl, type Scenario } from '../components/simulator/use-scenario-hash'
 
 function reference(): Scenario {
   return {
@@ -89,4 +89,25 @@ test('guided entry and result sharing stay before advanced controls; simulator s
   assert.match(simulator, /addEventListener\('popstate', restore\)/)
   assert.match(intro, /pathname\?\.split\('\/'\)\[2\] === 'simulator'\) return null/)
   assert.match(globe, /if \(window\.location\.hash\) return/)
+})
+
+
+test('manual-copy and copied feedback cannot show a stale scenario link after input changes', () => {
+  const initial = reference()
+  const comparison: Comparison = { base: initial.sliders, ctx: initial.ctx, goal: 'both', scenarios: [[DEFAULT_OPERATIONS.canopyPct], [DEFAULT_OPERATIONS.vehiclesIndex]] }
+  const first: Scenario = { ...initial, comparison, sliders: applyOperations(initial.sliders, comparison.scenarios[0]), linkedMode: false, activePreset: null }
+  const second: Scenario = { ...first, sliders: applyOperations(initial.sliders, comparison.scenarios[1]) }
+  for (const status of ['manual', 'copied'] as const) {
+    const feedback = { scenarioHash: encodeScenario(first), status, url: scenarioUrl(first, 'https://taap.thetwok.in/bangalore/simulator') }
+    assert.deepEqual(currentCopyFeedback(first, feedback), feedback)
+    assert.equal(currentCopyFeedback(second, feedback), null)
+    assert.equal(currentCopyFeedback({ ...first, ctx: { ...first.ctx, month: 8 } }, feedback), null)
+    assert.equal(currentCopyFeedback({ ...first, comparison: null }, feedback), null)
+    assert.equal(currentCopyFeedback({ ...first, basemap: 'satellite' }, feedback), null)
+    // A clipboard request resolving after scenario 2 is applied is still hidden.
+    assert.equal(currentCopyFeedback(second, { ...feedback }), null)
+    const latest = { scenarioHash: encodeScenario(second), status, url: scenarioUrl(second, feedback.url) }
+    assert.deepEqual(currentCopyFeedback(second, latest), latest)
+    assert.deepEqual(resolveScenario(new URL(latest.url).hash, initial, ['central']), second)
+  }
 })

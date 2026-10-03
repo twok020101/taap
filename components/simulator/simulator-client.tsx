@@ -16,7 +16,7 @@ import type { Comparison } from '@/lib/scenarios'
 import { getReferenceContext } from '@/lib/baselines'
 import { track } from '@vercel/analytics'
 import { simulate } from '@/model/simulate'
-import { resolveScenario, scenarioUrl, useWriteScenarioHash, type Scenario } from '@/components/simulator/use-scenario-hash'
+import { currentCopyFeedback, encodeScenario, resolveScenario, scenarioUrl, useWriteScenarioHash, type Scenario, type ScenarioCopyFeedback } from '@/components/simulator/use-scenario-hash'
 import type { CityConfig, SliderState, PresetYear, Baseline, SimContext, ZoneKey } from '@/cities/types'
 import type { LiveWeather } from '@/lib/sources/openMeteo'
 import type { LiveAq } from '@/lib/sources/openAQ'
@@ -56,16 +56,19 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
   const comparison = scenario.comparison ?? null
   const resultsHeading = useRef<HTMLHeadingElement>(null)
   const [hydrated, setHydrated] = useState(false)
-  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'manual'>('idle')
-  const [manualUrl, setManualUrl] = useState('')
+  const [copyAttempt, setCopyAttempt] = useState<ScenarioCopyFeedback | null>(null)
+  const copyFeedback = currentCopyFeedback(scenario, copyAttempt)
+  const copyState = copyFeedback?.status ?? 'idle'
+  const manualUrl = copyFeedback?.url ?? ''
+  const copyVersion = useRef(0)
   const manualLink = useRef<HTMLInputElement>(null)
   const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     const restore = () => {
       setScenario(resolveScenario(window.location.hash, referenceScenario, Object.keys(city.zones), baseline.waterKm2 !== null))
-      setCopyState('idle')
-      setManualUrl('')
+      copyVersion.current += 1
+      setCopyAttempt(null)
       setHydrated(true)
     }
     // Browser URL state is external to the server render. Restore on navigation too.
@@ -91,17 +94,21 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
   const handleCopyLink = useCallback(async () => {
     // Serialize the state being displayed, even before the debounced hash writer runs.
     const url = scenarioUrl(scenario, window.location.href)
+    const scenarioHash = encodeScenario(scenario)
+    const requestVersion = ++copyVersion.current
     window.history.replaceState(window.history.state, '', url)
     if (copyTimer.current) clearTimeout(copyTimer.current)
     try {
       await navigator.clipboard.writeText(url)
+      if (requestVersion !== copyVersion.current) return
       track('scenario_shared', { city: city.id, comparison: comparison !== null })
-      setCopyState('copied')
-      setManualUrl('')
-      copyTimer.current = setTimeout(() => setCopyState('idle'), 1800)
+      setCopyAttempt({ scenarioHash, status: 'copied', url })
+      copyTimer.current = setTimeout(() => {
+        if (requestVersion === copyVersion.current) setCopyAttempt(null)
+      }, 1800)
     } catch {
-      setManualUrl(url)
-      setCopyState('manual')
+      if (requestVersion !== copyVersion.current) return
+      setCopyAttempt({ scenarioHash, status: 'manual', url })
     }
   }, [city.id, comparison, scenario])
 
@@ -212,7 +219,7 @@ export function SimulatorClient({ city, baseline, presets, liveWeather, liveAq }
         <summary className="cursor-pointer text-lg font-semibold">Advanced controls: inputs & climate context</summary>
         <p className="mt-3 text-sm text-muted-foreground">Explore assumptions manually. Linked mode couples canopy and built-up changes using a demo ratio. Guided comparisons always keep other inputs fixed.</p>
         <div className="my-5 flex flex-wrap gap-3">
-          <button className="rounded-md border px-3 py-2 text-sm hover:bg-accent" onClick={() => { setScenario(referenceScenario); setCopyState('idle'); setManualUrl('') }}>Reset to reference scenario</button>
+          <button className="rounded-md border px-3 py-2 text-sm hover:bg-accent" onClick={() => { setScenario(referenceScenario); copyVersion.current += 1; setCopyAttempt(null) }}>Reset to reference scenario</button>
           <a href={`/${city.id}/about`} className="px-1 py-2 text-sm underline">Inspect assumptions and sources</a>
         </div>
         <div className="grid gap-6 lg:grid-cols-2">

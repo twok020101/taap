@@ -39,3 +39,11 @@ jobs:
           name: browser-evidence
           path: .cache/e2e/
           if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-screenshots
+          path: |
+            .cache/e2e/*.png
+            .cache/e2e/results.json
+          if-no-files-found: ignore

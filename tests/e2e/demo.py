@@ -30,6 +30,7 @@ def flow(browser, mobile=False):
     label = 'mobile' if mobile else 'desktop'
     context = browser.new_context(viewport={'width': 390 if mobile else 1440, 'height': 844 if mobile else 1000}, reduced_motion='reduce')
     context.tracing.start(screenshots=True, snapshots=True, sources=True)
+    context.add_init_script("Object.defineProperty(navigator, 'clipboard', {value: {writeText: async value => {window.__copiedScenario = value}}})")
     # External basemaps are not part of this regression. Real MapLibre/WebGL runs
     # against an empty local style, with the app's actual generated overlay.
     context.route(re.compile(r'.*(cartocdn|maptiler|demotiles\.maplibre).*'), lambda route: route.fulfill(json={'version': 8, 'sources': {}, 'layers': [{'id': 'background', 'type': 'background', 'paint': {'background-color': '#151515'}}]}) if '.json' in route.request.url else route.abort())
@@ -61,6 +62,8 @@ def flow(browser, mobile=False):
         page.get_by_role('button', name='Copy a shareable link to this exact simulator scenario').last.click()
         expect(page).to_have_url(re.compile(r'.*#.*compare='))
         shared = page.url
+        assert page.evaluate('window.__copiedScenario') == shared
+        body_has(page, 'Exact scenario link copied.')
         assert params(page)['c'] == ['11']
         reopened = context.new_page()
         reopened.goto(shared, wait_until='domcontentloaded')
@@ -152,6 +155,12 @@ def fallback(browser):
     page.get_by_role('button', name='Apply scenario 1', exact=False).click()
     page.get_by_role('button', name='Copy a shareable link to this exact simulator scenario').last.click()
     body_has(page, 'Copy this exact scenario link')
+    expect(page.locator('#manual-scenario-link')).to_have_value(page.url)
+    page.get_by_role('button', name='Apply scenario 2', exact=False).click()
+    expect(page.locator('#manual-scenario-link')).to_have_count(0)
+    page.get_by_role('button', name='Copy a shareable link to this exact simulator scenario').last.click()
+    expect(page.locator('#manual-scenario-link')).to_have_value(page.url)
+    assert params(page)['c'] == ['6'] and params(page)['v'] == ['90']
     page.screenshot(path=str(OUT / 'fallback-mobile.png'), full_page=True)
     record('WebGL unavailable: friendly numeric fallback, functioning comparison and manual copy')
     context.close()

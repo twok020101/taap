@@ -66,16 +66,16 @@ export default async function CityHomePage({
       <section className="mx-auto max-w-6xl px-4 py-20">
         <div className="mb-12 text-center">
           <p className="mb-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
-            The data behind the heat
+            Historical context · source claims need review
           </p>
           <h2
             className="text-4xl md:text-5xl tracking-tight"
             style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic' }}
           >
-            A record of urban transformation
+            Context, not calibration
           </h2>
           <p className="mt-3 text-muted-foreground">
-            {city.name}. Periods and sources differ by card; these are not a single comparable time series.
+            {city.name}. These historical figures are unverified source claims, not model inputs or a validated time series. Dates, metrics and geographic footprints differ; short citations below lack full supporting locators.
           </p>
         </div>
 
@@ -86,13 +86,13 @@ export default async function CityHomePage({
               label={stat.label}
               value={stat.value}
               suffix={stat.suffix}
-              source={stat.source}
+              source={`Unverified contextual claim · ${stat.source}`}
               accent={CARD_ACCENTS[i] ?? 'default'}
             />
           ))}
           {treeLoss && (
             <StatCard
-              label={`Tree cover lost in ${treeLoss.latestYear}`}
+              label={`Tree cover lost in ${treeLoss.latestYear} (${city.id === 'mumbai' ? 'Mumbai Suburban district' : 'configured district'})`}
               value={treeLoss.latestLossHa}
               suffix=" ha"
               source="Hansen/GFW · 30 m"

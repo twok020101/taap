@@ -1,6 +1,6 @@
 'use client'
 
-import { useSelectedLayoutSegment } from 'next/navigation'
+import { usePathname, useSelectedLayoutSegment } from 'next/navigation'
 import { getCity } from '@/cities'
 import { GlobeIntro } from './globe-intro'
 
@@ -17,6 +17,9 @@ import { GlobeIntro } from './globe-intro'
  */
 export function GlobeIntroHost() {
   const segment = useSelectedLayoutSegment()
+  const pathname = usePathname()
+  // Interactive and shared scenarios must be usable immediately.
+  if (pathname?.split('/')[2] === 'simulator') return null
   if (!segment) return null
   const city = getCity(segment)
   if (!city) return null

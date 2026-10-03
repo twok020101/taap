@@ -1,8 +1,8 @@
 # Why Is Bangalore Hot? — Interactive Urban Heat Simulator
 
-An interactive web app for Bangalore, Delhi, Mumbai and Chennai. Explore modelled temperature and air quality with tree-canopy, built-up, water-area and vehicle controls. Population is read-only context; the simulator has no independent population effect.
+An interactive web app for Bangalore, Delhi, Mumbai and Chennai. Explore illustrative temperature-equivalent and air-quality responses with tree-canopy, built-up, water-area and vehicle controls. Population is read-only context; the simulator has no independent population effect.
 
-Baseline: April 2026. Built with Next.js 16, Tailwind, shadcn/ui, MapLibre, deployed to Vercel.
+Reference scenario: mixed-year inputs; not an observed April 2026 snapshot. Built with Next.js 16, Tailwind, shadcn/ui, MapLibre, deployed to Vercel.
 
 ## Quick start
 
@@ -15,11 +15,11 @@ Open http://localhost:3000.
 
 ## Why this exists
 
-Bangalore lost ~88% of its tree cover and ~79% of its wetlands between 1973 and 2023, while built-up area grew more than tenfold. Land surface temperatures rose by nearly 8°C in 25 years. Numbers alone don't land — sliders do.
+Explore how changing land cover can affect urban environments, while keeping research findings separate from unvalidated numerical assumptions. Historical source metrics and footprints vary; do not treat them as a single calibrated time series.
 
 ## Model honesty
 
-The slider model combines documented coefficients with simplified seasonal, wind, aerosol and zone effects. It is **illustrative, not predictive**. Selected coefficient ranges are not complete scientific uncertainty. The methodology page shows source-audit gaps; missing water-area evidence is omitted explicitly rather than treated as zero.
+The slider model combines explicit demonstration assumptions with simplified seasonal, wind, aerosol and zone effects. It is **illustrative, not predictive**. Selected coefficient ranges are not complete scientific uncertainty. The methodology page shows source-audit gaps; missing water-area evidence is omitted explicitly rather than treated as zero.
 
 ## Environmental story, research and discovery
 
@@ -47,3 +47,7 @@ pnpm audit:evidence
 ```
 
 See [the integration and evaluation notes](docs/jev-integration.md) for scope, evidence inputs, limits and impact measurement. Nothing is deployed by these commands.
+
+## Engineering showcase
+
+[Try the guided demo](https://taap.thetwok.in/bangalore/simulator) · [Engineering case study](docs/engineering.md) · [City methodology index](https://taap.thetwok.in/methodology). Software verification is separate from scientific model validation.

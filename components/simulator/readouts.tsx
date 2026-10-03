@@ -80,28 +80,28 @@ const BREAKDOWN_INFO: Record<string, BreakdownSource> = {
   },
   aerosolDay: {
     label: 'Aerosol (day)',
-    description: 'Solar dimming from aerosols — cooling at ground level. −0.8°C per +0.3 AOD above the 0.4 reference.',
-    source: 'Babu et al., ARFI 2013',
+    description: 'Demo daytime aerosol response relative to the reference AOD. This is not a calibrated local air-temperature coefficient.',
+    source: 'Mechanism context: Babu et al., ARFI 2013; exact magnitude unverified.',
   },
   aerosolNight: {
     label: 'Aerosol (night)',
-    description: 'IR trapping from aerosols — warming at ground level after sunset. +0.5°C per +0.3 AOD above the 0.4 reference.',
-    source: 'Babu et al., ARFI 2013',
+    description: 'Demo nighttime aerosol response relative to the reference AOD. This is not a calibrated local air-temperature coefficient.',
+    source: 'Mechanism context: Babu et al., ARFI 2013; exact magnitude unverified.',
   },
   monsoon: {
     label: 'Season/monsoon',
-    description: 'Monthly offset from annual mean, capturing seasonal variation and monsoon cooling.',
-    source: 'IMD climatology 1991–2020 (per-city)',
+    description: 'Assumed monthly response relative to the April reference setting. This does not simulate monsoon dynamics.',
+    source: 'City response table; derivation and applicability unverified.',
   },
   advection: {
     label: 'Wind advection',
     description: 'Multiplier applied to the slider-driven subtotal based on wind direction — magnitude depends on which land-use axis the wind crosses.',
-    source: 'State PCB wind-rose + zone land-use analysis',
+    source: 'Demonstration multiplier; no verified local calibration.',
   },
   zoneOffset: {
     label: 'Zone offset',
-    description: 'Residual zone-specific LST not captured by aggregate sliders. Dense cores run hotter than the city mean; outskirts cooler.',
-    source: 'Per-city LST / UHI studies (see About for citations)',
+    description: 'Assumed zone response relative to the reference zone. It is not observed local air or surface temperature.',
+    source: 'Curated zone assumptions; no verified magnitude derivation.',
   },
 }
 
@@ -133,7 +133,7 @@ function BreakdownRow({ breakdownKey, value, band }: BreakdownRowProps) {
             </TooltipTrigger>
             <TooltipContent className="max-w-64 text-xs">
               <p>{info.description}</p>
-              <p className="mt-1 text-muted-foreground">Source: {info.source}</p>
+              <p className="mt-1 text-muted-foreground">Context / assumption status: {info.source}</p>
             </TooltipContent>
           </Tooltip>
         )}
@@ -163,12 +163,12 @@ export function Readouts({ output, baseline, liveAq, cityId }: ReadoutsProps) {
   const rangedBreakdownBands = output.bands.breakdown
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="grid gap-4 md:grid-cols-2">
       {/* Temperature */}
       <div className="rounded-xl border bg-card p-6">
         <div className="mb-1 flex items-center justify-between">
           <span className="text-sm font-medium text-muted-foreground">
-            Modelled Temperature
+            Temperature-equivalent response
           </span>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -178,19 +178,19 @@ export function Readouts({ output, baseline, liveAq, cityId }: ReadoutsProps) {
               </button>
             </TooltipTrigger>
             <TooltipContent className="max-w-xs text-xs">
-              Canopy: {coefficients.canopy.central}°C per −1 pp · Built-up:{' '}
+              Demo assumptions (unverified magnitudes). Canopy: {coefficients.canopy.central}°C per −1 pp · Built-up:{' '}
               {coefficients.builtUp.central}°C per +1 pp · Water:{' '}
               {coefficients.water.central}°C per −1 km²
             </TooltipContent>
           </Tooltip>
         </div>
-        <div className="flex items-end gap-3">
-          <span className="text-6xl font-bold tabular-nums tracking-tight text-orange-400">
-            {output.tempC.toFixed(1)}
+        <div className="flex flex-wrap items-end gap-3">
+          <span className="text-5xl font-bold tabular-nums tracking-tight text-orange-400">
+            {formatSigned(output.tempDelta, 1)}
             <span className="text-3xl">°C</span>
           </span>
           <div className="mb-1 flex flex-col">
-            <DeltaTag delta={output.tempDelta} unit="°C" />
+            <span className="text-xs text-muted-foreground">Selected sensitivity range</span>
             <BandLine
               low={output.bands.tempDelta.low}
               high={output.bands.tempDelta.high}
@@ -198,13 +198,19 @@ export function Readouts({ output, baseline, liveAq, cityId }: ReadoutsProps) {
               digits={2}
             />
             <span className="text-xs text-muted-foreground">
-              vs {baseline.tempC.toFixed(1)}°C baseline
+              from the reference scenario
             </span>
           </div>
         </div>
+        <p className="mt-3 text-xs text-muted-foreground">Not measured or predicted air temperature or land-surface temperature. Demo anchor + response: {output.tempC.toFixed(1)}°C (anchor {baseline.tempC.toFixed(1)}°C).</p>
+        {(output.diagnostics.temperature.clipped || output.diagnostics.temperature.sensitivityClipped) && <div className="mt-3 rounded border border-amber-500/30 bg-amber-950/20 p-3 text-xs text-amber-200">
+          <strong>Numerical limit reached.</strong> The displayed response is limited to −8…+12°C. Before clipping: {formatSigned(output.diagnostics.temperature.unclippedDelta, 2)}°C; selected range {formatSigned(output.diagnostics.temperature.unclippedLow, 2)}…{formatSigned(output.diagnostics.temperature.unclippedHigh, 2)}°C.
+          {output.diagnostics.temperature.collapsedByClipping && ' The range collapsed at the limit; this is not certainty or validation.'}
+          <p className="mt-1">Clipping can hide additional response. Components below are shown before the limit is applied.</p>
+        </div>}
         {output.nightCoolLoss !== 0 && (
           <p className="mt-2 text-xs text-muted-foreground">
-            Night cooling loss:{' '}
+            Assumed canopy night-response proxy:{' '}
             <span className="text-amber-300">
               {output.nightCoolLoss > 0 ? '+' : ''}{output.nightCoolLoss.toFixed(2)}°C
             </span>{' '}
@@ -212,9 +218,14 @@ export function Readouts({ output, baseline, liveAq, cityId }: ReadoutsProps) {
               [{formatSigned(Math.min(output.bands.nightCoolLoss.low, output.bands.nightCoolLoss.high), 2)}…
               {formatSigned(Math.max(output.bands.nightCoolLoss.low, output.bands.nightCoolLoss.high), 2)}]°C
             </span>{' '}
-            (reduced evapotranspiration)
+            (separate proxy, not observed nighttime cooling)
           </p>
         )}
+
+        {(output.diagnostics.nightCoolLoss.clipped || output.diagnostics.nightCoolLoss.sensitivityClipped) && <p className="mt-2 text-xs text-amber-200">
+          The canopy night-response proxy reaches its numerical limit. Before clipping: {formatSigned(output.diagnostics.nightCoolLoss.unclippedValue, 2)}°C; selected range {formatSigned(output.diagnostics.nightCoolLoss.unclippedLow, 2)}…{formatSigned(output.diagnostics.nightCoolLoss.unclippedHigh, 2)}°C.
+          {output.diagnostics.nightCoolLoss.collapsedByClipping && ' A collapsed range is not certainty.'}
+        </p>}
 
         {/* Breakdown */}
         {relevantBreakdown.length > 0 && (
@@ -250,7 +261,7 @@ export function Readouts({ output, baseline, liveAq, cityId }: ReadoutsProps) {
       <div className="rounded-xl border bg-card p-6">
         <div className="mb-1 flex items-center justify-between">
           <span className="text-sm font-medium text-muted-foreground">
-            Modelled PM2.5
+            Illustrative PM2.5 scenario
           </span>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -260,13 +271,13 @@ export function Readouts({ output, baseline, liveAq, cityId }: ReadoutsProps) {
               </button>
             </TooltipTrigger>
             <TooltipContent className="max-w-xs text-xs">
-              Vehicles index: {coefficients.vehicles.central} µg/m³ per +10 pp ·{' '}
+              Demo vehicles assumption: {coefficients.vehicles.central} µg/m³ per +10 index points ·{' '}
               {coefficients.vehicles.source}
             </TooltipContent>
           </Tooltip>
         </div>
-        <div className="flex items-end gap-3">
-          <span className="text-6xl font-bold tabular-nums tracking-tight text-purple-400">
+        <div className="flex flex-wrap items-end gap-3">
+          <span className="text-5xl font-bold tabular-nums tracking-tight text-purple-400">
             {output.pm25}
             <span className="text-2xl font-normal text-muted-foreground"> µg/m³</span>
           </span>
@@ -279,28 +290,32 @@ export function Readouts({ output, baseline, liveAq, cityId }: ReadoutsProps) {
               digits={1}
             />
             <span className="text-xs text-muted-foreground">
-              vs {baseline.pm25} µg/m³ baseline
+              vs {baseline.pm25} µg/m³ reference anchor
             </span>
             {liveAq && (
               <span className="mt-0.5 inline-flex w-fit items-center rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                live: {liveAq.valueUgm3} µg/m³
+                External station report: {liveAq.valueUgm3} µg/m³
               </span>
             )}
           </div>
         </div>
         <p className="mt-2 text-xs text-muted-foreground">
-          PM2.5 reference: modelled scenario, not a live measurement
+          Illustrative scenario with unverified response magnitudes; not a measurement or air-quality forecast.
         </p>
       </div>
 
-      {/* Uncertainty note */}
-      <p className="text-xs text-muted-foreground">
-        Brackets show the low–high band from the coefficient ranges in{' '}
+      {(output.diagnostics.pm25.clipped || output.diagnostics.pm25.sensitivityClipped) && <div className="rounded border border-amber-500/30 p-3 text-xs text-amber-200 md:col-span-2">
+        <strong>PM2.5 numerical limit reached.</strong> Displayed values are limited to 0…500 µg/m³. Before clipping: {output.diagnostics.pm25.unclippedValue.toFixed(2)} µg/m³; selected range {output.diagnostics.pm25.unclippedLow.toFixed(2)}…{output.diagnostics.pm25.unclippedHigh.toFixed(2)} µg/m³.
+        {output.diagnostics.pm25.collapsedByClipping && ' The range collapsed at the limit; this is not certainty or validation.'}
+      </div>}
+      {/* Sensitivity note */}
+      <p className="text-xs text-muted-foreground md:col-span-2">
+        Brackets show selected sensitivity ranges, not confidence intervals or full scientific uncertainty. Demo assumption ranges are listed in{' '}
         <a href={`/${cityId}/about`} className="underline underline-offset-2 hover:text-foreground">the model and source notes</a>:
         canopy {coefficients.canopy.low}–{coefficients.canopy.high}°C/pp ·
         built-up {coefficients.builtUp.low}–{coefficients.builtUp.high}°C/pp ·
         water {coefficients.water.low}–{coefficients.water.high}°C/km² ·
-        vehicles {coefficients.vehicles.low}–{coefficients.vehicles.high} µg/m³ per +10 pp.
+        vehicles {coefficients.vehicles.low}–{coefficients.vehicles.high} µg/m³ per +10 index points.
       </p>
     </div>
   )

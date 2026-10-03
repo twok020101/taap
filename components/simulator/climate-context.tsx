@@ -51,9 +51,9 @@ export function ClimateContext({
   const [open, setOpen] = useState(true)
 
   const aodLabel =
-    ctx.aod <= 0.35 ? 'Low (clean)'
+    ctx.aod <= 0.35 ? 'Low'
     : ctx.aod <= 0.6 ? 'Medium'
-    : 'High (polluted)'
+    : 'High'
 
   return (
     <div className="rounded-lg border bg-card">
@@ -63,18 +63,19 @@ export function ClimateContext({
         className="flex w-full items-center justify-between px-4 py-3 text-sm font-semibold hover:bg-accent/50 transition-colors rounded-t-lg"
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
+        aria-controls="climate-controls"
       >
         <span>Climate context</span>
         {open ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
       </button>
 
       {open && (
-        <div className="flex flex-col gap-6 border-t px-4 py-5">
+        <div id="climate-controls" className="flex flex-col gap-6 border-t px-4 py-5">
 
           {/* Month / season */}
           <div>
             <p className="mb-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
-              Month (captures monsoon)
+              Month (assumed seasonal response)
             </p>
             <div className="flex flex-wrap gap-1.5">
               {MONTHS.map(({ label, value }) => (
@@ -84,13 +85,14 @@ export function ClimateContext({
                   size="sm"
                   className="h-7 w-10 px-0 text-xs"
                   onClick={() => onMonthChange(value)}
+                  aria-pressed={ctx.month === value}
                 >
                   {label}
                 </Button>
               ))}
             </div>
             <p className="mt-1.5 text-xs text-muted-foreground">
-              Source: IMD climatology {city.name} 1991–2020
+              Demo monthly response relative to April; not simulated weather or monsoon dynamics.
             </p>
           </div>
 
@@ -105,6 +107,7 @@ export function ClimateContext({
                   key={value}
                   type="button"
                   onClick={() => onWindDirChange(value)}
+                  aria-pressed={ctx.windDir === value}
                   className={[
                     'flex flex-col items-center gap-0.5 rounded-md border px-3 py-2 text-xs font-medium transition-colors',
                     ctx.windDir === value
@@ -118,7 +121,7 @@ export function ClimateContext({
               ))}
             </div>
             <p className="mt-1.5 text-xs text-muted-foreground">
-              Source: State PCB wind-rose + zone land-use ({city.name})
+              Demo wind-response settings; local numerical calibration has not been verified.
             </p>
           </div>
 
@@ -139,6 +142,7 @@ export function ClimateContext({
                 max={1.0}
                 step={0.05}
                 value={[ctx.aod]}
+                aria-label="Aerosol load (AOD)"
                 onValueChange={([v]) => onAodChange(v)}
                 className="flex-1"
               />
@@ -150,7 +154,7 @@ export function ClimateContext({
               <span>High</span>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              Source: Babu et al., ARFI 2013 — Indian urban AOD-forcing.
+              Aerosol response magnitudes are demo assumptions, not validated local coefficients.
               Day: −0.8°C / +0.3 AOD · Night: +0.5°C / +0.3 AOD · PM2.5: +30 µg/m³ / +0.3 AOD
             </p>
           </div>
@@ -168,13 +172,14 @@ export function ClimateContext({
                   size="sm"
                   className="h-auto whitespace-normal py-1 text-xs"
                   onClick={() => onZoneChange(key)}
+                  aria-pressed={ctx.zone === key}
                 >
                   {city.zones[key].label}
                 </Button>
               ))}
             </div>
             <p className="mt-1.5 text-xs text-muted-foreground">
-              Selecting a zone resets sliders to that zone&apos;s baseline.
+              Selecting a zone resets sliders to that zone&apos;s assumed inputs.
             </p>
           </div>
 
@@ -190,6 +195,7 @@ export function ClimateContext({
                   variant={ctx.timeOfDay === tod ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => onTimeOfDayChange(tod)}
+                  aria-pressed={(ctx.timeOfDay ?? 'day') === tod}
                 >
                   {tod === 'day' ? '☀ Day' : '☾ Night'}
                 </Button>

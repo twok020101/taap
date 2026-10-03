@@ -1,5 +1,5 @@
 {
-  "$comment": "Chennai baseline for Taap simulator. All _source objects carry title, year, url_or_doi, and verbatim quote (or null if not directly citable). tempC is mean April maximum, the hottest month (1991-2020 climate normal). pm25 is annual mean from peer-reviewed source. canopyPct from FSI ISFR 2023. builtUpPct from MDPI remote-sensing study. waterKm2 is sum of named water bodies within the CMA bbox. vehiclesIndex is Chennai registered vehicles relative to Bangalore=100.",
+  "$comment": "Mixed-year demonstration reference inputs. year is a legacy scenario label, not a common observation year. All source attributions and quoted/derived text are unverified; see data/evidence/baseline-provenance.json for per-input classification, period, footprint and evidence gaps. Values are preserved without asserting calibration.",
   "tempC": 36.1,
   "_source_tempC": {
     "title": "Chennai Climate — climatestotravel.com",

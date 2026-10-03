@@ -60,11 +60,12 @@ export default function RootLayout({
           <footer className="border-t border-border/40 py-8 text-center text-xs text-muted-foreground" style={{ position: 'relative', zIndex: 2 }}>
             <p>
               Illustrative model only — not a forecast. Source applicability and coefficient derivations need review. Explore{' '}
-              <Link href="/" className="underline underline-offset-2 hover:text-foreground">
+              <Link href="/methodology" className="underline underline-offset-2 hover:text-foreground">
                 city methodologies
               </Link>{' '}
               for per-city caveats and citations.
             </p>
+            <div className="mt-4 flex flex-wrap justify-center gap-5"><Link href="/bangalore/simulator" className="hover:text-foreground">Try the demo</Link><Link href="/engineering" className="hover:text-foreground">Engineering case study</Link><a href="https://github.com/twok020101/taap" className="hover:text-foreground">GitHub source</a></div>
             <nav aria-label="Footer" className="mt-4 flex flex-wrap justify-center gap-5"><Link href="/research" className="hover:text-foreground">Research & evidence</Link><a href="/research.json" className="hover:text-foreground">Research data</a><a href="/llms.txt" className="hover:text-foreground">AI reading guide</a></nav>
           </footer>
         </TooltipProvider>

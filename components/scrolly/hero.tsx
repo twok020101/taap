@@ -33,7 +33,7 @@ export function Hero({ city, eraAnomaly, history }: HeroProps) {
           className="mb-6 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground"
           style={{ fontFamily: 'var(--font-sans)' }}
         >
-          April 2026 · Illustrative model · {city.name}
+          Mixed-year references · Illustrative model · {city.name}
         </p>
 
         <h1

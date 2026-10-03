@@ -1,0 +1,41 @@
+name: Verify
+on:
+  pull_request:
+  push:
+    branches: [main, feat/accuracy-first-demo]
+permissions:
+  contents: read
+jobs:
+  software-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm exec tsc --noEmit
+      - run: pnpm lint
+      - run: pnpm build
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install 'playwright>=1.58,<2'
+      - run: python -m playwright install --with-deps chromium
+      - name: Browser E2E
+        run: |
+          pnpm start > /tmp/taap-server.log 2>&1 &
+          for i in $(seq 1 60); do curl -fsS http://127.0.0.1:3000 > /dev/null && break; sleep 1; done
+          python tests/e2e/demo.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-evidence
+          path: .cache/e2e/
+          if-no-files-found: ignore

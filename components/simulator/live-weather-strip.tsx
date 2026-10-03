@@ -14,22 +14,18 @@ function windDegToLabel(deg: number): string {
 }
 
 function formatIST(isoString: string): string {
-  try {
-    // Open-Meteo returns local time already for Asia/Kolkata timezone
-    // Format: "2024-04-17T14:30" — extract HH:MM
-    const timePart = isoString.includes('T') ? isoString.split('T')[1] : ''
-    const hhmm = timePart.slice(0, 5)
-    return hhmm || isoString
-  } catch {
-    return isoString
-  }
+  // Open-Meteo supplies Asia/Kolkata local time; retain its date as well as time.
+  return isoString.replace('T', ' ').slice(0, 16)
 }
 
 // OpenAQ timestamps are UTC — convert to IST for display
 function formatUtcToIST(isoUtc: string): string {
   try {
-    return new Date(isoUtc).toLocaleTimeString('en-IN', {
+    return new Date(isoUtc).toLocaleString('en-IN', {
       timeZone: 'Asia/Kolkata',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
       hour12: false,
@@ -45,9 +41,10 @@ export function LiveWeatherStrip({ cityName, weather, liveAq }: LiveWeatherStrip
 
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-lg border border-sky-900/50 bg-sky-950/30 px-4 py-3 text-sm">
-      <span className="font-semibold text-sky-300">Live in {cityName}</span>
+      <span className="font-semibold text-sky-300">External weather context · {cityName}</span>
       <span className="text-foreground">
         <span className="font-mono text-lg font-bold text-sky-200">{weather.tempC}°C</span>
+        <span className="ml-1 text-xs text-muted-foreground">modelled 2 m air temperature</span>
       </span>
       <span className="text-muted-foreground">{weather.summary}</span>
       <span className="text-muted-foreground">
@@ -60,7 +57,7 @@ export function LiveWeatherStrip({ cityName, weather, liveAq }: LiveWeatherStrip
         <>
           <span className="h-3 w-px bg-sky-900/60" aria-hidden />
           <span className="font-mono font-bold text-purple-300">
-            PM2.5 · {liveAq.valueUgm3} µg/m³
+            Station PM2.5 · {liveAq.valueUgm3} µg/m³
           </span>
           <span className="text-xs text-muted-foreground/70">
             {liveAq.stationCount} CPCB/state-board stations · as of {formatUtcToIST(liveAq.observedAt)} IST
@@ -68,7 +65,8 @@ export function LiveWeatherStrip({ cityName, weather, liveAq }: LiveWeatherStrip
         </>
       )}
       <span className="ml-auto text-xs text-muted-foreground/70">
-        as of {timeLabel} IST · Open-Meteo · 15 min cache
+        Source time {timeLabel} IST · Open-Meteo · 15 min cache
+        <span className="mt-1 block">External weather is not used to calibrate or validate this demo.</span>
       </span>
     </div>
   )

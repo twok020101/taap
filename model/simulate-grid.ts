@@ -1,31 +1,20 @@
 /**
- * Per-cell (spatial) simulator.
- *
- * Mirrors `simulate()` but evaluates the coefficient model per grid cell,
- * weighting the three spatially-variable drivers (canopy, built-up, water)
- * by each cell's land-cover fractions. The city-mean of the resulting
- * per-cell deltas matches the city-level `simulate()` output, so nothing
- * diverges at aggregate scale — the map is the city-level result, resolved
- * in space.
- *
- * Kept deliberately branchless and allocation-free inside the hot loop
- * so a full ~15k-cell pass stays well under 20 ms on a 2020-era laptop,
- * even under fast slider dragging.
+ * Synthetic spatial response pattern, not measured street-level temperature.
+ * Uses assumed zone land cover and curated feature weights. Uniform month/AOD
+ * terms are omitted; cell relief and zone contrasts are added and each cell is
+ * independently clipped. Consequently its grid mean need not equal simulate().
  */
 
 import { coefficients as c } from './coefficients'
+import { getReferenceContext } from '@/lib/baselines'
 import type { Baseline, CityConfig, SliderState, SimContext, ZoneKey } from '@/cities/types'
 import type { Grid } from './grid'
 
 export interface GridSimResult {
   /**
-   * Per-cell **spatial** delta (°C) — what the map shows.
-   * Excludes the uniform monsoon + aerosol components because they carry
-   * zero spatial information and would otherwise wash the entire map red
-   * at baseline (April + central zone ≈ +4.2 °C everywhere). The city-level
-   * `simulate()` still reports the full delta for the readouts; the map's
-   * job is to show *where* heat concentrates, not city-wide seasonal drift.
-   *
+   * Illustrative per-cell temperature-equivalent pattern relative to the city
+   * reference zone. Includes synthetic relief even at unchanged sliders; this
+   * is not a measured reference surface. Omits uniform month/AOD components.
    * Length = grid.cells.length.
    */
   tempDelta: Float32Array
@@ -59,10 +48,8 @@ export function simulateGrid(
     ? sliders.waterKm2 - baseline.waterKm2 : 0
   const cityWater = -waterDeltaKm2 * c.water.central
 
-  // Note: monsoon and aerosol are deliberately omitted — see GridSimResult.
-  // They shift every cell by the same amount and therefore contribute zero
-  // spatial signal, while badly distorting the baseline view (April + central
-  // would otherwise produce ~+4.2 °C on every cell at sliders=baseline).
+  // Uniform month/AOD terms are omitted; the overlay depicts only a
+  // synthetic spatial pattern and must not be interpreted as headline values.
 
   const advectionMult = advMult
 
@@ -72,9 +59,10 @@ export function simulateGrid(
   const invMeanBuiltUp = grid.meanBuiltUpFrac > 0 ? 1 / grid.meanBuiltUpFrac : 0
   const invMeanWater = grid.meanWaterFrac > 0 ? 1 / grid.meanWaterFrac : 0
 
-  // Pre-pull zone offsets once to avoid hash lookups per cell.
+  // Same reference-zone origin as the headline, plus synthetic cell relief.
+  const referenceZoneOffset = city.zones[getReferenceContext(city).zone].tempOffsetC
   const zoneOffsets: Record<ZoneKey, number> = Object.fromEntries(
-    Object.entries(city.zones).map(([k, z]) => [k, z.tempOffsetC]),
+    Object.entries(city.zones).map(([k, z]) => [k, z.tempOffsetC - referenceZoneOffset]),
   )
 
   const cells = grid.cells

@@ -34,6 +34,7 @@ export function GlobeIntro({ cityName, storageKey }: GlobeIntroProps) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
+    if (window.location.hash) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     if (sessionStorage.getItem(dedupKey)) return
 

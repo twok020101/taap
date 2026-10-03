@@ -1,158 +1,96 @@
 /**
- * Coefficients for the Bangalore Urban Heat Model.
+ * Demonstration assumptions for Taap's deterministic response model.
  *
- * Each driver has central / low / high estimates and literature attributions.
- * Source applicability and numeric derivations are tracked by the evidence audit.
- * Values are per-unit change in the driver relative to the
- * April 2026 baseline.
- *
- * IMPORTANT: This is an illustrative model, not a forecast. Linear additive
- * deltas cannot capture non-linear feedbacks or street-scale physics. The
- * simulator adds simplified seasonal, wind, aerosol and zone terms. See /about for the full honesty panel.
+ * These values and low/high ranges have no verified numerical derivation or
+ * Indian-city calibration. They produce an illustrative temperature-equivalent
+ * response, not an air-temperature or land-surface-temperature (LST) forecast.
+ * Literature describes mechanisms; a citation does not validate a coefficient.
+ * Values are applied relative to mixed-year reference inputs and the explicitly
+ * defined reference context in lib/baselines.ts. See each city's /about page.
  */
-
 export interface Coefficient {
-  /** Effect per unit change in driver (see unit in description) */
   central: number
   low: number
   high: number
   unit: string
   description: string
   source: string
+  evidenceStatus: 'assumed'
 }
 
 export const coefficients = {
   /**
-   * Tree canopy cover.
-   * Per −1 percentage-point reduction in canopy: +°C daytime LST.
-   * Sources: Ziter et al. 2019 (PNAS); Manoli et al. 2024 (Nature Comms).
-   * Range 0.06–0.12 °C / −1 pp canopy.
+   * Demonstration slope and selected sensitivity range, not a fitted estimate.
+   * Mechanism context only: Ziter et al. (2019), doi:10.1073/pnas.1817561116,
+   * measured AIR temperature and nonlinear, scale-dependent canopy effects in
+   * Madison, Wisconsin. It does not establish this linear coefficient or range.
    */
   canopy: {
     central: 0.09,
     low: 0.06,
     high: 0.12,
-    unit: '°C per −1 pp canopy',
-    description: 'Daytime LST increase per 1 percentage-point loss of tree canopy cover',
-    source: 'Ziter et al. 2019, PNAS; Manoli et al. 2024, Nature Communications',
+    unit: '°C-equivalent per −1 pp canopy',
+    description: 'Assumed temperature-equivalent increase per 1 percentage-point loss of tree canopy',
+    source: 'Demonstration assumption; Ziter et al. 2019 (air temperature) supports mechanism only, not this coefficient',
+    evidenceStatus: 'assumed',
   } satisfies Coefficient,
-
-  /**
-   * Built-up / impervious surface.
-   * Per +1 percentage-point increase in built-up area: +°C LST.
-   * Source: IISc Bangalore 1973–2023 decadal study (Ramachandra & Bharath 2023).
-   * Range 0.05–0.10 °C / +1 pp built-up.
-   */
+  /** No verified source derivation for this demonstration slope or range. */
   builtUp: {
     central: 0.075,
     low: 0.05,
     high: 0.10,
-    unit: '°C per +1 pp built-up',
-    description: 'LST increase per 1 percentage-point increase in impervious surface',
-    source: 'IISc Ramachandra & Bharath 2023, Sustainable Cities and Society',
+    unit: '°C-equivalent per +1 pp built-up',
+    description: 'Assumed temperature-equivalent increase per 1 percentage-point increase in built-up area',
+    source: 'Demonstration assumption; numerical source derivation unverified',
+    evidenceStatus: 'assumed',
   } satisfies Coefficient,
-
-  /**
-   * Water bodies (lakes, tanks, wetlands).
-   * Per −1 km² reduction in water area within 500 m buffer: +°C LST.
-   * Source: Sustainable Cities & Society 2024 meta-analysis.
-   * Range 0.3–0.8 °C / −1 km².
-   */
+  /** No verified city-wide water-area scaling or 500 m effect is established. */
   water: {
     central: 0.55,
     low: 0.30,
     high: 0.80,
-    unit: '°C per −1 km² water',
-    description: 'LST increase per 1 km² loss of water body within 500 m buffer',
-    source: 'Sustainable Cities and Society 2024 (meta-analysis of urban water cooling)',
+    unit: '°C-equivalent per −1 km² water',
+    description: 'Assumed temperature-equivalent increase per 1 km² loss of water area',
+    source: 'Demonstration assumption; numerical source derivation and spatial applicability unverified',
+    evidenceStatus: 'assumed',
   } satisfies Coefficient,
-
-  /**
-   * Vehicle fleet index.
-   * Per +10 percentage-point increase in vehicles index: +µg/m³ PM2.5.
-   * Sources: KSPCB emission inventory; UrbanEmissions APnA 2018 model.
-   * Range 3–5 µg/m³ per +10 pp index.
-   * NOTE: No direct temperature effect — PM2.5 warming via aerosol forcing
-   * is modelled separately via the AOD slider.
-   */
+  /** Index POINTS, not percentage points. No direct thermal effect. */
   vehicles: {
     central: 4,
     low: 3,
     high: 5,
-    unit: 'µg/m³ PM2.5 per +10 pp vehicle index',
-    description: 'PM2.5 increase per 10 percentage-point increase in vehicle fleet index',
-    source: 'KSPCB emission inventory; UrbanEmissions APnA 2018',
+    unit: 'µg/m³-equivalent PM2.5 per +10 vehicle index points',
+    description: 'Assumed PM2.5-equivalent increase per 10 vehicle fleet index points',
+    source: 'Demonstration assumption; emissions-to-concentration derivation unverified',
+    evidenceStatus: 'assumed',
   } satisfies Coefficient,
 
-  /**
-   * Night cooling loss multiplier.
-   * Fraction of daytime canopy-driven warming that also manifests as reduced
-   * nighttime cooling (loss of evapotranspiration). Applies to canopy delta only.
-   * Value: 0.3 (30% of day delta).
-   * Source: PNAS 2019 Ziter — night/day ratio for urban forest cooling.
-   */
+  /** Assumed multiplier on canopy response, not a verified night/day ratio. */
   nightCoolLossFraction: 0.30,
 
   /**
-   * Monsoon / seasonal baseline offsets (°C from annual mean 24°C).
-   * Indexed by month 1–12.
-   * Source: IMD climatology Bangalore 1991–2020.
+   * Assumed seasonal profile, months 1–12. The simulator SUBTRACTS the April
+   * entry, so April contributes zero. Prior IMD attribution has no verified
+   * table locator/derivation here; city overrides also remain unverified.
    */
-  monsoonOffsets: [
-    0,      // index 0 unused (months are 1-based)
-    -2.0,   // Jan
-    -1.0,   // Feb
-    +1.5,   // Mar
-    +3.0,   // Apr
-    +3.5,   // May
-    +1.0,   // Jun (monsoon starts)
-    -0.5,   // Jul (peak monsoon)
-    -0.5,   // Aug
-    +0.5,   // Sep
-    +1.0,   // Oct
-    -0.5,   // Nov
-    -1.5,   // Dec
-  ] as const,
+  monsoonOffsets: [0, -2, -1, 1.5, 3, 3.5, 1, -0.5, -0.5, 0.5, 1, -0.5, -1.5] as const,
+
+  /** Assumed multipliers on land-use response; not calibrated wind transport. */
+  windAdvectionMultiplier: { N: 0.05, E: 0.15, S: 0.10, W: -0.20 } as const,
+
+  /** Assumed PM2.5-equivalent offsets; N is the reference direction. */
+  windPm25Offset: { N: 0, E: 8, S: 4, W: -5 } as const,
 
   /**
-   * Wind direction advection multipliers.
-   * Applied as a multiplier to the slider-driven temperature delta
-   * (canopy + builtUp + water sum only, pre-advection).
-   *
-   * Source: KSPCB wind-rose 2022 + derived from zone land-use.
-   */
-  windAdvectionMultiplier: {
-    N: 0.05,   // Airport / mixed — slight warming
-    E: 0.15,   // Whitefield / IT corridor — hotter urban wind
-    S: 0.10,   // Electronic City / built-up — moderate warming
-    W: -0.20,  // Mysuru road / green belt — cooler rural wind
-  } as const,
-
-  /**
-   * Wind advection PM2.5 offset by direction (µg/m³).
-   * Source: KSPCB wind-rose 2022 + zone land-use analysis.
-   */
-  windPm25Offset: {
-    N: 0,   // mixed — neutral
-    E: 8,   // IT corridor traffic load
-    S: 4,   // Electronic City traffic
-    W: -5,  // green belt — cleaner air
-  } as const,
-
-  /**
-   * Aerosol Optical Depth (AOD) forcing.
-   * Reference AOD: 0.4 (clean Bangalore). Effects per +0.3 AOD above reference.
-   * - Daytime cooling: −0.8°C per +0.3 AOD (solar dimming)
-   * - Nighttime warming: +0.5°C per +0.3 AOD (IR trapping)
-   * - PM2.5 increase: +30 µg/m³ per +0.3 AOD
-   *
-   * Source: Babu et al., ARFI 2013 — Bangalore AOD-forcing.
+   * Assumed aerosol response slopes and step size; not verified radiative
+   * forcing or a validated conversion between AOD and ground-level PM2.5.
+   * City-specific reference AOD values set the demo origin, not clean-air limits.
    */
   aod: {
     referenceAod: 0.4,
     stepAod: 0.3,
-    daytimeCoolingPerStep: -0.8,   // °C per +0.3 AOD
-    nighttimeWarmingPerStep: 0.5,  // °C per +0.3 AOD
-    pm25PerStep: 30,               // µg/m³ per +0.3 AOD
+    daytimeCoolingPerStep: -0.8,
+    nighttimeWarmingPerStep: 0.5,
+    pm25PerStep: 30,
   } as const,
 } as const

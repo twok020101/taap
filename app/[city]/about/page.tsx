@@ -1,699 +1,158 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 import { coefficients } from '@/model/coefficients'
 import { simulate } from '@/model/simulate'
+import { getBaseline, getBaselineProvenance, getReferenceContext } from '@/lib/baselines'
 import audit from '@/data/evidence/audit.json'
-import { evidenceClaims } from '@/lib/ai/evidence'
 import { getCity } from '@/cities'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { pageMetadata, breadcrumbs } from '@/lib/seo'
 import { StructuredData } from '@/components/structured-data'
 import type { Baseline, PresetYear } from '@/cities/types'
-import { AlertTriangle, BookOpen, CheckCircle2, Microscope, Ruler, TrendingUp, XCircle } from 'lucide-react'
-
-interface CaveatItem {
-  title: string
-  explanation: string
-}
+import { AlertTriangle, BookOpen, Microscope, Ruler, TrendingUp } from 'lucide-react'
 
 export async function generateMetadata({ params }: { params: Promise<{ city: string }> }) {
   const city = getCity((await params).city)
   if (!city) notFound()
-  return pageMetadata(`${city.name} heat model methodology, sources & limitations | Taap`, `Inspect ${city.name}'s model coefficients, source audit, historical context and limitations. Understand what Taap calculates and what remains unverified.`, `/${city.id}/about`, `/${city.id}/opengraph-image`)
+  return pageMetadata(`${city.name} heat demo methodology, assumptions & limitations | Taap`, `Inspect ${city.name}'s illustrative temperature-equivalent response, mixed-year inputs, clipping and evidence gaps. This is not a calibrated air-temperature or LST forecast.`, `/${city.id}/about`, `/${city.id}/opengraph-image`)
 }
 
-const NOW_CAPTURED: CaveatItem[] = [
-  {
-    title: 'Seasonal / monsoon modulation',
-    explanation:
-      'A monthly offset table (IMD climatology 1991–2020) shifts the baseline temperature to reflect the city\'s dry-hot, monsoon, and post-monsoon phases. The "Climate context" month selector lets you explore the full annual cycle.',
-  },
-  {
-    title: 'Wind-direction advection',
-    explanation:
-      'Four cardinal wind directions apply a multiplier to the slider-driven temperature delta based on the land-use axis they blow across — dense built-up / IT corridors warm, green / coastal fringes cool. Multipliers and PM2.5 offsets are calibrated per city where published wind-roses exist and inherited with caveat elsewhere.',
-  },
-  {
-    title: 'Aerosol optical depth (AOD) forcing',
-    explanation:
-      'An AOD slider (0.1–1.0) captures aerosol radiative forcing in both directions: daytime cooling from solar dimming, nighttime warming from IR trapping. AOD also feeds into PM2.5. A time-of-day toggle switches which effect dominates.',
-  },
-  {
-    title: 'Spatial heterogeneity via zones',
-    explanation:
-      'Each city is divided into five zones, each with its own canopy/built-up/water baseline and a residual zone temperature offset. Selecting a zone snaps the sliders to that zone\'s land-use baseline and adds the zone offset to the output.',
-  },
-  {
-    title: 'Live PM2.5 from CPCB/state-board stations via OpenAQ',
-    explanation:
-      'Live PM2.5 from CPCB/state-board stations via OpenAQ, updated every 15 min (falls back silently if unreachable). The live reading is observational only — it does not rebase the model\'s PM2.5 calculation, which remains a function of the slider state against the April 2026 baseline.',
-  },
+const MISSING = [
+  ['Calibration and complete uncertainty', 'No independent, held-out validation links these output magnitudes to a common physical temperature metric. Low/high values vary selected assumptions only. Measurement error, structural error, geography and coefficient applicability are not included. A zero-width interval is not certainty.'],
+  ['Street-scale conditions', 'Individual tree shade, building geometry, thermal comfort, soil moisture, boundary-layer dynamics and cloud feedbacks are absent. Air temperature and land surface temperature (LST) cannot be substituted for each other.'],
+  ['Seasonal and transport dynamics', 'Monthly profiles, four-direction wind multipliers and AOD slopes are demonstration assumptions. They do not resolve monsoons, sea breezes, aerosol composition or transported pollution. City-specific overrides remain unverified, including mismatched source temperature statistics.'],
+  ['Future climate and human exposure', 'Presets change inputs, not the model year or future climate trajectory. Population is context only. Vehicle heat, industrial heat, air-conditioning heat and health risk are not calculated. Simulated PM2.5-equivalent values are not observations or exposure guidance.'],
 ]
 
-const STILL_MISSING: CaveatItem[] = [
-  {
-    title: 'Street-scale microclimate (tree shade at your exact location)',
-    explanation:
-      'The model does not resolve individual streets, shade geometry or thermal comfort. Its source attributions mix temperature metrics and its coefficient derivations require review. A satellite surface-temperature contrast cannot be read as an equivalent change in air temperature.',
-  },
-  {
-    title: 'Long-range aerosol transport (IGP intrusion, stubble-burn plumes)',
-    explanation:
-      'During winter months, haze plumes from the Indo-Gangetic plain can advect into other regions. The AOD slider captures local aerosol load but cannot simulate multi-day transport events or associated PM2.5 spikes of 200+ µg/m³.',
-  },
-  {
-    title: 'Climate-change background trajectory (future years)',
-    explanation:
-      'The April 2026 baseline already embeds decades of warming. The sliders explore the urban-heat-island contribution but do not project future years under SSP scenarios.',
-  },
-  {
-    title: 'Real-time hyperlocal LST (only zone-mean approximation)',
-    explanation:
-      'The live weather strip shows Open-Meteo near-surface air temperature at the city centroid. It is not a land surface temperature (LST) measurement, not disaggregated by zone, and not real-time satellite imagery.',
-  },
-  {
-    title: 'Boundary-layer physics, cloud feedbacks, soil moisture',
-    explanation:
-      'Urban heat island intensity is modulated by boundary-layer height, synoptic cloud cover, and antecedent soil moisture. These require a mesoscale numerical weather model and cannot be reduced to a slider coefficient.',
-  },
-  {
-    title: 'Anthropogenic heat release and population effects',
-    explanation:
-      'Population is contextual information with no independent temperature or PM2.5 term. Air conditioning, industrial heat and vehicle heat release are not calculated. The vehicle slider changes PM2.5 only and does not change the AOD slider.',
-  },
-]
-
-interface CoeffRow {
-  label: string
-  driver: string
-  central: string
-  range: string
-  effect: string
-}
-
-const COEFF_ROWS: CoeffRow[] = [
-  {
-    label: 'Tree Canopy',
-    driver: 'Per −1 pp canopy',
-    central: `+${coefficients.canopy.central}°C`,
-    range: `${coefficients.canopy.low}–${coefficients.canopy.high}°C`,
-    effect: 'LST (daytime)',
-  },
-  {
-    label: 'Built-up Area',
-    driver: 'Per +1 pp built-up',
-    central: `+${coefficients.builtUp.central}°C`,
-    range: `${coefficients.builtUp.low}–${coefficients.builtUp.high}°C`,
-    effect: 'LST',
-  },
-  {
-    label: 'Water Bodies',
-    driver: 'Per −1 km² water',
-    central: `+${coefficients.water.central}°C`,
-    range: `${coefficients.water.low}–${coefficients.water.high}°C`,
-    effect: 'LST (within 500 m)',
-  },
-  {
-    label: 'Vehicles Index',
-    driver: 'Per +10 pp index',
-    central: `+${coefficients.vehicles.central} µg/m³`,
-    range: `${coefficients.vehicles.low}–${coefficients.vehicles.high} µg/m³`,
-    effect: 'PM2.5 only',
-  },
-  {
-    label: 'AOD forcing (day)',
-    driver: 'Per +0.3 AOD above 0.4',
-    central: `${coefficients.aod.daytimeCoolingPerStep}°C`,
-    range: 'single-value estimate',
-    effect: 'LST cooling',
-  },
-  {
-    label: 'AOD forcing (night)',
-    driver: 'Per +0.3 AOD above 0.4',
-    central: `+${coefficients.aod.nighttimeWarmingPerStep}°C`,
-    range: 'single-value estimate',
-    effect: 'LST warming',
-  },
-]
-
-interface AnnualRow {
-  y: number
-  tmaxMean: number
-  tminMean: number
-  nDays: number
-}
-
+interface AnnualRow { y: number; tmaxMean: number; tminMean: number; nDays: number }
 interface TempHistory {
   annual: AnnualRow[]
   baseline1951_1980: { tmaxMean: number; tminMean: number }
   recent2015_2024: { tmaxMean: number; tminMean: number }
   anomalyDegC: { tmax: number; tmin: number }
-  meta: { station: string }
+  meta: { lat: number; lon: number; fetchedAt: string }
 }
 
-function buildPaths(annual: AnnualRow[]) {
-  const W = 800
-  const H = 260
-  const padL = 44
-  const padR = 14
-  const padT = 14
-  const padB = 28
-
-  const minTmin = Math.min(...annual.map((r) => r.tminMean))
-  const maxTmax = Math.max(...annual.map((r) => r.tmaxMean))
-  const yMin = Math.floor(minTmin - 0.5)
-  const yMax = Math.ceil(maxTmax + 0.5)
-
-  const xRange = annual[annual.length - 1].y - annual[0].y
-  const xScale = (year: number) =>
-    padL + ((year - annual[0].y) / xRange) * (W - padL - padR)
-  const yScale = (val: number) =>
-    padT + ((yMax - val) / (yMax - yMin)) * (H - padT - padB)
-
-  const toPolyline = (key: keyof Pick<AnnualRow, 'tmaxMean' | 'tminMean'>) =>
-    annual.map((r) => `${xScale(r.y).toFixed(1)},${yScale(r[key]).toFixed(1)}`).join(' ')
-
-  const tmaxPath = toPolyline('tmaxMean')
-  const tminPath = toPolyline('tminMean')
-
-  const yTicks: number[] = []
-  for (let v = Math.ceil(yMin / 2) * 2; v <= yMax; v += 2) yTicks.push(v)
-
-  const xTicks: number[] = []
-  for (let yr = 1960; yr <= 2020; yr += 10) xTicks.push(yr)
-
-  return { tmaxPath, tminPath, yTicks, xTicks, xScale, yScale, yMin, yMax }
+function historyPaths(annual: AnnualRow[]) {
+  const min = Math.floor(Math.min(...annual.map(r => r.tminMean)) - 0.5)
+  const max = Math.ceil(Math.max(...annual.map(r => r.tmaxMean)) + 0.5)
+  const x = (year: number) => 44 + (year - annual[0].y) / (annual.at(-1)!.y - annual[0].y) * 742
+  const y = (value: number) => 14 + (max - value) / (max - min) * 218
+  const line = (key: 'tmaxMean' | 'tminMean') => annual.map(row => `${x(row.y).toFixed(1)},${y(row[key]).toFixed(1)}`).join(' ')
+  const ticks: number[] = []
+  for (let value = Math.ceil(min / 2) * 2; value <= max; value += 2) ticks.push(value)
+  return { x, y, ticks, tmax: line('tmaxMean'), tmin: line('tminMean') }
 }
-
-/**
- * Per-city validation target — April 1951–1970 IMD observed mean temperature.
- *
- * confidence:
- *   'high'   = published IMD observed normal or equivalent
- *   'medium' = IMD station observations for a partial window, or back-projected
- *              from a later normal via a peer-reviewed warming trend
- *   'low'    = no citable source — render the "pending" placeholder instead
- */
-interface ValidationTarget {
-  value: number
-  source: string
-  confidence: 'high' | 'medium'
-}
-
-const VALIDATION_TARGETS: Record<string, ValidationTarget> = {
-  bangalore: {
-    value: 22.0,
-    source: 'IMD Bangalore 1951–1970 April Tmax',
-    confidence: 'high',
-  },
-  delhi: {
-    // Derived from IMD Safdarjung 1957–1962 April Tmax observations via
-    // tutiempo WMO 42182 (6-year sample within the 1951–1970 window),
-    // cross-checked against IMD Safdarjung 1991–2020 normal (36.5°C) and
-    // the published ~0.2°C/decade Indian max-temperature warming trend.
-    value: 35.5,
-    source: 'IMD Safdarjung (WMO 42182) April observations 1957–1962 via tutiempo; cross-checked against IMD 1991–2020 normal 36.5°C + 0.2°C/decade trend',
-    confidence: 'medium',
-  },
-  chennai: {
-    // Back-projected: IMD Nungambakkam 1991–2020 April Tmax normal is 34.5°C
-    // (Climate of Chennai, Wikipedia → IMD); Kothawale et al. 2012 (DOI
-    // 10.1007/s00704-012-0646-6) found +1.6°C total warming 1951–2010 with
-    // ~25% in phase 1 (1951–1980), ~75% in phase 2 (1981–2010). Applying the
-    // ~0.5°C phase-1 delta gives 34.5 − 0.5 = 34.0°C for 1951–1970.
-    value: 34.0,
-    source: 'Back-projected: IMD Nungambakkam 1991–2020 normal (34.5°C) minus Kothawale et al. 2012 phase-1 warming (~0.5°C)',
-    confidence: 'medium',
-  },
-  mumbai: {
-    // Derived from NOAA GHCN-M v4 Tavg for IN012070800 (Bombay/Santacruz,
-    // WMO 43003) 1951–1970 April mean = 28.9°C (19-of-20 years, QC-flagged),
-    // plus a Tmax−Tavg offset of 3.71°C observed in GHCN-Daily 1973–1982
-    // April readings at the same station. 28.9 + 3.71 = 32.6°C. Cross-check:
-    // sparse pre-1973 GHCN-Daily readings cluster 33.2–33.5°C (biased high
-    // by observation-time sampling); IMD 1991–2020 normal is 33.3°C, giving
-    // ~0.7°C of documented warming since 1951–1970 — consistent with the
-    // GHCN-M decade trend at Santacruz.
-    value: 32.6,
-    source: 'NOAA GHCN-M v4 Tavg (IN012070800 Santacruz, 19-year window) + GHCN-Daily Tmax−Tavg offset; cross-checked against IMD 1991–2020 normal 33.3°C',
-    confidence: 'medium',
-  },
-}
-const VALIDATION_GATE_C = 1.0
 
 export async function generateStaticParams() {
   const { cityIds } = await import('@/cities')
-  return cityIds.map((city) => ({ city }))
+  return cityIds.map(city => ({ city }))
 }
 
-export default async function AboutPage({
-  params,
-}: {
-  params: Promise<{ city: string }>
-}) {
+export default async function AboutPage({ params }: { params: Promise<{ city: string }> }) {
   const { city: cityId } = await params
   const city = getCity(cityId)
-  if (!city) notFound()
-
-  const [baselineModule, presetsModule, historyModule] = await Promise.all([
-    import(`@/data/${cityId}/baseline.json`),
+  const baseline = getBaseline(cityId)
+  const provenance = getBaselineProvenance(cityId)
+  if (!city || !baseline || !provenance) notFound()
+  const [presetsModule, historyModule] = await Promise.all([
     import(`@/data/${cityId}/presets.json`),
     import(`@/data/${cityId}/temperature-history.json`),
   ])
-  const baseline = baselineModule.default as Baseline
   const presets = presetsModule.default as Record<PresetYear, Baseline>
-  const historyData = historyModule.default as TempHistory
-
-  const validationTarget = VALIDATION_TARGETS[cityId]
-  const defaultZone = Object.keys(city.zones)[0] ?? 'central'
-  const p1973 = presets['1973']
-  const modelOut = simulate(
-    city,
-    baseline,
-    {
-      canopyPct: p1973.canopyPct,
-      builtUpPct: p1973.builtUpPct,
-      waterKm2: p1973.waterKm2,
-      vehiclesIndex: p1973.vehiclesIndex,
-      populationM: p1973.populationM,
-    },
-    { month: 4, windDir: 'N', aod: 0.4, zone: defaultZone, timeOfDay: 'day' },
-  )
-  const validation = validationTarget ? {
-    modelled: modelOut.tempC,
-    modelledLow: baseline.tempC + modelOut.bands.tempDelta.low,
-    modelledHigh: baseline.tempC + modelOut.bands.tempDelta.high,
-    observed: validationTarget.value,
-    source: validationTarget.source,
-    confidence: validationTarget.confidence,
-    error: modelOut.tempC - validationTarget.value,
-    absError: Math.abs(modelOut.tempC - validationTarget.value),
-    passed: Math.abs(modelOut.tempC - validationTarget.value) <= VALIDATION_GATE_C,
-  } : null
-
-  const annual = historyData.annual
-  const { tmaxPath, tminPath, yTicks, xTicks, xScale, yScale } = buildPaths(annual)
-  const histBaseline = historyData.baseline1951_1980
-  const recent = historyData.recent2015_2024
-  const anomaly = historyData.anomalyDegC
-  const baselineTmaxY = yScale(histBaseline.tmaxMean)
+  const history = historyModule.default as TempHistory
+  const reference = getReferenceContext(city)
+  const diagnostic = simulate(city, baseline, presets['1973'], reference)
+  const raw = diagnostic.diagnostics.temperature
+  const paths = historyPaths(history.annual)
+  const kindLabel = { observed: 'Reported observation', estimated: 'Estimated / derived', assumed: 'Assumed', unavailable: 'Unavailable' }
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-16">
-      <StructuredData data={breadcrumbs([{ name: 'Taap', path: '/' }, { name: city.name, path: `/${city.id}` }, { name: 'Methodology', path: `/${city.id}/about` }])}/>
-      <div className="mb-10">
-        <Badge variant="outline" className="mb-4">
-          Model Honesty Panel · {city.name}
-        </Badge>
-        <h1 className="text-4xl font-bold tracking-tight">
-          What this model captures — and what it doesn&apos;t
-        </h1>
-        <p className="mt-3 text-lg text-muted-foreground">
-          An illustrative simulator, not a forecast. Selected coefficient ranges are sensitivity bounds;
-          their source derivations still need review. Read these caveats before citing the outputs.
-        </p>
-        <p className="mt-4 text-sm text-muted-foreground">For study methods, environmental mechanisms and local applicability, visit the <Link href="/research" className="text-emerald-200 underline underline-offset-4">research library</Link>. The library does not certify the model coefficients.</p>
-      </div>
+      <StructuredData data={breadcrumbs([{ name: 'Taap', path: '/' }, { name: city.name, path: `/${city.id}` }, { name: 'Methodology', path: `/${city.id}/about` }])} />
+      <header className="mb-10">
+        <Badge variant="outline" className="mb-4">Model honesty · {city.name}</Badge>
+        <h1 className="text-4xl font-bold tracking-tight">What the demo calculates</h1>
+        <p className="mt-4 text-lg text-muted-foreground">An illustrative temperature-equivalent response, not a calibrated air-temperature or land-surface-temperature (LST) forecast.</p>
+        <p className="mt-3 text-sm text-muted-foreground">The deterministic code demonstrates scenario comparison and sensitivity analysis. Numerical coefficients are demonstration assumptions. Scientific calibration would require matched measurements, geography, dates, a held-out evaluation protocol and error reporting.</p>
+        <p className="mt-3 text-sm"><Link href={`/${city.id}/simulator`} className="underline underline-offset-4">Try the simulator</Link> · <Link href="/research" className="underline underline-offset-4">Research mechanisms and limits</Link></p>
+      </header>
 
-      {validation && (
-        <section className="mb-14">
-          <div className="mb-4 flex items-center gap-2">
-            <Ruler className="h-5 w-5 text-blue-400" />
-            <h2 className="text-xl font-semibold">Historical consistency check</h2>
-          </div>
-          <Card
-            className={
-              validation.passed
-                ? 'border-emerald-900/40 bg-emerald-950/10'
-                : 'border-amber-900/40 bg-amber-950/10'
-            }
-          >
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-base">
-                {validation.passed ? (
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                ) : (
-                  <XCircle className="h-4 w-4 text-amber-400" />
-                )}
-                1973 preset vs IMD historical record
-                <Badge
-                  variant={validation.passed ? 'default' : 'destructive'}
-                  className="ml-auto font-mono text-[11px]"
-                >
-                  {validation.passed ? 'PASS' : 'FAIL'} (±{VALIDATION_GATE_C.toFixed(1)}°C gate)
-                </Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              <p className="mb-3">
-                Comparing the sliders at their 1973 values (canopy {p1973.canopyPct}%,
-                built-up {p1973.builtUpPct}%, water {p1973.waterKm2} km², vehicles index{' '}
-                {p1973.vehiclesIndex}) against the April 2026 baseline should reproduce the
-                historical reference. Agreement at one point does not independently validate the model, its individual coefficients or its transfer to another city.
-              </p>
-              <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-lg border bg-card/50 p-3">
-                  <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
-                    Modelled
-                  </div>
-                  <div className="mt-1 font-mono text-lg text-orange-300">
-                    {validation.modelled.toFixed(1)}°C
-                  </div>
-                  <div className="text-[11px] font-mono text-muted-foreground/70">
-                    [{validation.modelledLow.toFixed(1)}…{validation.modelledHigh.toFixed(1)}]°C
-                  </div>
-                </div>
-                <div className="rounded-lg border bg-card/50 p-3">
-                  <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-muted-foreground">
-                    Observed (IMD 1951–1970)
-                    {validation.confidence === 'medium' && (
-                      <Badge
-                        variant="outline"
-                        className="border-amber-700/50 px-1 py-0 font-mono text-[9px] uppercase text-amber-300"
-                      >
-                        est.
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="mt-1 font-mono text-lg">
-                    {validation.observed.toFixed(1)}°C
-                  </div>
-                  <div className="text-[11px] text-muted-foreground/70">
-                    {validation.source}
-                  </div>
-                </div>
-                <div className="rounded-lg border bg-card/50 p-3">
-                  <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
-                    Error
-                  </div>
-                  <div
-                    className={`mt-1 font-mono text-lg ${
-                      validation.passed ? 'text-emerald-300' : 'text-amber-300'
-                    }`}
-                  >
-                    {validation.error > 0 ? '+' : ''}
-                    {validation.error.toFixed(2)}°C
-                  </div>
-                  <div className="text-[11px] text-muted-foreground/70">
-                    |error| ≤ {VALIDATION_GATE_C.toFixed(1)}°C
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-      )}
+      <section aria-labelledby="reference-heading" className="mb-12">
+        <h2 id="reference-heading" className="mb-4 text-xl font-semibold">Reference and output definitions</h2>
+        <Card><CardContent className="space-y-3 pt-6 text-sm text-muted-foreground">
+          <p><strong className="text-foreground">Mixed-year reference scenario.</strong> {provenance.note}</p>
+          <p>The numerical temperature anchor is {baseline.tempC.toFixed(1)}°C. Adding an assumed response to it does not turn the result into an observed or calibrated physical temperature. The PM2.5 anchor is {baseline.pm25} µg/m³; simulated changes likewise use unverified assumptions.</p>
+          <p><strong className="text-foreground">Explicit zero-delta context:</strong> April, N wind, AOD {reference.aod}, {city.zones[reference.zone].label}, daytime, with the reference slider values. The month contribution is the selected profile entry minus April&apos;s entry. The zone contribution is the selected zone offset minus the reference-zone offset. AOD is relative to the city&apos;s demo reference; PM2.5 wind offsets are relative to N. These are modelling conventions, not measured simultaneous conditions.</p>
+          <p>The day/night selector changes the assumed aerosol term only; it does not supply separate observed day/night baselines. Guided comparisons hold the same climate context on both sides and report the difference between those scenarios.</p>
+          <p><strong className="text-foreground">Synthetic map:</strong> generated zone and feature weights create an illustrative spatial pattern. Its values include local synthetic relief and zone contrasts, omit uniform month/AOD effects, and are independently clipped. Its mean need not equal the headline response. Satellite imagery is a background layer, not a measurement of the coloured overlay.</p>
+        </CardContent></Card>
+      </section>
 
-      {!validation && (
-        <section className="mb-14">
-          <Card className="border-muted-foreground/20 bg-card/30">
-            <CardContent className="pt-6 text-sm text-muted-foreground">
-              <strong className="text-foreground">Backwards validation not yet wired for {city.name}.</strong>{' '}
-              A citable April 1951–1970 IMD observed mean is required. Added for Bangalore;
-              pending source for {city.name}.
-            </CardContent>
-          </Card>
-        </section>
-      )}
-
-      {/* Historical temperature */}
-      <section className="mb-14">
-        <div className="mb-4 flex items-center gap-2">
-          <TrendingUp className="h-5 w-5 text-orange-400" />
-          <h2 className="text-xl font-semibold">Historical temperature · 1951–2024</h2>
-        </div>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="mb-6 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-lg border bg-card/50 p-3">
-                <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
-                  1951–1980 Baseline
-                </div>
-                <div className="mt-1 font-mono text-sm">
-                  Tmax {histBaseline.tmaxMean.toFixed(2)} °C · Tmin{' '}
-                  {histBaseline.tminMean.toFixed(2)} °C
-                </div>
-              </div>
-              <div className="rounded-lg border bg-card/50 p-3">
-                <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
-                  2015–2024 Recent
-                </div>
-                <div className="mt-1 font-mono text-sm">
-                  Tmax {recent.tmaxMean.toFixed(2)} °C · Tmin {recent.tminMean.toFixed(2)} °C
-                </div>
-              </div>
-              <div className="rounded-lg border bg-card/50 p-3">
-                <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
-                  Anomaly
-                </div>
-                <div className="mt-1 font-mono text-sm">
-                  <span className="text-orange-300">
-                    {anomaly.tmax >= 0 ? '+' : ''}
-                    {anomaly.tmax.toFixed(2)} °C
-                  </span>{' '}
-                  (Tmax) · {anomaly.tmin >= 0 ? '+' : ''}
-                  {anomaly.tmin.toFixed(2)} °C (Tmin)
-                </div>
-              </div>
+      <section aria-labelledby="clipping-heading" className="mb-12">
+        <div className="mb-4 flex items-center gap-2"><Ruler className="h-5 w-5 text-amber-400" /><h2 id="clipping-heading" className="text-xl font-semibold">Historical preset: clipping diagnostic</h2></div>
+        <Card className="border-amber-900/40"><CardHeader><CardTitle className="text-base">1973-labelled inputs, evaluated under the reference context</CardTitle></CardHeader>
+          <CardContent className="space-y-4 text-sm text-muted-foreground">
+            <p>Preset labels are scenario shorthand. Their inputs are unverified and do not reconstruct historical weather. There is no verified, metric-matched historical observation for scoring this calculation. The earlier historical agreement badge and unsupported comparison targets have been removed.</p>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-lg border p-3"><p className="text-xs">Unclipped illustrative response</p><p className="mt-2 font-mono text-lg text-foreground">{raw.unclippedDelta.toFixed(2)}°C-equivalent</p><p className="mt-1 text-xs">Selected assumption range [{raw.unclippedLow.toFixed(2)}, {raw.unclippedHigh.toFixed(2)}]</p></div>
+              <div className="rounded-lg border p-3"><p className="text-xs">Clipped display response</p><p className="mt-2 font-mono text-lg text-foreground">{diagnostic.tempDelta.toFixed(2)}°C-equivalent</p><p className="mt-1 text-xs">Selected assumption range [{diagnostic.bands.tempDelta.low.toFixed(2)}, {diagnostic.bands.tempDelta.high.toFixed(2)}]</p></div>
+              <div className="rounded-lg border p-3"><p className="text-xs">Saturation status</p><p className="mt-2 font-semibold text-amber-200">{raw.clipped ? 'Central result clipped' : raw.sensitivityClipped ? 'Sensitivity range clipped' : 'No clipping in this run'}</p><p className="mt-1 text-xs">Response bounds: −8 to +12°C-equivalent; PM2.5-equivalent values: 0 to 500 µg/m³.</p></div>
             </div>
-
-            <svg
-              viewBox="0 0 800 260"
-              className="w-full h-auto"
-              preserveAspectRatio="xMidYMid meet"
-              role="img"
-              aria-label={`Annual mean Tmax and Tmin for ${city.name}, 1951 to 2024`}
-            >
-              {yTicks.map((v) => (
-                <g key={v}>
-                  <line
-                    x1={44}
-                    y1={yScale(v)}
-                    x2={786}
-                    y2={yScale(v)}
-                    stroke="currentColor"
-                    strokeOpacity={0.08}
-                    strokeWidth={1}
-                  />
-                  <text
-                    x={40}
-                    y={yScale(v)}
-                    textAnchor="end"
-                    dominantBaseline="middle"
-                    fontSize={10}
-                    fill="currentColor"
-                    opacity={0.45}
-                  >
-                    {v}
-                  </text>
-                </g>
-              ))}
-
-              <line
-                x1={44}
-                y1={baselineTmaxY}
-                x2={786}
-                y2={baselineTmaxY}
-                stroke="#fb923c"
-                strokeOpacity={0.35}
-                strokeWidth={1}
-                strokeDasharray="4 4"
-              />
-
-              {xTicks.map((yr) => (
-                <g key={yr}>
-                  <line
-                    x1={xScale(yr)}
-                    y1={232}
-                    x2={xScale(yr)}
-                    y2={236}
-                    stroke="currentColor"
-                    strokeOpacity={0.3}
-                    strokeWidth={1}
-                  />
-                  <text
-                    x={xScale(yr)}
-                    y={246}
-                    textAnchor="middle"
-                    fontSize={10}
-                    fill="currentColor"
-                    opacity={0.45}
-                  >
-                    {yr}
-                  </text>
-                </g>
-              ))}
-
-              <polyline
-                points={tmaxPath}
-                fill="none"
-                stroke="#fb923c"
-                strokeWidth={1.5}
-                strokeLinejoin="round"
-              />
-
-              <polyline
-                points={tminPath}
-                fill="none"
-                stroke="#5eead4"
-                strokeWidth={1.5}
-                strokeLinejoin="round"
-              />
-
-              <circle cx={700} cy={22} r={4} fill="#fb923c" />
-              <text x={708} y={22} dominantBaseline="middle" fontSize={11} fill="currentColor" opacity={0.7}>
-                Tmax
-              </text>
-              <circle cx={740} cy={22} r={4} fill="#5eead4" />
-              <text x={748} y={22} dominantBaseline="middle" fontSize={11} fill="currentColor" opacity={0.7}>
-                Tmin
-              </text>
-            </svg>
-
-            <p className="mt-3 text-xs text-muted-foreground">
-              Source: Open-Meteo ERA5 Archive, {historyData.meta.station}. 2 m air
-              temperature reanalysis — not LST. Different from the homepage +LST stat.
-            </p>
+            <p>{raw.collapsedByClipping ? 'The nonzero raw range collapses at the display bound. This is saturation, not certainty or historical agreement.' : 'Even without clipping, these selected sensitivity endpoints are not a confidence interval or complete scientific uncertainty.'} Display bounds are demo guardrails, not scientifically established physical limits.</p>
           </CardContent>
         </Card>
       </section>
 
-      <Separator className="mb-14" />
-
-      <section className="mb-14">
-        <div className="mb-4 flex items-center gap-2">
-          <CheckCircle2 className="h-5 w-5 text-emerald-400" />
-          <h2 className="text-xl font-semibold">Now captured</h2>
-        </div>
-        <div className="flex flex-col gap-4">
-          {NOW_CAPTURED.map(({ title, explanation }) => (
-            <Card key={title} className="border-emerald-900/30">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base text-emerald-300">{title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">{explanation}</p>
-              </CardContent>
-            </Card>
+      <section aria-labelledby="provenance-heading" className="mb-12">
+        <h2 id="provenance-heading" className="mb-4 text-xl font-semibold">Per-input provenance and evidence gaps</h2>
+        <p className="mb-4 text-sm text-muted-foreground">All entries below are unverified. “Reported observation” describes the stored attribution, not a verification result. Source/publication year and underlying measurement period are different fields. Missing information is shown explicitly.</p>
+        <div className="grid gap-4 md:grid-cols-2">
+          {provenance.inputs.map(input => (
+            <Card key={input.input}><CardHeader className="pb-2"><CardTitle className="text-base">{input.label}: {baseline[input.input] ?? 'unavailable'}</CardTitle><div className="flex flex-wrap gap-2"><Badge variant="outline">{kindLabel[input.kind]}</Badge><Badge variant="outline">Unverified</Badge></div></CardHeader><CardContent className="space-y-2 text-xs text-muted-foreground">
+              <p><strong>Period:</strong> {input.period ?? 'Not recorded'} · <strong>Source year:</strong> {input.sourceYear ?? 'Not recorded'}</p>
+              <p><strong>Metric:</strong> {input.metric}</p><p><strong>Footprint:</strong> {input.footprint ?? 'Not recorded; do not assume it matches the simulator boundary'}</p>
+              <p><strong>Source attribution:</strong> {input.sourceUrl ? <a href={input.sourceUrl} target="_blank" rel="noreferrer" className="underline">{input.sourceTitle ?? 'Recorded source'}</a> : input.sourceTitle ?? 'No traceable source supplied'}</p>
+              <p><strong>Exact locator:</strong> {input.locator ?? 'Not recorded'}</p><p><strong>Derivation:</strong> {input.derivation ?? 'Not documented'}</p><p>{input.note}</p>
+            </CardContent></Card>
           ))}
         </div>
       </section>
 
-      <Separator className="mb-14" />
-
-      <section className="mb-14">
-        <div className="mb-4 flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5 text-amber-400" />
-          <h2 className="text-xl font-semibold">Still not captured</h2>
-        </div>
-        <div className="flex flex-col gap-4">
-          {STILL_MISSING.map(({ title, explanation }) => (
-            <Card key={title}>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base">{title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">{explanation}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+      <section aria-labelledby="coefficient-heading" className="mb-12">
+        <div className="mb-4 flex items-center gap-2"><Microscope className="h-5 w-5 text-blue-400" /><h2 id="coefficient-heading" className="text-xl font-semibold">Coefficient assumptions</h2></div>
+        <p className="mb-4 text-sm text-muted-foreground">Central values and low/high ranges are demonstration choices, not measured estimates or confidence intervals. Seasonal, wind, aerosol, night-response and zone constants, including city overrides, also remain unverified. Interval propagation is deterministic, not Monte Carlo.</p>
+        <div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="border-b"><th className="py-2 pr-4">Driver / unit</th><th className="py-2 pr-4">Central</th><th className="py-2 pr-4">Selected range</th><th className="py-2">Evidence</th></tr></thead><tbody>
+          {(['canopy', 'builtUp', 'water', 'vehicles'] as const).map(key => { const c = coefficients[key]; return <tr key={key} className="border-b"><td className="py-3 pr-4">{c.unit}</td><td className="pr-4 font-mono">{c.central}</td><td className="pr-4 font-mono">{c.low}–{c.high}</td><td className="text-xs text-muted-foreground">{c.source}</td></tr> })}
+        </tbody></table></div>
+        <p className="mt-4 text-sm text-muted-foreground">Other retained assumptions: canopy night-response factor {coefficients.nightCoolLossFraction}; AOD response per +{coefficients.aod.stepAod}: {coefficients.aod.daytimeCoolingPerStep}°C-equivalent by day, +{coefficients.aod.nighttimeWarmingPerStep}°C-equivalent by night, +{coefficients.aod.pm25PerStep} µg/m³-equivalent PM2.5. No calibrated exposure or weather interpretation follows from these numbers.</p>
       </section>
 
-      <Separator className="mb-14" />
-
-      <section className="mb-14">
-        <div className="mb-4 flex items-center gap-2">
-          <Microscope className="h-5 w-5 text-blue-400" />
-          <h2 className="text-xl font-semibold">Coefficient table</h2>
-        </div>
-        <p className="mb-6 text-sm text-muted-foreground">
-          The implementation uses the central estimates and selected low/high ranges below.
-          Those ranges are propagated into the readouts; they are not a complete measure of
-          scientific uncertainty. Defaults are inherited from Bangalore unless a city has
-          seasonal, wind or AOD overrides. Source applicability and numeric derivations
-          still need the review described below.
-        </p>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b text-left text-xs uppercase tracking-widest text-muted-foreground">
-                <th className="py-2 pr-4">Driver</th>
-                <th className="py-2 pr-4">Change</th>
-                <th className="py-2 pr-4">Central</th>
-                <th className="py-2 pr-4">Range</th>
-                <th className="py-2 pr-4">Effect on</th>
-              </tr>
-            </thead>
-            <tbody>
-              {COEFF_ROWS.map((row) => (
-                <tr key={row.label} className="border-b last:border-0">
-                  <td className="py-3 pr-4 font-medium">{row.label}</td>
-                  <td className="py-3 pr-4 text-muted-foreground">{row.driver}</td>
-                  <td className="py-3 pr-4 font-mono text-orange-400">{row.central}</td>
-                  <td className="py-3 pr-4 font-mono text-muted-foreground">{row.range}</td>
-                  <td className="py-3 pr-4 text-muted-foreground">{row.effect}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      <section aria-labelledby="missing-heading" className="mb-12">
+        <div className="mb-4 flex items-center gap-2"><AlertTriangle className="h-5 w-5 text-amber-400" /><h2 id="missing-heading" className="text-xl font-semibold">What this does not include</h2></div>
+        <div className="space-y-3">{MISSING.map(([title, text]) => <Card key={title}><CardHeader className="pb-2"><CardTitle className="text-base">{title}</CardTitle></CardHeader><CardContent className="text-sm text-muted-foreground">{text}</CardContent></Card>)}</div>
       </section>
 
-      <Separator className="mb-14" />
+      <section aria-labelledby="history-heading" className="mb-12">
+        <div className="mb-4 flex items-center gap-2"><TrendingUp className="h-5 w-5 text-orange-400" /><h2 id="history-heading" className="text-xl font-semibold">Separate historical context · 1951–2024</h2></div>
+        <Card><CardContent className="pt-6 text-sm text-muted-foreground">
+          <p>Repository snapshot attributed to Open-Meteo&apos;s historical archive: annual averages of daily maximum/minimum 2 m air temperature at {history.meta.lat}, {history.meta.lon}. This gridded reanalysis context is separate from both LST and the illustrative response. It is not an IMD station observation or a validation dataset for this demo.</p>
+          <svg viewBox="0 0 800 260" className="mt-5 h-auto w-full" role="img" aria-label={`Archived annual mean daily maximum and minimum air temperature context for ${city.name}`}>
+            {paths.ticks.map(value => <g key={value}><line x1={44} y1={paths.y(value)} x2={786} y2={paths.y(value)} stroke="currentColor" strokeOpacity={0.1} /><text x={40} y={paths.y(value)} textAnchor="end" dominantBaseline="middle" fontSize={10} fill="currentColor">{value}°</text></g>)}
+            {[1960, 1980, 2000, 2020].map(year => <text key={year} x={paths.x(year)} y={250} textAnchor="middle" fontSize={10} fill="currentColor">{year}</text>)}
+            <polyline points={paths.tmax} fill="none" stroke="#fb923c" strokeWidth={1.5} /><polyline points={paths.tmin} fill="none" stroke="#5eead4" strokeWidth={1.5} />
+          </svg>
+          <p className="mt-2 text-xs">Orange: mean daily maximum · teal: mean daily minimum (°C). Stored retrieval date: {history.meta.fetchedAt.slice(0, 10)}. The archived fetcher did not pin a reanalysis model; product/version and raw-source reproducibility still require review. <a href="https://open-meteo.com/en/docs/historical-weather-api" className="underline" target="_blank" rel="noreferrer">Archive documentation</a>.</p>
+          <p className="mt-3 text-xs">Stored 1951–1980 averages: Tmax {history.baseline1951_1980.tmaxMean.toFixed(2)}°C, Tmin {history.baseline1951_1980.tminMean.toFixed(2)}°C. Stored 2015–2024 averages: Tmax {history.recent2015_2024.tmaxMean.toFixed(2)}°C, Tmin {history.recent2015_2024.tminMean.toFixed(2)}°C. Snapshot values have not been independently verified in this release.</p>
+        </CardContent></Card>
+      </section>
 
-      <section>
-        <div className="mb-4 flex items-center gap-2">
-          <BookOpen className="h-5 w-5 text-emerald-400" />
-          <h2 className="text-xl font-semibold">Citations and evidence checks</h2>
-        </div>
-        <div className="mb-6 rounded-lg border bg-card/50 p-4 text-sm">
-          <p className="font-medium">Source audit · {audit.checkedAt.slice(0, 10)}</p>
-          <p className="mt-2 text-muted-foreground">Jev checks supplied source passages against coefficient claims. These checks do not validate the full simulator. “Needs review” and “Source text missing” are unresolved evidence gaps.</p>
-          <ul className="mt-3 space-y-2">
-            {evidenceClaims().map(claim => {
-              const row = audit.rows.find(row => row.id === claim.id && row.claim === claim.claim)
-              const labels: Record<string, string> = { review: 'Needs review', unverified: 'Source text missing', insufficient: 'Passage does not establish the full coefficient', contradicts: 'Potential conflict — needs review', supports: 'Passage supports claim — maintainer review required', quote_missing: 'Quote not found' }
-              return <li key={claim.id}><strong className="capitalize">{claim.id}</strong>: {row ? labels[row.status] ?? 'Needs review' : 'Changed since audit — rerun required'}{row?.sourceUrl && <> · <a className="underline" href={row.sourceUrl} target="_blank" rel="noreferrer">Inspected source</a></>}</li>
-            })}
-          </ul>
-        </div>
-        <ol className="flex flex-col gap-3 text-sm text-muted-foreground">
-          <li>
-            <strong className="text-foreground">Ziter et al. 2019</strong> — Scale-dependent
-            interactions between tree canopy cover and impervious surfaces reduce daytime
-            urban heat during summer. <em>PNAS</em> 116(15): 7575–7580. Canopy coefficient.
-          </li>
-          <li>
-            <strong className="text-foreground">Manoli et al. 2024</strong> — Seasonal and
-            diurnal modulation of the urban heat island by tree cover. <em>Nature Communications</em>.
-            Canopy range.
-          </li>
-          <li>
-            <strong className="text-foreground">IISc Ramachandra &amp; Bharath 2023</strong> —
-            Spatiotemporal dynamics of urbanisation and LST in Bangalore 1973–2023.
-            Built-up coefficient and historical land-use data.
-          </li>
-          <li>
-            <strong className="text-foreground">Sustainable Cities &amp; Society 2024</strong> —
-            Meta-analysis of urban water body cooling effects across Asian megacities.
-            Water body coefficient 0.3–0.8°C/km².
-          </li>
-          <li>
-            <strong className="text-foreground">KSPCB / UrbanEmissions APnA 2018</strong> —
-            Bangalore vehicle-fleet emission factors; wind-rose 2022.
-          </li>
-          <li>
-            <strong className="text-foreground">Babu et al., ARFI 2013</strong> — Aerosol
-            Radiative Forcing over India. AOD forcing coefficients.
-          </li>
-          <li>
-            <strong className="text-foreground">IMD climatology 1991–2020</strong> —
-            Monthly mean temperature normals per city. Monsoon and seasonal offset source.
-          </li>
-        </ol>
+      <section aria-labelledby="evidence-heading">
+        <div className="mb-4 flex items-center gap-2"><BookOpen className="h-5 w-5 text-emerald-400" /><h2 id="evidence-heading" className="text-xl font-semibold">Mechanism evidence, not coefficient validation</h2></div>
+        <p className="text-sm text-muted-foreground"><a href="https://doi.org/10.1073/pnas.1817561116" target="_blank" rel="noreferrer" className="underline">Ziter et al. (2019), PNAS</a> measured urban air temperature in Madison, Wisconsin. Its canopy relationships are nonlinear and depend on spatial scale. It supports canopy/impervious-cover mechanisms, not Taap&apos;s numerical slopes, uncertainty ranges, LST interpretation or transfer to Indian cities.</p>
+        <p className="mt-3 text-sm text-muted-foreground">The archived automated source-passage audit ({audit.checkedAt.slice(0, 10)}) found unresolved review and source-text gaps. Its old claim wording has since changed, so it is historical context only. No entry establishes calibration. Earlier unverified bibliographic labels are not presented here as confirmed coefficient sources.</p>
+        <p className="mt-3 text-sm"><Link href="/research" className="underline underline-offset-4">Explore the research library</Link></p>
       </section>
     </div>
   )
